@@ -256,7 +256,7 @@ consoleread(struct inode *ip, char *dst, int n)
   target = n;
   acquire(&cons.lock);
   while(n > 0){
-    while(input.r == input.w){
+    while(input.r == input.w || active != ip->minor){
       if(myproc()->killed){
         release(&cons.lock);
         ilock(ip);
