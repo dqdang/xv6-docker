@@ -27,6 +27,7 @@ static struct {
   int locking;
 } cons;
 
+
 static void
 printint(int xx, int base, int sign)
 {
@@ -182,12 +183,15 @@ consputc(int c)
 }
 
 #define INPUT_BUF 128
-struct {
+struct input{
   char buf[INPUT_BUF];
   uint r;  // Read index
   uint w;  // Write index
   uint e;  // Edit index
-} input;
+};
+
+struct input inputs[NUM_VCS];
+
 
 #define C(x)  ((x)-'@')  // Control-x
 
@@ -210,34 +214,34 @@ consoleintr(int (*getc)(void))
       }else{
         active = 1;
       }
-      while(input.e != input.w &&
-            input.buf[(input.e-1) % INPUT_BUF] != '\n'){
-        input.e--;
+      while(inputs[active-1].e != inputs[active-1].w &&
+            inputs[active-1].buf[(inputs[active-1].e-1) % INPUT_BUF] != '\n'){
+        inputs[active-1].e--;
         consputc(BACKSPACE);
       }
       doconsoleswitch = 1;
       break;
     case C('U'):  // Kill line.
-      while(input.e != input.w &&
-            input.buf[(input.e-1) % INPUT_BUF] != '\n'){
-        input.e--;
+      while(inputs[active-1].e != inputs[active-1].w &&
+            inputs[active-1].buf[(inputs[active-1].e-1) % INPUT_BUF] != '\n'){
+        inputs[active-1].e--;
         consputc(BACKSPACE);
       }
       break;
     case C('H'): case '\x7f':  // Backspace
-      if(input.e != input.w){
-        input.e--;
+      if(inputs[active-1].e != inputs[active-1].w){
+        inputs[active-1].e--;
         consputc(BACKSPACE);
       }
       break;
     default:
-      if(c != 0 && input.e-input.r < INPUT_BUF){
+      if(c != 0 && inputs[active-1].e-inputs[active-1].r < INPUT_BUF){
         c = (c == '\r') ? '\n' : c;
-        input.buf[input.e++ % INPUT_BUF] = c;
+        inputs[active-1].buf[inputs[active-1].e++ % INPUT_BUF] = c;
         consputc(c);
-        if(c == '\n' || c == C('D') || input.e == input.r+INPUT_BUF){
-          input.w = input.e;
-          wakeup(&input.r);
+        if(c == '\n' || c == C('D') || inputs[active-1].e == inputs[active-1].r+INPUT_BUF){
+          inputs[active-1].w = inputs[active-1].e;
+          wakeup(&inputs[active-1].r);
         }
       }
       break;
@@ -262,20 +266,20 @@ consoleread(struct inode *ip, char *dst, int n)
   target = n;
   acquire(&cons.lock);
   while(n > 0){
-    while(input.r == input.w || active != ip->minor){
+    while(inputs[active-1].r == inputs[active-1].w || active != ip->minor){
       if(myproc()->killed){
         release(&cons.lock);
         ilock(ip);
         return -1;
       }
-      sleep(&input.r, &cons.lock);
+      sleep(&inputs[active-1].r, &cons.lock);
     }
-    c = input.buf[input.r++ % INPUT_BUF];
+    c = inputs[active-1].buf[inputs[active-1].r++ % INPUT_BUF];
     if(c == C('D')){  // EOF
       if(n < target){
         // Save ^D for next time, to make sure
         // caller gets a 0-byte result.
-        input.r--;
+        inputs[active-1].r--;
       }
       break;
     }
