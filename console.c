@@ -209,7 +209,12 @@ consoleintr(int (*getc)(void))
         active = 2;
       }else{
         active = 1;
-      } 
+      }
+      while(input.e != input.w &&
+            input.buf[(input.e-1) % INPUT_BUF] != '\n'){
+        input.e--;
+        consputc(BACKSPACE);
+      }
       doconsoleswitch = 1;
       break;
     case C('U'):  // Kill line.
