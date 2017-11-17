@@ -1,7 +1,8 @@
+
+
 // Console input and output.
 // Input is from the keyboard or serial port.
 // Output is written to the screen and serial port.
-
 
 #include "types.h"
 #include "defs.h"
@@ -18,15 +19,29 @@
 
 static void consputc(int);
 
+#define INPUT_BUF 128
+struct input {
+  char buf[INPUT_BUF];
+  uint r;  // Read index
+  uint w;  // Write index
+  uint e;  // Edit index
+} input;
+
+
+
 static int panicked = 0;
 
-static int active = 1;
+static int active = 0;
+
+// struct input buf1 = {"", 0, 0, 0};
+// struct input buf2 = {"", 0, 0, 0};
+struct input inputs[NUM_VCS];
+
 
 static struct {
   struct spinlock lock;
   int locking;
 } cons;
-
 
 static void
 printint(int xx, int base, int sign)
@@ -182,18 +197,17 @@ consputc(int c)
   cgaputc(c);
 }
 
-#define INPUT_BUF 128
-struct input{
-  char buf[INPUT_BUF];
-  uint r;  // Read index
-  uint w;  // Write index
-  uint e;  // Edit index
-};
-
-struct input inputs[NUM_VCS];
-
-
 #define C(x)  ((x)-'@')  // Control-x
+
+
+void copy_buf(char *dst, char *src, int len)
+{
+  int i;
+
+  for (i = 0; i < len; i++) {
+    dst[i] = src[i];
+  }
+}
 
 void
 consoleintr(int (*getc)(void))
@@ -208,40 +222,32 @@ consoleintr(int (*getc)(void))
       doprocdump = 1;
       break;
     case C('T'):  // Process listing.
-      // procdump() locks cons.lock indirectly; invoke later
-      if (active == 1){
-        active = 2;
-      }else{
-        active = 1;
-      }
-      while(inputs[active-1].e != inputs[active-1].w &&
-            inputs[active-1].buf[(inputs[active-1].e-1) % INPUT_BUF] != '\n'){
-        inputs[active-1].e--;
-        consputc(BACKSPACE);
-      }
+      inputs[active] = input;
+      active = (active+1) % NUM_VCS;
+      input = inputs[active];
       doconsoleswitch = 1;
       break;
     case C('U'):  // Kill line.
-      while(inputs[active-1].e != inputs[active-1].w &&
-            inputs[active-1].buf[(inputs[active-1].e-1) % INPUT_BUF] != '\n'){
-        inputs[active-1].e--;
+      while(input.e != input.w &&
+            input.buf[(input.e-1) % INPUT_BUF] != '\n'){
+        input.e--;
         consputc(BACKSPACE);
       }
       break;
     case C('H'): case '\x7f':  // Backspace
-      if(inputs[active-1].e != inputs[active-1].w){
-        inputs[active-1].e--;
+      if(input.e != input.w){
+        input.e--;
         consputc(BACKSPACE);
       }
       break;
     default:
-      if(c != 0 && inputs[active-1].e-inputs[active-1].r < INPUT_BUF){
+      if(c != 0 && input.e-input.r < INPUT_BUF){
         c = (c == '\r') ? '\n' : c;
-        inputs[active-1].buf[inputs[active-1].e++ % INPUT_BUF] = c;
+        input.buf[input.e++ % INPUT_BUF] = c;
         consputc(c);
-        if(c == '\n' || c == C('D') || inputs[active-1].e == inputs[active-1].r+INPUT_BUF){
-          inputs[active-1].w = inputs[active-1].e;
-          wakeup(&inputs[active-1].r);
+        if(c == '\n' || c == C('D') || input.e == input.r+INPUT_BUF){
+          input.w = input.e;
+          wakeup(&input.r);
         }
       }
       break;
@@ -266,20 +272,20 @@ consoleread(struct inode *ip, char *dst, int n)
   target = n;
   acquire(&cons.lock);
   while(n > 0){
-    while(inputs[active-1].r == inputs[active-1].w || active != ip->minor){
+    while((input.r == input.w) || (active != ip->minor-1)){
       if(myproc()->killed){
         release(&cons.lock);
         ilock(ip);
         return -1;
       }
-      sleep(&inputs[active-1].r, &cons.lock);
+      sleep(&input.r, &cons.lock);
     }
-    c = inputs[active-1].buf[inputs[active-1].r++ % INPUT_BUF];
+    c = input.buf[input.r++ % INPUT_BUF];
     if(c == C('D')){  // EOF
       if(n < target){
         // Save ^D for next time, to make sure
         // caller gets a 0-byte result.
-        inputs[active-1].r--;
+        input.r--;
       }
       break;
     }
@@ -299,7 +305,7 @@ consolewrite(struct inode *ip, char *buf, int n)
 {
   int i;
 
-  if (active == ip->minor){
+  if (active == ip->minor-1){
     iunlock(ip);
     acquire(&cons.lock);
     for(i = 0; i < n; i++)
