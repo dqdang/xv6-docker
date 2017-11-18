@@ -26,7 +26,7 @@ create_vcs(void)
 int
 main(void)
 {
-  int pid, wpid;
+  int i, pid, wpid, id, fd;
 
   if(open("console", O_RDWR) < 0){
     mknod("console", 1, 1);
@@ -48,6 +48,30 @@ main(void)
       exec("sh", argv);
       printf(1, "init: exec sh failed\n");
       exit();
+    }
+    if(pid > 0)
+    {
+      char *dname = "vc0";
+      for (i = 0; i < 4; i++)
+      {
+        dname[2] = '0' + i;
+        fd = open(dname, O_RDWR);
+
+        /* fork a child and exec argv[1] */
+        id = fork();
+
+        if (id == 0){
+          close(0);
+          close(1);
+          close(2);
+          dup(fd);
+          dup(fd);
+          dup(fd);
+          exec(argv[0], &argv[0]);
+          exit();
+        }
+        close(fd);
+      }
     }
     while((wpid=wait()) >= 0 && wpid != pid)
       printf(1, "zombie!\n");
