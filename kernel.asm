@@ -1060,11 +1060,7 @@ consoleintr(int (*getc)(void))
 80100854:	c7 45 e4 01 00 00 00 	movl   $0x1,-0x1c(%ebp)
       break;
 8010085b:	e9 8b 01 00 00       	jmp    801009eb <consoleintr+0x1f6>
-      // }else{
-      //   active = 1;
-      //   inputs[2] = input;
-      //   input = inputs[1];
-      // }
+    case C('T'):  // Process listing.
       inputs[active] = input;
 80100860:	8b 15 84 b5 10 80    	mov    0x8010b584,%edx
 80100866:	89 d0                	mov    %edx,%eax

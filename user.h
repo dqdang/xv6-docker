@@ -1,3 +1,4 @@
+#include "types.h"
 struct stat;
 struct rtcdate;
 
@@ -23,16 +24,28 @@ int getpid(void);
 char* sbrk(int);
 int sleep(int);
 int uptime(void);
+int mygetpid(void);
+int pipe_count(int fd);
+int trace_start(void);
+int trace_end(int fd); 
 
 // ulib.c
 int stat(char*, struct stat*);
-char* strcpy(char*, char*);
+char *strcpy(char*, char*);
 void *memmove(void*, void*, int);
-char* strchr(const char*, char c);
+char *strchr(const char*, char c);
+int strcspn(const char *, const char *);
 int strcmp(const char*, const char*);
+int strncmp(const char*, const char *, uint);
+int strstr(char*, char*);
+char *strcat(char*, const char*);
+char *strtok(char*, const char*);
+uint strtoul(char*, char**, int);
+int strtol(char*, char**, int);
+int isspace(unsigned char);
 void printf(int, char*, ...);
 char* gets(char*, int max);
-uint strlen(char*);
+uint strlen(const char*);
 void* memset(void*, int, uint);
 void* malloc(uint);
 void free(void*);

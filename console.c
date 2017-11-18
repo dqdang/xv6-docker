@@ -27,8 +27,6 @@ struct input {
   uint e;  // Edit index
 } input;
 
-
-
 static int panicked = 0;
 
 static int active = 0;
@@ -223,7 +221,7 @@ consoleintr(int (*getc)(void))
       break;
     case C('T'):  // Process listing.
       inputs[active] = input;
-      active = (active+1) % NUM_VCS;
+      active = (active + 1) % NUM_VCS;
       input = inputs[active];
       doconsoleswitch = 1;
       break;

@@ -21,7 +21,7 @@
 8010b584 active
 8010b5a0 cons
 80100315 printint
-80109004 digits.1527
+80109004 digits.1528
 80100768 consputc
 80109000 crt
 801005dc cgaputc
@@ -57,8 +57,8 @@
 80109220 normalmap
 80109320 shiftmap
 80109420 ctlmap
-8010b61c shift.1360
-80109520 charcode.1361
+8010b61c shift.1361
+80109520 charcode.1362
 00000000 lapic.c
 80102e28 inb
 80102e43 outb
@@ -93,8 +93,8 @@
 8010b620 initproc
 80104244 allocproc
 80104af2 wakeup1
-8010b004 first.1561
-8010b008 states.1587
+8010b004 first.1562
+8010b008 states.1588
 00000000 sleeplock.c
 00000000 spinlock.c
 80104dd4 readeflags
