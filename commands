@@ -1,0 +1,3 @@
+ctool create c0 usfsh ls echo cat
+
+ctool start vc0 c0 usfsh 8 8 8
