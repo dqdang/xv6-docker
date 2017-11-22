@@ -14,11 +14,11 @@
 00000000 ulib.c
 00000348 stosb
 00001360 cvtIn
-000013c4 lasts.1227
+000013c4 lasts.1219
 00000000 printf.c
 00000a98 putc
 00000ac0 printint
-000013ac digits.1067
+000013ac digits.1059
 00000000 umalloc.c
 000013c8 base
 000013d0 freep

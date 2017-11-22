@@ -24,10 +24,6 @@ int getpid(void);
 char* sbrk(int);
 int sleep(int);
 int uptime(void);
-int mygetpid(void);
-int pipe_count(int fd);
-int trace_start(void);
-int trace_end(int fd); 
 
 // ulib.c
 int stat(char*, struct stat*);
