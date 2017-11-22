@@ -33,14 +33,13 @@ int start(int argc, char *argv[])
     cindex = cindex + 1;
   }
 
-  printf(1, "THIS IS ARGV[4]: %s\n", argv[4]);
   fd = open(argv[2], O_RDWR);
   printf(1, "fd = %d\n", fd);
 
-  // strcpy(ctable.containers[cindex].name, argv[3]);
-  // ctable.containers[cindex].max_proc = atoi(argv[5]);
-  // ctable.containers[cindex].max_mem = atoi(argv[6]);
-  // ctable.containers[cindex].max_disk = atoi(argv[7]);
+  strcpy(ctable.containers[cindex].name, argv[3]);
+  ctable.containers[cindex].max_proc = atoi(argv[5]);
+  ctable.containers[cindex].max_mem = atoi(argv[6]);
+  ctable.containers[cindex].max_disk = atoi(argv[7]);
 
   /* fork a child and exec argv[4] */
   id = fork();
