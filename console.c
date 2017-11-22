@@ -14,10 +14,10 @@
 #include "file.h"
 #include "memlayout.h"
 #include "mmu.h"
-#include "proc.h"
+#include "proc.h"  
 #include "x86.h"
 
-static void consputc(int);
+static void consputc(int);  
 
 #define INPUT_BUF 128
 struct input {
