@@ -6,15 +6,17 @@
 struct container
 {
   char *name;
-  char **executables; 
+  char **progs; 
   int max_proc;
   int max_mem;
   int max_disk;
+  int used_mem;
+  int used_disk;
 };
 
 struct
 {
-  struct container containers[4];
+  struct container tuperwares[4];
   int count;
 } ctable;
 
@@ -27,19 +29,9 @@ int is_int(char c)
 // ctool start vc0 c0 usfsh 8 10 5
 int start(int argc, char *argv[])
 {
-  int id, fd, cindex = 0;
-  while(!is_int(argv[3][cindex]))
-  {
-    cindex = cindex + 1;
-  }
-
+  int id, fd;
   fd = open(argv[2], O_RDWR);
   printf(1, "fd = %d\n", fd);
-
-  strcpy(ctable.containers[cindex].name, argv[3]);
-  ctable.containers[cindex].max_proc = atoi(argv[5]);
-  ctable.containers[cindex].max_mem = atoi(argv[6]);
-  ctable.containers[cindex].max_disk = atoi(argv[7]);
 
   /* fork a child and exec argv[4] */
   id = fork();
@@ -68,19 +60,25 @@ int start(int argc, char *argv[])
 // ctool create c0 cat ls echo sh ...
 int create(int argc, char *argv[])
 {
-  int i, id, fd;
+  int i, id, cindex = 0;
   char *mkdir[2];
   mkdir[0] = "mkdir";
   mkdir[1] = argv[2];
 
-  int cindex = 0;
-  while(!is_int(argv[3][cindex]))
+  while(!is_int(argv[2][cindex]))
   {
     cindex = cindex + 1;
   }
 
-  strcpy(ctable.containers[cindex].name, argv[2]);
+  strcpy(ctable.tuperwares[cindex].name, argv[2]);
   ctable.count = ctable.count + 1;
+  ctable.tuperwares[cindex].max_proc = atoi(argv[3]);
+  ctable.tuperwares[cindex].max_mem = atoi(argv[4])*1000000;
+  ctable.tuperwares[cindex].max_disk = atoi(argv[5])*1000000;
+  ctable.tuperwares[cindex].used_mem = 0;
+  ctable.tuperwares[cindex].used_disk = 0;
+
+
 
   id = fork();
   if(id == 0)
@@ -89,33 +87,32 @@ int create(int argc, char *argv[])
   }
   id = wait();
 
-  for(i = 3; i < argc; i++) // going through ls echo cat ...
+  for(i = 6; i < argc; i++) // going through ls echo cat ...
   {
-    id = fork();
-    if(id == 0)
-    {
-      char *executable[4];
-      char destination[32];
-
-      strcpy(destination, "/");
-      strcat(destination, mkdir[1]);
-      strcat(destination, "/");
-      strcat(destination, argv[i]);
-      strcat(destination, "\0");
-
-      executable[0] = "cat";
-      executable[1] = argv[i];
-
-      fd = open(destination, O_CREATE | O_RDWR);
     
-      close(1);
-      dup(fd);
-      close(fd);
-      exec(executable[0], executable);
-    }
-    id = wait();
-  }
+      // char *executable[4];
+    char destination[32];
 
+    strcpy(destination, "/");
+    strcat(destination, mkdir[1]);
+    strcat(destination, "/");
+    strcat(destination, argv[i]);
+    strcat(destination, "\0");
+    int bytes = copy(argv[i], destination, ctable.tuperwares[cindex].used_disk, ctable.tuperwares[cindex].max_disk);
+    printf(1, "Bytes for each file: %d\n", bytes);
+    if(bytes > 0){
+      ctable.tuperwares[cindex].used_disk += bytes; 
+    }else{
+      printf(1, "\nCONTAINER OUT OF MEMORY!\nFailed to copy executable %s. Removing incomplete binary.\n\n", argv[i]);
+      id = fork();
+      if(id == 0){
+        char *remove_args[2];
+        remove_args[0] = "rm";
+        remove_args[1] = destination;
+        exec(remove_args[0], remove_args);
+      }id = wait();
+    }
+  }
   return 0;
 }
 

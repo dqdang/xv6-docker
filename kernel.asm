@@ -4723,7 +4723,7 @@ idestart(struct buf *b)
   if(b->blockno >= FSSIZE)
 80102704:	8b 45 08             	mov    0x8(%ebp),%eax
 80102707:	8b 40 08             	mov    0x8(%eax),%eax
-8010270a:	3d e7 03 00 00       	cmp    $0x3e7,%eax
+8010270a:	3d 1f 4e 00 00       	cmp    $0x4e1f,%eax
 8010270f:	76 0c                	jbe    8010271d <idestart+0x31>
     panic("incorrect blockno");
 80102711:	c7 04 24 d4 83 10 80 	movl   $0x801083d4,(%esp)

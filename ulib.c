@@ -28,6 +28,34 @@ strcpy(char *s, char *t)
   return os;
 }
 
+int copy(char *inputfile, char *outputfile, int used_disk, int max_disk){
+    char buffer[32];
+    int fd1, fd2, count, bytes = 0;
+        
+    if ( (fd1 = open(inputfile, O_RDONLY)) < 0) {
+        printf(1, "Cannot open inputfile: %s\n", inputfile);
+        exit();
+    }
+    if ( (fd2 = open(outputfile, O_CREATE | O_WRONLY)) < 0) {
+        printf(1, "Cannot open outputfile: %s\n", outputfile);
+        exit();
+    }
+
+    while ( (count = read(fd1, buffer, 32)) > 0 ) {
+        int max = used_disk+=count;
+        printf(1, "This is max: %d\n", max);
+        if(max > max_disk){
+          return -1;
+        }
+        bytes = bytes + count;
+        write(fd2, buffer, 32);
+    }
+
+    close(fd1);
+    close(fd2);
+    return(bytes);
+}
+
 int
 strcmp(const char *p, const char *q)
 {
