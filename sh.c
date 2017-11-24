@@ -11,7 +11,7 @@
 #define LIST  4
 #define BACK  5
 
-#define MAXARGS 10
+#define MAXARGS 20
 
 struct cmd {
   int type;

@@ -20,13 +20,35 @@ struct
   int count;
 } ctable;
 
+void print_usage(int mode)
+{
+  if(mode == 0) // not enough arguments
+  {
+    printf(1, "Usage: ctool <mode> <args>\n");
+  }
+  if(mode == 1) // create
+  {
+    printf(1, "Usage: ctool create <max proc> <max mem> <max disk> <container> <exec1> <exec2> ...\n");
+  }
+  if(mode == 2) // create with container created
+  {
+    printf(1, "Container taken. Failed to create, exiting...\n");
+  }
+  if(mode == 3) // start
+  {
+    printf(1, "Usage: ctool start <console> <container> <exec>\n");
+  }
+  
+  exit();
+}
+
 int is_int(char c)
 {
   return c == '0' || c == '1' || c == '2' || c == '3' || c == '4' ||
          c == '5' || c == '6' || c == '7' || c == '8' || c == '9';
 }
 
-// ctool start vc0 c0 usfsh 8 10 5
+// ctool start vc0 c0 usfsh
 int start(int argc, char *argv[])
 {
   int id, fd;
@@ -36,7 +58,7 @@ int start(int argc, char *argv[])
   /* fork a child and exec argv[4] */
   id = fork();
 
-  if (id == 0)
+  if(id == 0)
   {
     close(0);
     close(1);
@@ -57,10 +79,10 @@ int start(int argc, char *argv[])
   return 0;
 }
 
-// ctool create c0 cat ls echo sh ...
+// ctool create c0 8 8 8 cat ls echo sh ...
 int create(int argc, char *argv[])
 {
-  int i, id, cindex = 0;
+  int i, id, bytes, cindex = 0;
   char *mkdir[2];
   mkdir[0] = "mkdir";
   mkdir[1] = argv[2];
@@ -78,8 +100,6 @@ int create(int argc, char *argv[])
   ctable.tuperwares[cindex].used_mem = 0;
   ctable.tuperwares[cindex].used_disk = 0;
 
-
-
   id = fork();
   if(id == 0)
   {
@@ -89,8 +109,6 @@ int create(int argc, char *argv[])
 
   for(i = 6; i < argc; i++) // going through ls echo cat ...
   {
-    
-      // char *executable[4];
     char destination[32];
 
     strcpy(destination, "/");
@@ -98,19 +116,26 @@ int create(int argc, char *argv[])
     strcat(destination, "/");
     strcat(destination, argv[i]);
     strcat(destination, "\0");
-    int bytes = copy(argv[i], destination, ctable.tuperwares[cindex].used_disk, ctable.tuperwares[cindex].max_disk);
+
+    bytes = copy(argv[i], destination, ctable.tuperwares[cindex].used_disk, ctable.tuperwares[cindex].max_disk);
     printf(1, "Bytes for each file: %d\n", bytes);
-    if(bytes > 0){
+
+    if(bytes > 0)
+    {
       ctable.tuperwares[cindex].used_disk += bytes; 
-    }else{
+    }
+    else
+    {
       printf(1, "\nCONTAINER OUT OF MEMORY!\nFailed to copy executable %s. Removing incomplete binary.\n\n", argv[i]);
       id = fork();
-      if(id == 0){
+      if(id == 0)
+      {
         char *remove_args[2];
         remove_args[0] = "rm";
         remove_args[1] = destination;
         exec(remove_args[0], remove_args);
-      }id = wait();
+      }
+      id = wait();
     }
   }
   return 0;
@@ -118,45 +143,33 @@ int create(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {
-
   if(argc < 2)
   {
-    // TODO:
-    // print_usage();
+    print_usage(0);
   }
 
   if(strcmp(argv[1], "create") == 0)
   {
-    if(argc < 4)
+    if(argc < 7)
     {
-      // TODO:
-      // print_usage("create");
+      print_usage(1);
     }
-    else
+    if(chdir(argv[2]) > 0)
     {
-      if(chdir(argv[2]) < 0)
-      {
-         create(argc, argv);
-      }
-      else
-      {
-        printf(1, "This device already has a container's filesystem\n");
-        exit();
-      }
+      print_usage(2);
     }
+
+    create(argc, argv);
   }
 
   if(strcmp(argv[1], "start") == 0)
   {
-    if(argc < 4)
+    if(argc < 5)
     {
-      // TODO:
-      // print_usage("create");
+      print_usage(3);
     }
-    else
-    {
-      start(argc, argv);
-    }
+
+    start(argc, argv);
   }
 
   exit();
