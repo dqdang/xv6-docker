@@ -15,6 +15,7 @@
 #include "sleeplock.h"
 #include "file.h"
 #include "fcntl.h"
+#include "container.h"
 
 // Fetch the nth word-sized system call argument as a file descriptor
 // and return both the descriptor and the corresponding struct file.
@@ -442,4 +443,150 @@ sys_pipe(void)
   fd[0] = fd0;
   fd[1] = fd1;
   return 0;
+}
+
+int
+sys_getname(void)
+{
+  int index;
+  char *name;
+
+  if(argint(0, &index) < 0 || argstr(1, &name) < 0){
+    return -1;
+  }
+
+  return getname(index, name);
+}
+
+int
+sys_setname(void)
+{
+  int index;
+  char *name;
+
+  if(argint(0, &index) < 0 || argstr(1, &name) < 0){
+    return -1;
+  }
+
+  return setname(index, name);
+}
+
+int
+sys_getmaxproc(void)
+{
+  int index;
+
+  if(argint(0, &index) < 0){
+    return -1;
+  }
+
+  return getmaxproc(index);
+}
+
+int
+sys_setmaxproc(void)
+{
+  int index, max;
+
+  if(argint(0, &index) < 0 || argint(1, &max)){
+    return -1;
+  }
+
+  return setmaxproc(index, max);
+}
+
+int
+sys_getmaxmem(void)
+{
+  int index;
+
+  if(argint(0, &index) < 0){
+    return -1;
+  }
+
+  return getmaxmem(index);
+}
+
+int
+sys_setmaxmem(void)
+{
+  int index, max;
+
+  if(argint(0, &index) < 0 || argint(1, &max)){
+    return -1;
+  }
+
+  return setmaxmem(index, max);
+}
+
+int
+sys_getmaxdisk(void)
+{
+  int index;
+
+  if(argint(0, &index) < 0){
+    return -1;
+  }
+
+  return getmaxdisk(index);
+}
+
+int
+sys_setmaxdisk(void)
+{
+  int index, max;
+
+  if(argint(0, &index) < 0 || argint(1, &max)){
+    return -1;
+  }
+
+  return setmaxdisk(index, max);
+}
+
+int
+sys_getusedmem(void)
+{
+  int index;
+
+  if(argint(0, &index) < 0){
+    return -1;
+  }
+
+  return getusedmem(index);
+}
+
+int
+sys_setusedmem(void)
+{
+  int index, max;
+
+  if(argint(0, &index) < 0 || argint(1, &max)){
+    return -1;
+  }
+
+  return setusedmem(index, max);
+}
+
+int
+sys_getuseddisk(void)
+{
+  int index;
+
+  if(argint(0, &index) < 0){
+    return -1;
+  }
+
+  return getuseddisk(index);
+}
+
+int
+sys_setuseddisk(void)
+{
+  int index, max;
+
+  if(argint(0, &index) < 0 || argint(1, &max)){
+    return -1;
+  }
+
+  return setuseddisk(index, max);
 }

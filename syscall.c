@@ -103,6 +103,18 @@ extern int sys_unlink(void);
 extern int sys_wait(void);
 extern int sys_write(void);
 extern int sys_uptime(void);
+extern int sys_getname(void);
+extern int sys_setname(void);
+extern int sys_getmaxproc(void);
+extern int sys_setmaxproc(void);
+extern int sys_getmaxmem(void);
+extern int sys_setmaxmem(void);
+extern int sys_getmaxdisk(void);
+extern int sys_setmaxdisk(void);
+extern int sys_getusedmem(void);
+extern int sys_setusedmem(void);
+extern int sys_getuseddisk(void);
+extern int sys_setuseddisk(void);
 
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -126,6 +138,18 @@ static int (*syscalls[])(void) = {
 [SYS_link]    sys_link,
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
+[SYS_getname] sys_getname,
+[SYS_setname] sys_setname,
+[SYS_getmaxproc] sys_getmaxproc,
+[SYS_setmaxproc] sys_setmaxproc,
+[SYS_getmaxmem] sys_getmaxmem,
+[SYS_setmaxmem] sys_setmaxmem,
+[SYS_getmaxdisk] sys_getmaxdisk,
+[SYS_setmaxdisk] sys_setmaxdisk,
+[SYS_getusedmem] sys_getusedmem,
+[SYS_setusedmem] sys_setusedmem,
+[SYS_getuseddisk] sys_getuseddisk,
+[SYS_setuseddisk] sys_setuseddisk,
 };
 
 void

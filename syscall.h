@@ -20,3 +20,15 @@
 #define SYS_link   19
 #define SYS_mkdir  20
 #define SYS_close  21
+#define SYS_getname 22
+#define SYS_setname 23
+#define SYS_getmaxproc 24
+#define SYS_setmaxproc 25
+#define SYS_getmaxmem 26
+#define SYS_setmaxmem 27
+#define SYS_getmaxdisk 28
+#define SYS_setmaxdisk 29
+#define SYS_getusedmem 30
+#define SYS_setusedmem 31
+#define SYS_getuseddisk 32
+#define SYS_setuseddisk 33

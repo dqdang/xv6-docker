@@ -24,6 +24,18 @@ int getpid(void);
 char* sbrk(int);
 int sleep(int);
 int uptime(void);
+int getname(int, char*);
+int setname(int, char*);
+int getmaxproc(int);
+int setmaxproc(int, int);
+int getmaxmem(int);
+int setmaxmem(int, int);
+int getmaxdisk(int);
+int setmaxdisk(int, int);
+int getusedmem(int);
+int setusedmem(int, int);
+int getuseddisk(int);
+int setuseddisk(int, int);
 
 // ulib.c
 int stat(char*, struct stat*);
