@@ -2,11 +2,12 @@
 #include "types.h"
 #include "stat.h"
 #include "user.h"
-#include "defs.h"
+#define NUM_VCS 4
 
 struct container{
   char *name;
-  char **progs; 
+  char **files;
+  int num_files;
   int max_proc;
   int max_mem;
   int max_disk;
@@ -24,13 +25,16 @@ void print_usage(int mode){
     printf(1, "Usage: ctool <mode> <args>\n");
   }
   if(mode == 1){ // create
-    printf(1, "Usage: ctool create <max proc> <max mem> <max disk> <container> <exec1> <exec2> ...\n");
+    printf(1, "Usage: ctool create <container> <max proc> <max mem> <max disk> <exec1> <exec2> ...\n");
   }
   if(mode == 2){ // create with container created
     printf(1, "Container taken. Failed to create, exiting...\n");
   }
   if(mode == 3){ // start
     printf(1, "Usage: ctool start <console> <container> <exec>\n");
+  }
+  if(mode == 4){ // delete
+    printf(1, "Usage: ctool delete <container>\n");
   }
   
   exit();
@@ -70,34 +74,52 @@ int start(int argc, char *argv[]){
 
 int stop(char *argv[]){
   // TODO: loop through processes and kill them
+  return 1;
 }
 
 int delete(char *argv[]){
-  int id, i;
-  char rm[2];
-  id = fork();
-
+  int id, i, j;
+  char *rm[2];
+  rm[0] = "/rm";
   //TODO: call pause
 
-  if(id == 0){
-    rm[0] = "rm";
-    rm[1] = argv[2];
-    exec(rm[0], rm);
-  }
   for(i = 0; i < NUM_VCS; i++){
-    if(strcmp(tuperwares[i].name, argv[2]) == 0){
-      free(tuperwares[i]);
-      tuperwares[i] = NULL;
+    if(strcmp(ctable.tuperwares[i].name, argv[2]) == 0){
+      for(j = 0; j < ctable.tuperwares[i].num_files; j++){
+        id = fork();
+        if(id == 0){
+          char destination[32];
+          strcpy(destination, "/");
+          strcat(destination, argv[2]);
+          strcat(destination, "/");
+          strcat(destination, ctable.tuperwares[i].files[j]);
+          strcat(destination, "\0");
+          rm[1] = destination;
+          exec(rm[0], rm);
+        }
+        id = wait();
+      }
+      id = fork();
+      if(id == 0){
+        rm[1] = argv[2];
+        exec(rm[0], rm);
+      }
+      id = wait();
+
+     
+      struct container container;
+      ctable.tuperwares[i] = container;
       break;
     }
   }return 1;
 }
 
 // ctool create c0 8 8 8 cat ls echo sh ...
-int create(int argc, char *argv[])
-{
-  int i, id, bytes, cindex = 0;
+int create(int argc, char *argv[]){
+  int i, id, bytes, num_files, cindex = 0;
+  num_files = argc-6;
   char *mkdir[2];
+  char *files[num_files];
   mkdir[0] = "mkdir";
   mkdir[1] = argv[2];
 
@@ -107,6 +129,7 @@ int create(int argc, char *argv[])
 
   strcpy(ctable.tuperwares[cindex].name, argv[2]);
   ctable.count = ctable.count + 1;
+  ctable.tuperwares[cindex].num_files = num_files;
   ctable.tuperwares[cindex].max_proc = atoi(argv[3]);
   ctable.tuperwares[cindex].max_mem = atoi(argv[4])*1000000;
   ctable.tuperwares[cindex].max_disk = atoi(argv[5])*1000000;
@@ -128,6 +151,7 @@ int create(int argc, char *argv[])
     strcat(destination, argv[i]);
     strcat(destination, "\0");
 
+    // ctable.tuperwares[i].files[i-6] = argv[i];
     bytes = copy(argv[i], destination, ctable.tuperwares[cindex].used_disk, ctable.tuperwares[cindex].max_disk);
     printf(1, "Bytes for each file: %d\n", bytes);
 
@@ -145,7 +169,9 @@ int create(int argc, char *argv[])
       }
       id = wait();
     }
-  }return 0;
+  }
+  ctable.tuperwares[cindex].files = files;
+  return 0;
 }
 
 int main(int argc, char *argv[]){
@@ -168,6 +194,13 @@ int main(int argc, char *argv[]){
       print_usage(3);
     }
     start(argc, argv);
+  }
+
+  if(strcmp(argv[1], "delete") == 0){
+    if(argc < 3){
+      print_usage(4);
+    }
+    delete(argv);
   }
   exit();
 }
