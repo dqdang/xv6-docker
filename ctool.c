@@ -141,6 +141,8 @@ int create(int argc, char *argv[]){
   id = fork();
   if(id == 0){
     exec(mkdir[0], mkdir);
+    printf(1, "Creating container failed. Container taken probably.\n");
+    exit();
   }
   id = wait();
 
@@ -182,7 +184,7 @@ int create(int argc, char *argv[]){
 int to_string(){
   char containers[256];
   tostring(containers);
-  printf(1, "%s\n", containers);
+  printf(1, "%d\n", containers);
   return 0;
 }
 

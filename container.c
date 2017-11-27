@@ -1,3 +1,5 @@
+#include "types.h"
+#include "defs.h"
 #include "container.h"
 
 #define NUM_VCS 4
@@ -100,18 +102,13 @@ int getactivefs(char *fs){
 }
 
 int tostring(char *string){
-    int i, j = 0;
-
+    int i;
+    strncpy(string, "Containers\n", 11);
     for(i = 0; i < NUM_VCS; i++){
-        // string += name;
-        while((*string++ = cabinet.tuperwares[i].name[j++]) != 0);
-        *string++ = '\n';
-        j = 0;
-        // string += vc;
-        while((*string++ = cabinet.tuperwares[i].vc[j++]) != 0);
-        *string++ = '\n';
+        strcat(string, cabinet.tuperwares[i].name);
+        strcat(string, "\n");
     }
-    *string++ = '\0';
+    strcat(string, "\0");
     return 0;
 }
 
