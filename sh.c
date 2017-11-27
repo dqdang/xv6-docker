@@ -173,10 +173,7 @@ main(void)
   while(getcmd(buf, sizeof(buf)) >= 0){
     char fs[32];
     getactivefs(fs);
-    printf(2, "HERE 1 fs = %s\n", fs);
-    // printf(2, "first condition = %d\n", (buf[0] == 'c' && buf[1] == 'd' && buf[2] == 10));
-    // printf(2, "second condition = %d\n", strcmp("cd ..\n", buf));
-    // printf(2, "third condition = %d\n", atroot(fs));
+    printf(2, "fs = %s\n", fs);
     if((buf[0] == 'c' && buf[1] == 'd' && buf[2] == 10) || ((strcmp("cd ..\n", buf) == 0) && atroot(fs))){
       // printf(1, "fs = %s\n", fs);
       if(chdir(fs) < 0)
