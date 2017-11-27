@@ -38,12 +38,15 @@ int start(int argc, char *argv[]){
   index[1] = '\0';
   cindex = atoi(index);
 
-  printf(1, "CINDEX: %d\n", cindex);
   setvc(cindex, argv[2]);
   // getvcfs("vc0")
 
   fd = open(argv[2], O_RDWR);
-  printf(1, "fd = %d\n", fd);
+  if(fd < 0){
+    printf(1, "Failed to open console %s\n", argv[2]);
+    exit();
+  }
+  printf(1, "Opened console %s\n", argv[2]);
   /* fork a child and exec argv[4] */
   id = fork();
 
@@ -55,7 +58,7 @@ int start(int argc, char *argv[]){
     dup(fd);
     dup(fd);
     if(chdir(argv[3]) < 0){
-      printf(1, "Container does not exist.");
+      printf(1, "Container %s does not exist.", argv[3]);
       exit();
     }
     exec(argv[4], &argv[4]);
@@ -137,18 +140,15 @@ int create(int argc, char *argv[]){
   setusedmem(cindex, 0);
   setuseddisk(cindex, 0);
 
-  int err = 0;
+  int ppid = getpid();
   id = fork();
   if(id == 0){
     exec(mkdir[0], mkdir);
     printf(1, "Creating container failed. Container taken probably.\n");
-    err = 1;
-  }
-  printf(1, "%d\n", err);
-  id = wait();
-  if(err == 1){
+    kill(ppid);
     exit();
   }
+  id = wait();
 
   for(i = 6; i < argc; i++){ // going through ls echo cat ...
     char destination[32];
