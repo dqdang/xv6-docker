@@ -32,7 +32,16 @@ int is_int(char c){
 
 // ctool start vc0 c0 usfsh
 int start(int argc, char *argv[]){
-  int id, fd;
+  int id, fd, cindex = 1;
+  char index[2];
+  index[0] = argv[3][strlen(argv[3])-1];
+  index[1] = '\0';
+  cindex = atoi(index);
+
+  printf(1, "CINDEX: %d\n", cindex);
+  setvc(cindex, argv[2]);
+  // getvcfs("vc0")
+
   fd = open(argv[2], O_RDWR);
   printf(1, "fd = %d\n", fd);
   /* fork a child and exec argv[4] */
@@ -113,9 +122,13 @@ int create(int argc, char *argv[]){
   mkdir[0] = "mkdir";
   mkdir[1] = argv[2];
 
-  while(!is_int(argv[2][cindex])){
-    cindex = cindex + 1;
-  }
+  // while(!is_int(argv[2][cindex])){
+  //   cindex = cindex + 1;
+  // }
+  char index[2];
+  index[0] = argv[2][strlen(argv[2])-1];
+  index[1] = '\0';
+  cindex = atoi(index);
 
   setname(cindex, argv[2]);
   setmaxproc(cindex, atoi(argv[3]));
