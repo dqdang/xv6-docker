@@ -179,6 +179,13 @@ int create(int argc, char *argv[]){
   return 0;
 }
 
+int to_string(){
+  char containers[256];
+  tostring(containers);
+  printf(1, "%s\n", containers);
+  return 0;
+}
+
 int main(int argc, char *argv[]){
   if(argc < 2){
     print_usage(0);
@@ -199,6 +206,10 @@ int main(int argc, char *argv[]){
       print_usage(3);
     }
     start(argc, argv);
+  }
+
+  if(strcmp(argv[1], "string") == 0){
+    to_string();
   }
 
   // if(strcmp(argv[1], "delete") == 0){

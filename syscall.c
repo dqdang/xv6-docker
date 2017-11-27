@@ -120,6 +120,7 @@ extern int sys_getvcfs(void);
 extern int sys_setactivefs(void);
 extern int sys_getactivefs(void);
 extern int sys_getcwd(void);
+extern int sys_tostring(void);
 
 
 static int (*syscalls[])(void) = {
@@ -160,7 +161,8 @@ static int (*syscalls[])(void) = {
 [SYS_getvcfs]     sys_getvcfs,
 [SYS_setactivefs] sys_setactivefs, 
 [SYS_getactivefs] sys_getactivefs, 
-[SYS_getcwd]      sys_getcwd, 
+[SYS_getcwd]      sys_getcwd,
+[SYS_tostring]    sys_tostring,
 };
 
 void

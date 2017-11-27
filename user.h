@@ -41,6 +41,7 @@ int setactivefs(char*);
 int getactivefs(char*);
 int getvcfs(char*, char*);
 int getcwd(void*, int);
+int tostring(char*);
 
 
 // ulib.c

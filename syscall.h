@@ -36,4 +36,6 @@
 #define SYS_getvcfs		35
 #define SYS_setactivefs 36
 #define SYS_getactivefs 37
-#define SYS_getcwd 38
+#define SYS_getcwd      38
+#define SYS_tostring    39
+

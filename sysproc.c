@@ -285,3 +285,15 @@ sys_getvcfs(void){
 
   return getvcfs(vc, fs);
 }
+
+int
+sys_tostring(void){
+  char *string;
+
+  if(argstr(0, &string) < 0){
+    return -1;
+  }
+
+  return tostring(string);
+}
+

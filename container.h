@@ -65,4 +65,5 @@ getactivefs(char *fs);
 int
 getvcfs(char *vc, char *fs);
 
-
+int
+tostring(char *string);

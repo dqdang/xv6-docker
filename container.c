@@ -99,4 +99,19 @@ int getactivefs(char *fs){
     return 0;
 }
 
+int tostring(char *string){
+    int i, j = 0;
+
+    for(i = 0; i < NUM_VCS; i++){
+        // string += name;
+        while((*string++ = cabinet.tuperwares[i].name[j++]) != 0);
+        *string++ = '\n';
+        j = 0;
+        // string += vc;
+        while((*string++ = cabinet.tuperwares[i].vc[j++]) != 0);
+        *string++ = '\n';
+    }
+    *string++ = '\0';
+    return 0;
+}
 
