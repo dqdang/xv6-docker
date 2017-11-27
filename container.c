@@ -103,7 +103,9 @@ int getactivefs(char *fs){
 
 int tostring(char *string){
     int i;
-    strncpy(string, "Containers\n", 11);
+    strncpy(string, "Active FS: ", 11);
+    strcat(string, cabinet.active_fs);
+    strcat(string, "\n\n");
     for(i = 0; i < NUM_VCS; i++){
         if(cabinet.tuperwares[i].name != 0){
             strcat(string, "Name: ");
@@ -125,7 +127,7 @@ int tostring(char *string){
         char num_string[32];
         itoa(i, num_string, 10);
         strcat(string, num_string);
-        strcat(string, "\n");
+        strcat(string, "\n\n");
     }
     strcat(string, "\0");
     return 0;

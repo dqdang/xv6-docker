@@ -144,6 +144,7 @@ int create(int argc, char *argv[]){
     printf(1, "Creating container failed. Container taken probably.\n");
     err = 1;
   }
+  printf(1, "%d\n", err);
   id = wait();
   if(err == 1){
     exit();
