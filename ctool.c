@@ -137,14 +137,17 @@ int create(int argc, char *argv[]){
   setusedmem(cindex, 0);
   setuseddisk(cindex, 0);
 
-
+  int err = 0;
   id = fork();
   if(id == 0){
     exec(mkdir[0], mkdir);
     printf(1, "Creating container failed. Container taken probably.\n");
-    exit();
+    err = 1;
   }
   id = wait();
+  if(err == 1){
+    exit();
+  }
 
   for(i = 6; i < argc; i++){ // going through ls echo cat ...
     char destination[32];
@@ -184,7 +187,7 @@ int create(int argc, char *argv[]){
 int to_string(){
   char containers[256];
   tostring(containers);
-  printf(1, "%d\n", containers);
+  printf(1, "%s\n", containers);
   return 0;
 }
 

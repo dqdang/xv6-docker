@@ -42,42 +42,6 @@ static struct {
   int locking;
 } cons;
 
-char* itoa(int num, char* str, int base)
-{
-    char temp;
-    int rem, i = 0, j = 0;
- 
-    if (num == 0)
-    {
-        str[i++] = '0';
-        str[i] = '\0';
-        return str;
-    }
- 
-    while (num != 0)
-    {
-        rem = num % base;
-        if(rem > 9)
-        {
-            rem = rem - 10;
-        }
-        /* Add the digit as a string */
-        str[i++] = rem + '0';
-        num = num/base;
-    }
-
-    str[i] = '\0';
-
-    for(j = 0; j < i / 2; j++)
-    {
-        temp = str[j];
-        str[j] = str[i - j - 1];
-        str[i - j - 1] = temp;
-    }
- 
-    return str;
-}
-
 static void
 printint(int xx, int base, int sign)
 {

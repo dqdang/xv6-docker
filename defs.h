@@ -147,7 +147,8 @@ char*           safestrcpy(char*, const char*, int);
 int             strlen(const char*);
 int             strncmp(const char*, const char*, uint);
 char*           strncpy(char*, const char*, int);
-char*           strcat(char *dest, const char *src);
+char*           strcat(char *, const char *);
+char*           itoa(int, char*, int);
 
 // syscall.c
 int             argint(int, int*);

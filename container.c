@@ -105,7 +105,26 @@ int tostring(char *string){
     int i;
     strncpy(string, "Containers\n", 11);
     for(i = 0; i < NUM_VCS; i++){
-        strcat(string, cabinet.tuperwares[i].name);
+        if(cabinet.tuperwares[i].name != 0){
+            strcat(string, "Name: ");
+            strcat(string, cabinet.tuperwares[i].name);
+        }
+        else{
+            strcat(string, "NULL");
+        }
+        strcat(string, "\n");
+        if(cabinet.tuperwares[i].vc != 0){
+            strcat(string, "VC: ");
+            strcat(string, cabinet.tuperwares[i].vc);
+        }
+        else{
+            strcat(string, "NULL");
+        }
+        strcat(string, "\n");
+        strcat(string, "Index: ");
+        char num_string[32];
+        itoa(i, num_string, 10);
+        strcat(string, num_string);
         strcat(string, "\n");
     }
     strcat(string, "\0");
