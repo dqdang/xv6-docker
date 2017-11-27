@@ -25,14 +25,9 @@ void print_usage(int mode){
   exit();
 }
 
-int is_int(char c){
-  return c == '0' || c == '1' || c == '2' || c == '3' || c == '4' ||
-         c == '5' || c == '6' || c == '7' || c == '8' || c == '9';
-}
-
 // ctool start vc0 c0 usfsh
 int start(int argc, char *argv[]){
-  int id, fd, cindex = 1;
+  int id, fd, cindex = 1, ppid = getpid();
   char index[2];
   index[0] = argv[3][strlen(argv[3])-1];
   index[1] = '\0';
@@ -59,6 +54,7 @@ int start(int argc, char *argv[]){
     dup(fd);
     if(chdir(argv[3]) < 0){
       printf(1, "Container %s does not exist.", argv[3]);
+      kill(ppid);
       exit();
     }
     exec(argv[4], &argv[4]);
@@ -81,9 +77,6 @@ int stop(char *argv[]){
 //   rm[0] = "/rm";
 //   //TODO: call pause
 
-//   while(!is_int(argv[2][cindex])){
-//     cindex = cindex + 1;
-//   }
 //   getname(cindex, compare);
 //   for(i = 0; i < NUM_VCS; i++){
 //     if(strcmp(compare, argv[2]) == 0){
@@ -125,9 +118,6 @@ int create(int argc, char *argv[]){
   mkdir[0] = "mkdir";
   mkdir[1] = argv[2];
 
-  // while(!is_int(argv[2][cindex])){
-  //   cindex = cindex + 1;
-  // }
   char index[2];
   index[0] = argv[2][strlen(argv[2])-1];
   index[1] = '\0';
@@ -144,7 +134,7 @@ int create(int argc, char *argv[]){
   id = fork();
   if(id == 0){
     exec(mkdir[0], mkdir);
-    printf(1, "Creating container failed. Container taken probably.\n");
+    printf(1, "Creating container failed. Container taken.\n");
     kill(ppid);
     exit();
   }
