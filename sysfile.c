@@ -15,7 +15,6 @@
 #include "sleeplock.h"
 #include "file.h"
 #include "fcntl.h"
-#include "container.h"
 
 // Fetch the nth word-sized system call argument as a file descriptor
 // and return both the descriptor and the corresponding struct file.
@@ -446,147 +445,59 @@ sys_pipe(void)
 }
 
 int
-sys_getname(void)
-{
-  int index;
-  char *name;
-
-  if(argint(0, &index) < 0 || argstr(1, &name) < 0){
+name_of_inode(struct inode *ip, struct inode *parent, char buf[DIRSIZ]) {
+    uint off;
+    struct dirent de;
+    for (off = 0; off < parent->size; off += sizeof(de)) {
+        if (readi(parent, (char*)&de, off, sizeof(de)) != sizeof(de))
+            panic("couldn't read dir entry");
+        if (de.inum == ip->inum) {
+            safestrcpy(buf, de.name, DIRSIZ);
+            return 0;
+        }
+    }
     return -1;
-  }
-
-  return getname(index, name);
 }
 
 int
-sys_setname(void)
-{
-  int index;
-  char *name;
-
-  if(argint(0, &index) < 0 || argstr(1, &name) < 0){
-    return -1;
-  }
-
-  return setname(index, name);
+name_for_inode(char* buf, int n, struct inode *ip) {
+    int path_offset;
+    struct inode *parent;
+    char node_name[DIRSIZ];
+    if (ip->inum == namei("/")->inum) { //namei is inefficient but iget isn't exported for some reason
+        buf[0] = '/';
+        return 1;
+    } else if (ip->type == T_DIR) {
+        parent = dirlookup(ip, "..", 0);
+        ilock(parent);
+        if (name_of_inode(ip, parent, node_name)) {
+            panic("could not find name of inode in parent!");
+        }
+        path_offset = name_for_inode(buf, n, parent);
+        safestrcpy(buf + path_offset, node_name, n - path_offset);
+        path_offset += strlen(node_name);
+        if (path_offset == n - 1) {
+            buf[path_offset] = '\0';
+            return n;
+        } else {
+            buf[path_offset++] = '/';
+        }
+        iput(parent); //free
+        return path_offset;
+    } else if (ip->type == T_DEV || ip->type == T_FILE) {
+        panic("process cwd is a device node / file, not a directory!");
+    } else {
+        panic("unknown inode type");
+    }
 }
 
 int
-sys_getmaxproc(void)
+sys_getcwd(void)
 {
-  int index;
-
-  if(argint(0, &index) < 0){
-    return -1;
-  }
-
-  return getmaxproc(index);
+    char *p;
+    int n;
+    if(argint(1, &n) < 0 || argptr(0, &p, n) < 0)
+        return -1;
+    return name_for_inode(p, n, myproc()->cwd);
 }
 
-int
-sys_setmaxproc(void)
-{
-  int index, max;
-
-  if(argint(0, &index) < 0 || argint(1, &max)){
-    return -1;
-  }
-
-  return setmaxproc(index, max);
-}
-
-int
-sys_getmaxmem(void)
-{
-  int index;
-
-  if(argint(0, &index) < 0){
-    return -1;
-  }
-
-  return getmaxmem(index);
-}
-
-int
-sys_setmaxmem(void)
-{
-  int index, max;
-
-  if(argint(0, &index) < 0 || argint(1, &max)){
-    return -1;
-  }
-
-  return setmaxmem(index, max);
-}
-
-int
-sys_getmaxdisk(void)
-{
-  int index;
-
-  if(argint(0, &index) < 0){
-    return -1;
-  }
-
-  return getmaxdisk(index);
-}
-
-int
-sys_setmaxdisk(void)
-{
-  int index, max;
-
-  if(argint(0, &index) < 0 || argint(1, &max)){
-    return -1;
-  }
-
-  return setmaxdisk(index, max);
-}
-
-int
-sys_getusedmem(void)
-{
-  int index;
-
-  if(argint(0, &index) < 0){
-    return -1;
-  }
-
-  return getusedmem(index);
-}
-
-int
-sys_setusedmem(void)
-{
-  int index, max;
-
-  if(argint(0, &index) < 0 || argint(1, &max)){
-    return -1;
-  }
-
-  return setusedmem(index, max);
-}
-
-int
-sys_getuseddisk(void)
-{
-  int index;
-
-  if(argint(0, &index) < 0){
-    return -1;
-  }
-
-  return getuseddisk(index);
-}
-
-int
-sys_setuseddisk(void)
-{
-  int index, max;
-
-  if(argint(0, &index) < 0 || argint(1, &max)){
-    return -1;
-  }
-
-  return setuseddisk(index, max);
-}

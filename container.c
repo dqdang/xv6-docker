@@ -2,63 +2,101 @@
 
 #define NUM_VCS 4
 
-struct container tuperwares[NUM_VCS];
+int
+strcmp(const char *p, const char *q)
+{
+  while(*p && *p == *q)
+    p++, q++;
+  return (char)*p - (char)*q;
+}
 
 int getname(int index, char* name){
     int i = 0;
-    while((*name++ = tuperwares[index].name[i++]) != 0);
+    while((*name++ = cabinet.tuperwares[index].name[i++]) != 0);
 
     return 0;
 }
 
 int setname(int index, char* name){
     int i = 0;
-    while((tuperwares[index].name[i++] = *name++) != 0);
+    while((cabinet.tuperwares[index].name[i++] = *name++) != 0);
 
     return 0;
 }
 
 int getmaxproc(int index){
-    return tuperwares[index].max_proc;
+    return cabinet.tuperwares[index].max_proc;
 }
 
 int setmaxproc(int index, int max_proc){
-    tuperwares[index].max_proc = max_proc;
+    cabinet.tuperwares[index].max_proc = max_proc;
     return 0;
 }
 
 int getmaxmem(int index){
-    return tuperwares[index].max_mem;
+    return cabinet.tuperwares[index].max_mem;
 }
 
 int setmaxmem(int index, int max_mem){
-    tuperwares[index].max_mem = max_mem;
+    cabinet.tuperwares[index].max_mem = max_mem;
     return 0;
 }
 
 int getmaxdisk(int index){
-    return tuperwares[index].max_disk;
+    return cabinet.tuperwares[index].max_disk;
 }
 
 int setmaxdisk(int index, int max_disk){
-    tuperwares[index].max_disk = max_disk;
+    cabinet.tuperwares[index].max_disk = max_disk;
     return 0;
 }
 
 int getusedmem(int index){
-    return tuperwares[index].used_mem;
+    return cabinet.tuperwares[index].used_mem;
 }
 
 int setusedmem(int index, int used_mem){
-    tuperwares[index].used_mem = used_mem;
+    cabinet.tuperwares[index].used_mem = used_mem;
     return 0;
 }
 
 int getuseddisk(int index){
-    return tuperwares[index].used_disk;
+    return cabinet.tuperwares[index].used_disk;
 }
 
 int setuseddisk(int index, int used_disk){
-    tuperwares[index].used_disk = used_disk;
+    cabinet.tuperwares[index].used_disk = used_disk;
     return 0;
 }
+
+int setvc(int index, char* vc){
+    int i = 0;
+    while((cabinet.tuperwares[index].vc[i++] = *vc++) != 0);
+
+    return 0;
+}
+
+int getvcfs(char *vc, char *fs){
+    int i, j = 0;
+    for(i = 0; i < NUM_VCS; i++){
+        if(strcmp(cabinet.tuperwares[i].vc, vc) == 0){
+            while((*fs++ = cabinet.tuperwares[i].name[j++]) != 0);
+        }
+    }return 0;
+}
+
+int setactivefs(char *fs){
+    int i = 0;
+    while((cabinet.active_fs[i++] = *fs++) != 0);
+
+    return 0;
+}
+
+int getactivefs(char *fs){
+    int i = 0;
+    while((*fs++ = cabinet.active_fs[i++]) != 0);
+
+    return 0;
+}
+
+

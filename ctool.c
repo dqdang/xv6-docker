@@ -142,7 +142,7 @@ int create(int argc, char *argv[]){
 
     // ctable.tuperwares[i].files[i-6] = argv[i];
     bytes = copy(argv[i], destination, getuseddisk(cindex), getmaxdisk(cindex));
-    printf(1, "Bytes for each file: %d\n", bytes);
+    printf(1, "Bytes for %s: %d\n", argv[i], bytes);
 
     if(bytes > 0){
       setuseddisk(cindex, getuseddisk(cindex) + bytes);
@@ -158,6 +158,7 @@ int create(int argc, char *argv[]){
       }
       id = wait();
     }
+    printf(1, "Total used disk: %d\n", getuseddisk(cindex));
   }
 
   // TODO: IMPLEMENT GET/SET FILES

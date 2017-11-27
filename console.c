@@ -16,6 +16,7 @@
 #include "mmu.h"
 #include "proc.h"  
 #include "x86.h"
+#include "container.h"
 
 static void consputc(int);  
 
@@ -40,6 +41,54 @@ static struct {
   struct spinlock lock;
   int locking;
 } cons;
+
+char *
+strcat(char *dest, const char *src)
+{
+    int i,j;
+    for (i = 0; dest[i] != '\0'; i++)
+        ;
+    for (j = 0; src[j] != '\0'; j++)
+        dest[i+j] = src[j];
+    dest[i+j] = '\0';
+    return dest;
+}
+
+char* itoa(int num, char* str, int base)
+{
+    char temp;
+    int rem, i = 0, j = 0;
+ 
+    if (num == 0)
+    {
+        str[i++] = '0';
+        str[i] = '\0';
+        return str;
+    }
+ 
+    while (num != 0)
+    {
+        rem = num % base;
+        if(rem > 9)
+        {
+            rem = rem - 10;
+        }
+        /* Add the digit as a string */
+        str[i++] = rem + '0';
+        num = num/base;
+    }
+
+    str[i] = '\0';
+
+    for(j = 0; j < i / 2; j++)
+    {
+        temp = str[j];
+        str[j] = str[i - j - 1];
+        str[i - j - 1] = temp;
+    }
+ 
+    return str;
+}
 
 static void
 printint(int xx, int base, int sign)
@@ -224,6 +273,20 @@ consoleintr(int (*getc)(void))
       active = (active + 1) % (NUM_VCS + 1);
       input = inputs[active];
       doconsoleswitch = 1;
+      char fs[4];
+      if(active > 0){
+        char active_string[32];
+        itoa(active, active_string, 10);
+        char vc[4];
+        vc[0] = 'v';
+        vc[1] = 'c';
+        strcat(vc, active_string);
+        getvcfs(vc, fs);
+      }else{
+        fs[0] = '/';
+        fs[1] = '\0';
+      }
+      setactivefs(fs);
       break;
     case C('U'):  // Kill line.
       while(input.e != input.w &&

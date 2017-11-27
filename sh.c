@@ -3,6 +3,7 @@
 #include "types.h"
 #include "user.h"
 #include "fcntl.h"
+#include "container.h"
 
 // Parsed command representation
 #define EXEC  1
@@ -141,6 +142,16 @@ getcmd(char *buf, int nbuf)
   return 0;
 }
 
+int atroot(char *fs){
+  char path[512];
+  getcwd(path, 512);
+  if(strcmp(fs, path) == 0){
+    return 1;
+  }
+
+  return 0;
+}
+
 int
 main(void)
 {
@@ -155,9 +166,18 @@ main(void)
     }
   }
 
+
   // Read and run input commands.
   while(getcmd(buf, sizeof(buf)) >= 0){
-    if(buf[0] == 'c' && buf[1] == 'd' && buf[2] == ' '){
+    char fs[32];
+    getactivefs(fs);
+    if((buf[0] == 'c' && buf[1] == 'd' && buf[2] == 10) || ((strcmp("cd ..", buf) == 0) && atroot(fs))){
+      printf(1, "fs = %s\n", fs);
+      if(chdir(fs) < 0)
+        printf(2, "cannot cd %s\n", fs);
+      continue;
+    }
+    else if(buf[0] == 'c' && buf[1] == 'd' && buf[2] == ' '){
       // Chdir must be called by the parent, not the child.
       buf[strlen(buf)-1] = 0;  // chop \n
       if(chdir(buf+3) < 0)

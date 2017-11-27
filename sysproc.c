@@ -6,6 +6,8 @@
 #include "memlayout.h"
 #include "mmu.h"
 #include "proc.h"
+#include "container.h"
+
 
 int
 sys_fork(void)
@@ -90,3 +92,196 @@ sys_uptime(void)
   return xticks;
 }
 
+int
+sys_getname(void)
+{
+  int index;
+  char *name;
+
+  if(argint(0, &index) < 0 || argstr(1, &name) < 0){
+    return -1;
+  }
+
+  return getname(index, name);
+}
+
+int
+sys_setname(void)
+{
+  int index;
+  char *name;
+
+  if(argint(0, &index) < 0 || argstr(1, &name) < 0){
+    return -1;
+  }
+
+  return setname(index, name);
+}
+
+int
+sys_getmaxproc(void)
+{
+  int index;
+
+  if(argint(0, &index) < 0){
+    return -1;
+  }
+
+  return getmaxproc(index);
+}
+
+int
+sys_setmaxproc(void)
+{
+  int index, max;
+
+  if(argint(0, &index) < 0 || argint(1, &max)){
+    return -1;
+  }
+
+  return setmaxproc(index, max);
+}
+
+int
+sys_getmaxmem(void)
+{
+  int index;
+
+  if(argint(0, &index) < 0){
+    return -1;
+  }
+
+  return getmaxmem(index);
+}
+
+int
+sys_setmaxmem(void)
+{
+  int index, max;
+
+  if(argint(0, &index) < 0 || argint(1, &max)){
+    return -1;
+  }
+
+  return setmaxmem(index, max);
+}
+
+int
+sys_getmaxdisk(void)
+{
+  int index;
+
+  if(argint(0, &index) < 0){
+    return -1;
+  }
+
+  return getmaxdisk(index);
+}
+
+int
+sys_setmaxdisk(void)
+{
+  int index, max;
+
+  if(argint(0, &index) < 0 || argint(1, &max)){
+    return -1;
+  }
+
+  return setmaxdisk(index, max);
+}
+
+int
+sys_getusedmem(void)
+{
+  int index;
+
+  if(argint(0, &index) < 0){
+    return -1;
+  }
+
+  return getusedmem(index);
+}
+
+int
+sys_setusedmem(void)
+{
+  int index, max;
+
+  if(argint(0, &index) < 0 || argint(1, &max)){
+    return -1;
+  }
+
+  return setusedmem(index, max);
+}
+
+int
+sys_getuseddisk(void)
+{
+  int index;
+
+  if(argint(0, &index) < 0){
+    return -1;
+  }
+
+  return getuseddisk(index);
+}
+
+int
+sys_setuseddisk(void)
+{
+  int index, max;
+
+  if(argint(0, &index) < 0 || argint(1, &max)){
+    return -1;
+  }
+
+  return setuseddisk(index, max);
+}
+
+
+int
+sys_setvc(void){
+  int index;
+  char *vc;
+
+  if(argint(0, &index) < 0 || argstr(1, &vc) < 0){
+    return -1;
+  }
+
+  return setvc(index, vc);
+}
+
+int
+sys_setactivefs(void){
+  char *fs;
+
+  if(argstr(0, &fs) < 0){
+    return -1;
+  }
+
+  return setactivefs(fs);
+}
+
+int
+sys_getactivefs(void){
+  char *fs;
+
+  if(argstr(0, &fs) < 0){
+    return -1;
+  }
+
+  return getactivefs(fs);
+}
+
+
+int
+sys_getvcfs(void){
+  char *vc;
+  char *fs;
+
+  if(argstr(0, &vc) < 0 || argstr(1, &fs) < 0){
+    return -1;
+  }
+
+  return getvcfs(vc, fs);
+}

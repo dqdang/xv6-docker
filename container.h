@@ -2,6 +2,7 @@
 
 struct container{
   char name[32];
+  char vc[32];
   char **files;
   int num_files;
   int max_proc;
@@ -10,6 +11,11 @@ struct container{
   int used_mem;
   int used_disk;
 };
+
+struct{
+	struct container tuperwares[NUM_VCS];
+	char active_fs[32];
+}cabinet;
 
 int
 getname(int index, char* name);
@@ -46,3 +52,17 @@ getuseddisk(int index);
 
 int
 setuseddisk(int index, int used_disk);
+
+int
+setvc(int index, char* vc);
+
+int
+setactivefs(char *fs);
+
+int
+getactivefs(char *fs);
+
+int
+getvcfs(char *vc, char *fs);
+
+

@@ -36,6 +36,12 @@ int getusedmem(int);
 int setusedmem(int, int);
 int getuseddisk(int);
 int setuseddisk(int, int);
+int setvc(int, char*);
+int setactivefs(char*);
+int getactivefs(char*);
+int getvcfs(char*, char*);
+int getcwd(void*, int);
+
 
 // ulib.c
 int stat(char*, struct stat*);

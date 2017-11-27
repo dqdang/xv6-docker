@@ -115,6 +115,12 @@ extern int sys_getusedmem(void);
 extern int sys_setusedmem(void);
 extern int sys_getuseddisk(void);
 extern int sys_setuseddisk(void);
+extern int sys_setvc(void);
+extern int sys_getvcfs(void);
+extern int sys_setactivefs(void);
+extern int sys_getactivefs(void);
+extern int sys_getcwd(void);
+
 
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -150,6 +156,11 @@ static int (*syscalls[])(void) = {
 [SYS_setusedmem] sys_setusedmem,
 [SYS_getuseddisk] sys_getuseddisk,
 [SYS_setuseddisk] sys_setuseddisk,
+[SYS_setvc]       sys_setvc,
+[SYS_getvcfs]     sys_getvcfs,
+[SYS_setactivefs] sys_setactivefs, 
+[SYS_getactivefs] sys_getactivefs, 
+[SYS_getcwd]      sys_getcwd, 
 };
 
 void

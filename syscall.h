@@ -32,3 +32,8 @@
 #define SYS_setusedmem 31
 #define SYS_getuseddisk 32
 #define SYS_setuseddisk 33
+#define SYS_setvc		34
+#define SYS_getvcfs		35
+#define SYS_setactivefs 36
+#define SYS_getactivefs 37
+#define SYS_getcwd 38
