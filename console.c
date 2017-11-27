@@ -42,6 +42,17 @@ static struct {
   int locking;
 } cons;
 
+char*
+strcpy(char *s, char *t)
+{
+  char *os;
+
+  os = s;
+  while((*s++ = *t++) != 0)
+    ;
+  return os;
+}
+
 static void
 printint(int xx, int base, int sign)
 {
@@ -225,15 +236,19 @@ consoleintr(int (*getc)(void))
       active = (active + 1) % (NUM_VCS + 1);
       input = inputs[active];
       doconsoleswitch = 1;
-      char fs[4];
+      char fs[32];
       if(active > 0){
         char active_string[32];
-        itoa(active, active_string, 10);
-        char vc[4];
-        vc[0] = 'v';
-        vc[1] = 'c';
+        itoa(active-1, active_string, 10);
+        strcat(active_string, "\0");
+        char vc[32];
+        strcpy(vc, "vc");
         strcat(vc, active_string);
-        getvcfs(vc, fs);
+        strcat(vc, "\0");
+        char vcfs[32];
+        getvcfs(vc, vcfs);
+        strcpy(fs, "/");
+        strcat(fs, vcfs);
       }else{
         fs[0] = '/';
         fs[1] = '\0';
@@ -339,6 +354,6 @@ consoleinit(void)
   cons.locking = 1;
 
   ioapicenable(IRQ_KBD, 0);
-  setactivefs("/\0");
+  setactivefs("//\0");
 }
 

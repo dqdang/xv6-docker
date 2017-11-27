@@ -144,8 +144,10 @@ getcmd(char *buf, int nbuf)
 
 int atroot(char *fs){
   char path[512];
+  printf(1, "%s\n", "HERE");
   getcwd(path, 512);
-  if(strcmp(fs, path) == 0){
+  printf(1, "PASS = %d\n", strcmp(&fs[1], path) == 0);
+  if(strcmp(&fs[1], path) == 0){
     return 1;
   }
 
@@ -171,15 +173,21 @@ main(void)
   while(getcmd(buf, sizeof(buf)) >= 0){
     char fs[32];
     getactivefs(fs);
-    if((buf[0] == 'c' && buf[1] == 'd' && buf[2] == 10) || ((strcmp("cd ..", buf) == 0) && atroot(fs))){
-      printf(1, "fs = %s\n", fs);
+    printf(2, "HERE 1 fs = %s\n", fs);
+    // printf(2, "first condition = %d\n", (buf[0] == 'c' && buf[1] == 'd' && buf[2] == 10));
+    // printf(2, "second condition = %d\n", strcmp("cd ..\n", buf));
+    // printf(2, "third condition = %d\n", atroot(fs));
+    if((buf[0] == 'c' && buf[1] == 'd' && buf[2] == 10) || ((strcmp("cd ..\n", buf) == 0) && atroot(fs))){
+      // printf(1, "fs = %s\n", fs);
       if(chdir(fs) < 0)
         printf(2, "cannot cd %s\n", fs);
       continue;
     }
     else if(buf[0] == 'c' && buf[1] == 'd' && buf[2] == ' '){
+
       // Chdir must be called by the parent, not the child.
       buf[strlen(buf)-1] = 0;  // chop \n
+
       if(chdir(buf+3) < 0)
         printf(2, "cannot cd %s\n", buf+3);
       continue;

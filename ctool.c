@@ -4,6 +4,44 @@
 #include "user.h"
 #include "container.h"
 
+char* itoa(int num, char* str, int base)
+{
+    char temp;
+    int rem, i = 0, j = 0;
+ 
+    if (num == 0)
+    {
+        str[i++] = '0';
+        str[i] = '\0';
+        return str;
+    }
+ 
+    while (num != 0)
+    {
+        rem = num % base;
+        if(rem > 9)
+        {
+            rem = rem - 10;
+        }
+        /* Add the digit as a string */
+        str[i++] = rem + '0';
+        num = num/base;
+    }
+
+    str[i] = '\0';
+
+    for(j = 0; j < i / 2; j++)
+    {
+        temp = str[j];
+        str[j] = str[i - j - 1];
+        str[i - j - 1] = temp;
+    }
+ 
+    return str;
+}
+
+
+
 void print_usage(int mode){
 
   if(mode == 0){ // not enough arguments
@@ -176,6 +214,20 @@ int create(int argc, char *argv[]){
 }
 
 int to_string(){
+  // char active_string[32];
+  // itoa(0, active_string, 10);
+  // char vc[32];
+  // strcpy(vc, "vc");
+  // strcat(vc, active_string);
+  // strcat(vc, "\0");
+
+
+  // char fs[4];
+  // getvcfs(vc, fs);
+  // printf(1, "FS = %s\n", fs);
+  // int active = (1 + 1) % (4 + 1);
+  // printf(1, "WTF = %d\n", active);
+
   char containers[256];
   tostring(containers);
   printf(1, "%s\n", containers);
