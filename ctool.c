@@ -158,8 +158,8 @@ int create(int argc, char *argv[]){
       }
       id = wait();
     }
-    printf(1, "Total used disk: %d\n", getuseddisk(cindex));
   }
+  printf(1, "Total used disk: %d\n", getuseddisk(cindex));
 
   // TODO: IMPLEMENT GET/SET FILES
   // ctable.tuperwares[cindex].files = files;
