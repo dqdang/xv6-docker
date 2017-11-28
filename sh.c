@@ -144,9 +144,8 @@ getcmd(char *buf, int nbuf)
 
 int atroot(char *fs){
   char path[512];
-  printf(1, "%s\n", "HERE");
   getcwd(path, 512);
-  printf(1, "PASS = %d\n", strcmp(&fs[1], path) == 0);
+  printf(1, "path = %s PASS = %d\n", path, strcmp(&fs[1], path) == 0);
   if(strcmp(&fs[1], path) == 0){
     return 1;
   }
@@ -174,6 +173,7 @@ main(void)
     char fs[32];
     getactivefs(fs);
     printf(2, "fs = %s\n", fs);
+    printf(2, "atroot = %d\n", atroot(fs));
     if((buf[0] == 'c' && buf[1] == 'd' && buf[2] == 10) || ((strcmp("cd ..\n", buf) == 0) && atroot(fs))){
       // printf(1, "fs = %s\n", fs);
       if(chdir(fs) < 0)
