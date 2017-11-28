@@ -66,6 +66,17 @@ strncmp(const char *p, const char *q, uint n)
 }
 
 char*
+strcpy(char *s, char *t)
+{
+  char *os;
+
+  os = s;
+  while((*s++ = *t++) != 0)
+    ;
+  return os;
+}
+
+char*
 strncpy(char *s, const char *t, int n)
 {
   char *os;
@@ -113,6 +124,46 @@ strcat(char *dest, const char *src)
         dest[i+j] = src[j];
     dest[i+j] = '\0';
     return dest;
+}
+
+char*
+strchr(const char *s, char c)
+{
+  for(; *s; s++)
+    if(*s == c)
+      return (char*)s;
+  return 0;
+}
+
+int
+strcspn(const char *s1, const char *s2)
+{
+    int ret=0;
+    while(*s1)
+        if(strchr(s2,*s1))
+            return ret;
+        else
+            s1++,ret++;
+    return ret;
+}
+
+char*
+strtok(char *s, const char *delim)
+{
+    static char *lasts;
+    register int ch;
+
+    if (s == 0)
+  s = lasts;
+    do {
+  if ((ch = *s++) == '\0')
+      return 0;
+    } while (strchr(delim, ch));
+    --s;
+    lasts = s + strcspn(s, delim);
+    if (*lasts != 0)
+  *lasts++ = 0;
+    return s;
 }
 
 char* itoa(int num, char* str, int base)

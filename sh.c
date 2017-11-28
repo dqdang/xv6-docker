@@ -54,6 +54,47 @@ int fork1(void);  // Fork but panics on failure.
 void panic(char*);
 struct cmd *parsecmd(char*);
 
+int 
+isfscmd(char* cmd){
+  if(strcmp(cmd, "mkdir") == 0 || strcmp(cmd, "ls") == 0){
+    return 1;
+  }return 0;
+}
+
+int
+ifsafepath(char *path){
+  int path_len = 0;
+  int new_path_len;
+  char *tok_path = path;
+  char currpath[256];
+  int index = getactivefsindex();
+  getpath(index, currpath);
+  char *tok_currpath = currpath;
+
+  while ((tok_currpath = strtok(tok_currpath, "/")) != 0){
+    path_len++;
+    tok_currpath = 0;
+  }
+
+  if(path[0] != '/'){
+    new_path_len = path_len;
+  }else{
+    new_path_len = 0;
+  }
+
+  while ((tok_path = strtok(tok_path, "/")) != 0){
+    if(strcmp(tok_path, "..") == 0){
+      new_path_len--;
+    }else{
+      new_path_len++;
+    }
+    tok_path = 0;
+  }
+
+  return new_path_len > 0;
+
+}
+
 // Execute cmd.  Never returns.
 void
 runcmd(struct cmd *cmd)
@@ -76,6 +117,11 @@ runcmd(struct cmd *cmd)
     ecmd = (struct execcmd*)cmd;
     if(ecmd->argv[0] == 0)
       exit();
+
+    if(isfscmd(ecmd->argv[0]) && !ifsafepath(ecmd->argv[1])){
+      printf(2, "You dont have permission to go here! \"%s\"\n", ecmd->argv[1]);
+      break;
+    }
     exec(ecmd->argv[0], ecmd->argv);
     printf(2, "exec %s failed\n", ecmd->argv[0]);
     break;

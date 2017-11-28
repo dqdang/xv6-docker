@@ -45,6 +45,8 @@ int tostring(char*);
 int getactivefsindex(void);
 int setatroot(int, int);
 int getatroot(int);
+int getpath(int, char*);
+int setpath(int, char*, int);
 
 
 

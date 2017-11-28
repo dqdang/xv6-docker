@@ -41,4 +41,5 @@
 #define SYS_getactivefsindex 40
 #define SYS_getatroot 41
 #define SYS_setatroot 42
-
+#define SYS_getpath   43
+#define SYS_setpath   44

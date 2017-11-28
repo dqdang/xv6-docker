@@ -42,17 +42,6 @@ static struct {
   int locking;
 } cons;
 
-char*
-strcpy(char *s, char *t)
-{
-  char *os;
-
-  os = s;
-  while((*s++ = *t++) != 0)
-    ;
-  return os;
-}
-
 static void
 printint(int xx, int base, int sign)
 {

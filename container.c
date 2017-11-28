@@ -121,6 +121,49 @@ int getatroot(int index){
     return cabinet.tuperwares[index].atroot;
 }
 
+int getpath(int index, char *path){
+    int i = 0;
+    while((*path++ = cabinet.tuperwares[index].path[i++]) != 0);
+
+    return 0;
+}
+
+int setpath(int index, char *path, int remove){
+    int i = 0, j;
+    char *token_cab, *token_path;
+    char *path_arr[128];
+
+    if(remove == 1){
+        token_cab = strtok(cabinet.tuperwares[index].path, "/");
+
+        path_arr[0] = token_cab; // c0
+
+        while(token_cab != 0){
+            token_cab = strtok(0, "/");
+            path_arr[i++] = token_cab;
+        }
+        // path_arr = [c0, test, v2]
+
+        token_path = strtok(path, "/");
+        while(token_path != 0){
+            token_path = strtok(0, "/");
+            if(strcmp(token_path, "..") == 0){
+                path_arr[--i] = 0;
+            }
+            else{
+                path_arr[i++] = token_path;
+            }
+        }
+    }
+
+    strcpy(cabinet.tuperwares[index].path, path_arr[0]);
+    for(j = 1; j < i; j++){
+        strcat(cabinet.tuperwares[index].path, path_arr[j]);
+    }
+
+    strcpy(path, cabinet.tuperwares[index].path);
+    return 0;
+}
 
 int tostring(char *string){
     int i;

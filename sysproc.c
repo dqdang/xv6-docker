@@ -324,3 +324,28 @@ sys_getatroot(void){
 
   return getatroot(index);
 }
+
+int
+sys_getpath(void){
+  int index;
+  char *path;
+
+  if(argint(0, &index) < 0 || argstr(1, &path) < 0){
+    return -1;
+  }
+
+  return getpath(index, path);
+}
+
+int
+sys_setpath(void){
+  int index, remove;
+  char *path;
+
+  if(argint(0, &index) < 0 || argstr(1, &path) < 0 || argint(2, &remove) < 0){
+    return -1;
+  }
+
+  return setpath(index, path, remove);
+}
+

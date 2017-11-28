@@ -124,6 +124,8 @@ extern int sys_tostring(void);
 extern int sys_getactivefsindex(void);
 extern int sys_getatroot(void);
 extern int sys_setatroot(void);
+extern int sys_getpath(void);
+extern int sys_setpath(void);
 
 
 static int (*syscalls[])(void) = {
@@ -169,6 +171,8 @@ static int (*syscalls[])(void) = {
 [SYS_getactivefsindex]    sys_getactivefsindex,
 [SYS_getatroot]    sys_getatroot,
 [SYS_setatroot]    sys_setatroot,
+[SYS_getpath]    sys_getpath,
+[SYS_setpath]    sys_setpath,
 };
 
 void

@@ -3,6 +3,7 @@
 struct container{
   char name[32];
   char vc[32];
+  char path[256];
   char **files;
   int num_files;
   int max_proc;
@@ -78,3 +79,9 @@ setatroot(int index, int val);
 
 int
 getatroot(int index);
+
+int
+getpath(int index, char *path);
+
+int
+setpath(int index, char *path, int remove);
