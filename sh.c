@@ -56,7 +56,6 @@ struct cmd *parsecmd(char*);
 
 int 
 isfscmd(char* cmd){
-  printf(1, "in isfscmd\n");
   if(strcmp(cmd, "mkdir") == 0 || strcmp(cmd, "ls") == 0){
     return 1;
   }return 0;
@@ -226,6 +225,7 @@ main(void)
       // Chdir must be called by the parent, not the child.
       buf[strlen(buf)-1] = 0;  // chop \n
       if(ifsafepath(buf+3)){
+        printf(1, "buf = %s buf+3 = %s\n", buf, buf+3);
         setpath(index, buf+3, 1);
         if(chdir(buf+3) < 0)
           printf(2, "cannot cd %s\n", buf+3);

@@ -129,24 +129,23 @@ int getpath(int index, char *path){
 }
 
 int setpath(int index, char *path, int update){
-    int i = 0, j;
-    char *token_cab, *token_path;
+    int i = 0; //j;
+    char *token_curr, *token_path;
     char *path_arr[128];
 
+
     if(update == 1){
-        token_cab = strtok(cabinet.tuperwares[index].path, "/");
+        token_curr = cabinet.tuperwares[index].path;
+        //token_path = path;
 
-        path_arr[0] = token_cab; // c0
-
-        while(token_cab != 0){
-            token_cab = strtok(0, "/");
-            path_arr[i++] = token_cab;
+        while ((token_curr = strtok(token_curr, "/")) != 0){
+            path_arr[i++] = token_curr;
+            token_curr = 0;
         }
-        // path_arr = [c0, test, v2]
 
-        token_path = strtok(path, "/");
-        while(token_path != 0){
-            token_path = strtok(0, "/");
+        while((token_path = strtok(token_path, "/")) != 0){
+            // printf(1, "given path token = %s\n", token_path);
+            
             if(strcmp(token_path, "..") == 0){
                 path_arr[--i] = 0;
             }
@@ -155,15 +154,21 @@ int setpath(int index, char *path, int update){
             }
         }
 
-        strcpy(cabinet.tuperwares[index].path, path_arr[0]);
-        for(j = 1; j < i; j++){
-            strcat(cabinet.tuperwares[index].path, path_arr[j]);
-        }
-        strcat(cabinet.tuperwares[index].path, "\0");
+        // strcpy(cabinet.tuperwares[index].path, path_arr[0]);
+        // for(j = 1; j < i; j++){
+        //     if(path_arr[j] != 0){
+        //         strcat(cabinet.tuperwares[index].path, path_arr[j]);
+        //     }
+        // }
+        // strcat(cabinet.tuperwares[index].path, "\0");
     }else{
+        path_arr[i++] = token_curr;
+
         strcpy(cabinet.tuperwares[index].path, path);
 
     }
+    path_arr[i++] = token_curr;
+
 
     
 
