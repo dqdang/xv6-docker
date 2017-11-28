@@ -166,7 +166,11 @@ int create(int argc, char *argv[]){
   setmaxdisk(cindex, atoi(argv[5]) * 1000000);
   setusedmem(cindex, 0);
   setuseddisk(cindex, 0);
-  setatroot(cindex, 1);
+  char path[32];
+  strcpy(path, "/");
+  strcat(path, argv[2]);
+  strcat(path, "\0");
+  setpath(cindex, path, 0);
 
   int ppid = getpid();
   id = fork();

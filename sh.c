@@ -56,6 +56,7 @@ struct cmd *parsecmd(char*);
 
 int 
 isfscmd(char* cmd){
+  printf(1, "in isfscmd\n");
   if(strcmp(cmd, "mkdir") == 0 || strcmp(cmd, "ls") == 0){
     return 1;
   }return 0;
@@ -63,6 +64,9 @@ isfscmd(char* cmd){
 
 int
 ifsafepath(char *path){
+  if(path == 0){
+    return 1;
+  }
   int path_len = 0;
   int new_path_len;
   char *tok_path = path;
@@ -82,7 +86,10 @@ ifsafepath(char *path){
     new_path_len = 0;
   }
 
+  printf(1, "path len = %d\n", new_path_len);
+
   while ((tok_path = strtok(tok_path, "/")) != 0){
+    printf(1, "token = %s\n", tok_path);
     if(strcmp(tok_path, "..") == 0){
       new_path_len--;
     }else{
@@ -208,21 +215,22 @@ main(void)
     char fs[32];
     int index = getactivefsindex();
     getactivefs(fs);
-    if((strcmp(buf, "/\n") == 0) || (buf[0] == 'c' && buf[1] == 'd' && buf[2] == 10) || ((strcmp("cd ..\n", buf) == 0) && getatroot(index))){
+    if((strcmp(buf, "/\n") == 0) || (buf[0] == 'c' && buf[1] == 'd' && buf[2] == 10)){
+      setpath(index, fs, 1);
       if(chdir(fs) < 0)
         printf(2, "cannot cd %s\n", fs);
-      setatroot(index, 1);
       continue;
     }
     else if(buf[0] == 'c' && buf[1] == 'd' && buf[2] == ' '){
 
       // Chdir must be called by the parent, not the child.
       buf[strlen(buf)-1] = 0;  // chop \n
-
-      if(chdir(buf+3) < 0)
-        printf(2, "cannot cd %s\n", buf+3);
-        continue;
-      setatroot(index, 0);
+      if(ifsafepath(buf+3)){
+        setpath(index, buf+3, 1);
+        if(chdir(buf+3) < 0)
+          printf(2, "cannot cd %s\n", buf+3);
+          continue;
+      }
       continue;
     }
     if(fork1() == 0)

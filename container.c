@@ -128,12 +128,12 @@ int getpath(int index, char *path){
     return 0;
 }
 
-int setpath(int index, char *path, int remove){
+int setpath(int index, char *path, int update){
     int i = 0, j;
     char *token_cab, *token_path;
     char *path_arr[128];
 
-    if(remove == 1){
+    if(update == 1){
         token_cab = strtok(cabinet.tuperwares[index].path, "/");
 
         path_arr[0] = token_cab; // c0
@@ -154,14 +154,19 @@ int setpath(int index, char *path, int remove){
                 path_arr[i++] = token_path;
             }
         }
+
+        strcpy(cabinet.tuperwares[index].path, path_arr[0]);
+        for(j = 1; j < i; j++){
+            strcat(cabinet.tuperwares[index].path, path_arr[j]);
+        }
+        strcat(cabinet.tuperwares[index].path, "\0");
+    }else{
+        strcpy(cabinet.tuperwares[index].path, path);
+
     }
 
-    strcpy(cabinet.tuperwares[index].path, path_arr[0]);
-    for(j = 1; j < i; j++){
-        strcat(cabinet.tuperwares[index].path, path_arr[j]);
-    }
+    
 
-    strcpy(path, cabinet.tuperwares[index].path);
     return 0;
 }
 
@@ -182,6 +187,14 @@ int tostring(char *string){
         if(cabinet.tuperwares[i].vc != 0){
             strcat(string, "VC: ");
             strcat(string, cabinet.tuperwares[i].vc);
+        }
+        else{
+            strcat(string, "NULL");
+        }
+        strcat(string, "\n");
+        if(cabinet.tuperwares[i].path != 0){
+            strcat(string, "PATH: ");
+            strcat(string, cabinet.tuperwares[i].path);
         }
         else{
             strcat(string, "NULL");
