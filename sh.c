@@ -142,17 +142,6 @@ getcmd(char *buf, int nbuf)
   return 0;
 }
 
-int atroot(char *fs){
-  char path[512];
-  getcwd(path, 512);
-  printf(1, "path = %s PASS = %d\n", path, strcmp(&fs[1], path) == 0);
-  if(strcmp(&fs[1], path) == 0){
-    return 1;
-  }
-
-  return 0;
-}
-
 int
 main(void)
 {
@@ -171,13 +160,12 @@ main(void)
   // Read and run input commands.
   while(getcmd(buf, sizeof(buf)) >= 0){
     char fs[32];
+    int index = getactivefsindex();
     getactivefs(fs);
-    printf(2, "fs = %s\n", fs);
-    printf(2, "atroot = %d\n", atroot(fs));
-    if((buf[0] == 'c' && buf[1] == 'd' && buf[2] == 10) || ((strcmp("cd ..\n", buf) == 0) && atroot(fs))){
-      // printf(1, "fs = %s\n", fs);
+    if((strcmp(buf, "/\n") == 0) || (buf[0] == 'c' && buf[1] == 'd' && buf[2] == 10) || ((strcmp("cd ..\n", buf) == 0) && getatroot(index))){
       if(chdir(fs) < 0)
         printf(2, "cannot cd %s\n", fs);
+      setatroot(index, 1);
       continue;
     }
     else if(buf[0] == 'c' && buf[1] == 'd' && buf[2] == ' '){
@@ -187,6 +175,8 @@ main(void)
 
       if(chdir(buf+3) < 0)
         printf(2, "cannot cd %s\n", buf+3);
+        continue;
+      setatroot(index, 0);
       continue;
     }
     if(fork1() == 0)

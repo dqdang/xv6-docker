@@ -10,11 +10,13 @@ struct container{
   int max_disk;
   int used_mem;
   int used_disk;
+  int atroot;
+
 };
 
 struct{
-	struct container tuperwares[NUM_VCS];
-	char active_fs[32];
+  struct container tuperwares[NUM_VCS];
+  char active_fs[32];
 }cabinet;
 
 int
@@ -67,3 +69,12 @@ getvcfs(char *vc, char *fs);
 
 int
 tostring(char *string);
+
+int
+getactivefsindex(void);
+
+int
+setatroot(int index, int val);
+
+int
+getatroot(int index);

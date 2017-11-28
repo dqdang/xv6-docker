@@ -42,6 +42,10 @@ int getactivefs(char*);
 int getvcfs(char*, char*);
 int getcwd(void*, int);
 int tostring(char*);
+int getactivefsindex(void);
+int setatroot(int, int);
+int getatroot(int);
+
 
 
 // ulib.c

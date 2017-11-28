@@ -101,6 +101,27 @@ int getactivefs(char *fs){
     return 0;
 }
 
+int getactivefsindex(void){
+    int i, index = -1;
+    for(i = 0; i < NUM_VCS; i++){
+        if(strcmp(&cabinet.active_fs[1], cabinet.tuperwares[i].name) == 0){
+            index = i;
+            break;
+        }
+    }return index;
+}
+
+int setatroot(int index, int val){
+    cabinet.tuperwares[index].atroot = val;
+
+    return 0;
+}
+
+int getatroot(int index){
+    return cabinet.tuperwares[index].atroot;
+}
+
+
 int tostring(char *string){
     int i;
     strncpy(string, "Active FS: ", 11);
@@ -132,4 +153,3 @@ int tostring(char *string){
     strcat(string, "\0");
     return 0;
 }
-

@@ -38,4 +38,7 @@
 #define SYS_getactivefs 37
 #define SYS_getcwd      38
 #define SYS_tostring    39
+#define SYS_getactivefsindex 40
+#define SYS_getatroot 41
+#define SYS_setatroot 42
 

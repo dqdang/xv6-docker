@@ -297,3 +297,30 @@ sys_tostring(void){
   return tostring(string);
 }
 
+
+int
+sys_getactivefsindex(void){
+    return getactivefsindex();
+}
+
+int
+sys_setatroot(void){
+  int index, val;
+
+  if(argint(0, &index) < 0 || argint(1, &val) < 0){
+    return -1;
+  }
+
+  return setatroot(index, val);
+}
+
+int
+sys_getatroot(void){
+  int index;
+
+  if(argint(0, &index) < 0){
+    return -1;
+  }
+
+  return getatroot(index);
+}
