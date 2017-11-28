@@ -4,3 +4,9 @@ _*
 *.asm
 *.sym
 *.img
+bootblock
+entryother
+initcode*
+kernel
+mkfs
+vectors.S
