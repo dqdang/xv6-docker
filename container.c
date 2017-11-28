@@ -149,23 +149,21 @@ int setpath(int index, char *path, int update){
             }
         }
         if(!single){
-            while((token_path = strtok(token_path, "/")) != 0){
-                // printf(1, "given path token = %s\n", token_path);
-                
+            while((token_path = strtok(token_path, "/")) != 0){                
                 if(strcmp(token_path, "..") == 0){
                     path_arr[--i] = 0;
                 }
                 else{
                     path_arr[i++] = token_path;
                 }
-            }
+            }token_path = 0;
         }else{
             path_arr[i] = path;
 
         }
 
         strcpy(cabinet.tuperwares[index].path, path_arr[0]);
-        for(j = 1; j < i; j++){
+        for(j = 1; j <= i; j++){
             if(path_arr[j] != 0){
                 strcat(cabinet.tuperwares[index].path, path_arr[j]);
                 strcat(cabinet.tuperwares[index].path, "/");
