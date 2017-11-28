@@ -4,7 +4,7 @@
 #include "user.h"
 #include "container.h"
 
-char* itoa(int num, char* str, int base)
+void itoa(int num, char* str, int base)
 {
     char temp;
     int rem, i = 0, j = 0;
@@ -13,7 +13,7 @@ char* itoa(int num, char* str, int base)
     {
         str[i++] = '0';
         str[i] = '\0';
-        return str;
+        return;
     }
  
     while (num != 0)
@@ -36,8 +36,8 @@ char* itoa(int num, char* str, int base)
         str[j] = str[i - j - 1];
         str[i - j - 1] = temp;
     }
- 
-    return str;
+
+    return;
 }
 
 
@@ -72,7 +72,6 @@ int start(int argc, char *argv[]){
   cindex = atoi(index);
 
   setvc(cindex, argv[2]);
-  // getvcfs("vc0")
 
   fd = open(argv[2], O_RDWR);
   if(fd < 0){
@@ -215,19 +214,6 @@ int create(int argc, char *argv[]){
 }
 
 int to_string(){
-  // char active_string[32];
-  // itoa(0, active_string, 10);
-  // char vc[32];
-  // strcpy(vc, "vc");
-  // strcat(vc, active_string);
-  // strcat(vc, "\0");
-
-
-  // char fs[4];
-  // getvcfs(vc, fs);
-  // printf(1, "FS = %s\n", fs);
-  // int active = (1 + 1) % (4 + 1);
-  // printf(1, "WTF = %d\n", active);
 
   char containers[256];
   tostring(containers);
