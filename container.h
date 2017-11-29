@@ -17,6 +17,8 @@ struct container{
 
 struct{
   struct container tuperwares[NUM_VCS];
+  int used_disk;
+  int used_mem;
   char active_fs[32];
 }cabinet;
 

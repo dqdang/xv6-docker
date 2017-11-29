@@ -534,13 +534,14 @@ procdump(void)
 }
 
 int ps(char* container){
-  if(container == "/"){
-    procdump();
-    return 0;
-  }
-  else{
-    // print only container processes
-    // can either put container as member of process,
-    // or have each container store its own processes.
-  }
+  // if(container == "/"){
+  //   procdump();
+  //   return 0;
+  // }
+  // else{
+  //   // print only container processes
+  //   // can either put container as member of process,
+  //   // or have each container store its own processes.
+  // }
+  return 0;
 }
