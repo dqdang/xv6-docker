@@ -393,3 +393,54 @@ memmove(void *vdst, void *vsrc, int n)
     *dst++ = *src++;
   return vdst;
 }
+
+int 
+isfscmd(char* cmd){
+  if(strcmp(cmd, "mkdir") == 0 || strcmp(cmd, "ls") == 0){
+    return 1;
+  }return 0;
+}
+
+int
+ifsafepath(char *path){
+  char temp_path[128];
+  if(path == 0){
+    return 1;
+  }
+  int path_len = 0;
+  int new_path_len;
+  strcpy(temp_path, path);
+  strcat(temp_path, "\0");
+  char *tok_path = temp_path;
+  char currpath[256];
+  int index = getactivefsindex();
+  getpath(index, currpath);
+  char *tok_currpath = strtok(currpath, "/");
+
+  while(tok_currpath != 0){//while ((tok_currpath = strtok(tok_currpath, "/")) != 0){
+    path_len++;
+    tok_currpath = strtok(0, "/");
+  }
+
+  if(path[0] != '/'){
+    new_path_len = path_len;
+  }else{
+    new_path_len = 0;
+  }
+
+  // printf(1, "path len = %d\n", new_path_len);
+  tok_path = strtok(tok_path, "/");
+  while (tok_path != 0){
+    // printf(1, "token = %s\n", tok_path);
+    if(strcmp(tok_path, "..") == 0){
+      new_path_len--;
+    }else{
+      new_path_len++;
+    }
+    tok_path = strtok(0, "/");
+  }
+
+  return new_path_len > 0;
+}
+
+

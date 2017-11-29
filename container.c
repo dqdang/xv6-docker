@@ -152,17 +152,19 @@ int setpath(int index, char *path, int update){
         path_arr[0] = "/";
 
         path_arr[i] = strtok(token_cab, "/");
+        // path_arr = ["/", "c0", ..., ...]
         while (path_arr[i] != 0) {
             path_arr[++i] = strtok(0, "/");
-
         }
 
-
+        // check to see if it's a path like ..; not /c0/test/
         for(x = 0; x < strlen(path); x++){
             if(path[x] == '/'){
                 single = 0;
             }
         }
+
+        // /c0/test/something
         if(single == 0){
             token_path = strtok(token_path, "/");
 
@@ -183,7 +185,7 @@ int setpath(int index, char *path, int update){
             }
         }
 
-
+        // copy back into container path member
         strcpy(cabinet.tuperwares[index].path, path_arr[0]);
         for(j = 1; j <= i; j++){
             if(path_arr[j] != 0){
@@ -194,7 +196,6 @@ int setpath(int index, char *path, int update){
         strcat(cabinet.tuperwares[index].path, "\0");
     }else{
         strcpy(cabinet.tuperwares[index].path, path);
-
     }
 
     return 0;

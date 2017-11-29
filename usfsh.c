@@ -460,6 +460,9 @@ void pipe_command(char *buf)
 
 int exec_shell_command(char *buf)
 {
+    int index = getactivefsindex();
+    char fs[32];
+    getactivefs(fs);
     struct cmd_node *cn;
 
     if(strcmp(buf, "exit") == 0)
@@ -473,11 +476,24 @@ int exec_shell_command(char *buf)
         printf(1, "\n[Process completed]\n\n");
         return 1;
     }
+    else if((strcmp(buf, "cd /\n") == 0) || (strcmp(buf, "cd") == 0))
+    {
+      setpath(index, fs, 0);
+      if(chdir(fs) < 0)
+      {
+        printf(2, "cannot cd %s\n", fs);
+      }
+      return 0;
+    }
     else if(buf[0] == 'c' && buf[1] == 'd' && buf[2] == ' ')
     {
-        if(chdir(&(buf[3])) < 0)
+        if(ifsafepath(buf+3))
         {
-            printf(1, "%s does not exist.\n", &buf[3]);
+            setpath(index, buf+3, 1);
+            if(chdir(&(buf[3])) < 0)
+            {
+                printf(1, "%s does not exist.\n", &buf[3]);
+            }
         }
     }
     else if(buf[0] == '!' && buf[1] != ' ')
@@ -493,10 +509,10 @@ int exec_shell_command(char *buf)
             exec_history(cn);
         }
     }
-    else if(strcmp(buf, "cd") == 0)
-    {
-        chdir("/");
-    }
+    // else if(strcmp(buf, "cd") == 0)
+    // {
+    //     chdir("/");
+    // }
     else if(strcmp(buf, "history") == 0)
     {
         print_history();
@@ -510,6 +526,7 @@ int process_one_command(int *command_counter)
     int done = 0;
     char buf[MAX_CMD_LEN];
     struct cmd_node *delete;
+
 
     *command_counter = *command_counter + 1;
 
