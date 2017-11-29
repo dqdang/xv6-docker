@@ -1,5 +1,12 @@
 #include "types.h"
 #include "defs.h"
+#include "types.h"
+#include "defs.h"
+#include "param.h"
+#include "memlayout.h"
+#include "mmu.h"
+#include "proc.h"
+#include "x86.h"
 #include "container.h"
 
 #define NUM_VCS 4
@@ -130,37 +137,52 @@ int getpath(int index, char *path){
 
 int setpath(int index, char *path, int update){
     int i = 1, j, x, single = 1;
+    char temp_currpath[128];
+    char temp_path[128];
     char *token_cab, *token_path;
     char *path_arr[128];
 
     if(update == 1){
-        token_cab = cabinet.tuperwares[index].path;
-        token_path = path;
+        strcpy(temp_currpath, cabinet.tuperwares[index].path);
+        strcat(temp_currpath, "\0");
+        token_cab = temp_currpath;
+        strcpy(temp_path, path);
+        strcat(temp_path, "\0");
+        token_path = temp_path;
         path_arr[0] = "/";
 
-        while ((token_cab = strtok(token_cab, "/")) != 0){
-            path_arr[i++] = token_cab;
-            token_cab = 0;
+        path_arr[i] = strtok(token_cab, "/");
+        while (path_arr[i] != 0) {
+            path_arr[++i] = strtok(0, "/");
+
         }
+
 
         for(x = 0; x < strlen(path); x++){
             if(path[x] == '/'){
                 single = 0;
             }
         }
-        if(!single){
-            while((token_path = strtok(token_path, "/")) != 0){                
+        if(single == 0){
+            token_path = strtok(token_path, "/");
+
+            while(token_path != 0){        
                 if(strcmp(token_path, "..") == 0){
                     path_arr[--i] = 0;
                 }
-                else{
+                else{   
                     path_arr[i++] = token_path;
                 }
-            }token_path = 0;
+                token_path = strtok(0, "/");
+            }
         }else{
-            path_arr[i] = path;
-
+            if(strcmp(path, "..") == 0){
+                path_arr[--i] = 0;
+            }else{                
+                path_arr[i] = path;
+            }
         }
+
 
         strcpy(cabinet.tuperwares[index].path, path_arr[0]);
         for(j = 1; j <= i; j++){
@@ -174,8 +196,6 @@ int setpath(int index, char *path, int update){
         strcpy(cabinet.tuperwares[index].path, path);
 
     }
-
-    
 
     return 0;
 }

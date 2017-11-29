@@ -63,20 +63,23 @@ isfscmd(char* cmd){
 
 int
 ifsafepath(char *path){
+  char temp_path[128];
   if(path == 0){
     return 1;
   }
   int path_len = 0;
   int new_path_len;
-  char *tok_path = path;
+  strcpy(temp_path, path);
+  strcat(temp_path, "\0");
+  char *tok_path = temp_path;
   char currpath[256];
   int index = getactivefsindex();
   getpath(index, currpath);
-  char *tok_currpath = currpath;
+  char *tok_currpath = strtok(currpath, "/");
 
-  while ((tok_currpath = strtok(tok_currpath, "/")) != 0){
+  while(tok_currpath != 0){//while ((tok_currpath = strtok(tok_currpath, "/")) != 0){
     path_len++;
-    tok_currpath = 0;
+    tok_currpath = strtok(0, "/");
   }
 
   if(path[0] != '/'){
@@ -85,16 +88,16 @@ ifsafepath(char *path){
     new_path_len = 0;
   }
 
-  printf(1, "path len = %d\n", new_path_len);
-
-  while ((tok_path = strtok(tok_path, "/")) != 0){
-    printf(1, "token = %s\n", tok_path);
+  // printf(1, "path len = %d\n", new_path_len);
+  tok_path = strtok(tok_path, "/");
+  while (tok_path != 0){
+    // printf(1, "token = %s\n", tok_path);
     if(strcmp(tok_path, "..") == 0){
       new_path_len--;
     }else{
       new_path_len++;
     }
-    tok_path = 0;
+    tok_path = strtok(0, "/");
   }
 
   return new_path_len > 0;
@@ -214,8 +217,9 @@ main(void)
     char fs[32];
     int index = getactivefsindex();
     getactivefs(fs);
-    if((strcmp(buf, "/\n") == 0) || (buf[0] == 'c' && buf[1] == 'd' && buf[2] == 10)){
-      setpath(index, fs, 1);
+    if((strcmp(buf, "cd /\n") == 0) || (buf[0] == 'c' && buf[1] == 'd' && buf[2] == 10)){
+      // printf(1, "Inside root cd\n");
+      setpath(index, fs, 0);
       if(chdir(fs) < 0)
         printf(2, "cannot cd %s\n", fs);
       continue;
@@ -225,7 +229,6 @@ main(void)
       // Chdir must be called by the parent, not the child.
       buf[strlen(buf)-1] = 0;  // chop \n
       if(ifsafepath(buf+3)){
-        printf(1, "buf = %s buf+3 = %s\n", buf, buf+3);
         setpath(index, buf+3, 1);
         if(chdir(buf+3) < 0)
           printf(2, "cannot cd %s\n", buf+3);
