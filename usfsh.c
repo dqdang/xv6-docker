@@ -20,7 +20,6 @@ int starts_with(const char *pre, const char *str);
 int is_shell_command(char *cmd);
 void print_prompt(int *command_counter);
 void read_line(char *line);
-char* itoa(int num, char* str, int base);
 void trim(char *input);
 void parse_args(char *cmd, char *delimit, char **argv);
 struct cmd_node *find_using_number(int cmd);
@@ -43,7 +42,6 @@ struct cmd_node
 {
     struct list_elem elem;
     int history_number;
-    // char *cmd;
     char cmd[MAX_CMD_LEN];
 };
 
@@ -65,9 +63,6 @@ struct cmd_node *new_cmd_node(char cmd[], int history_number)
         cn->cmd[i] = cmd[i];
     }
     cn->cmd[i] = '\0';
-
-    // cn->cmd = (char *) malloc(MAX_CMD_LEN * sizeof(char));
-    // strcpy(cn->cmd, cmd);
 
     cn->history_number = history_number;
 
@@ -129,42 +124,6 @@ void read_line(char *line)
     }
 
     line[i] = '\0';
-}
-
-char* itoa(int num, char* str, int base)
-{
-    char temp;
-    int rem, i = 0, j = 0;
- 
-    if (num == 0)
-    {
-        str[i++] = '0';
-        str[i] = '\0';
-        return str;
-    }
- 
-    while (num != 0)
-    {
-        rem = num % base;
-        if(rem > 9)
-        {
-            rem = rem - 10;
-        }
-        /* Add the digit as a string */
-        str[i++] = rem + '0';
-        num = num/base;
-    }
-
-    str[i] = '\0';
-
-    for(j = 0; j < i / 2; j++)
-    {
-        temp = str[j];
-        str[j] = str[i - j - 1];
-        str[i - j - 1] = temp;
-    }
- 
-    return str;
 }
 
 void trim(char *str)

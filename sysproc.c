@@ -349,3 +349,18 @@ sys_setpath(void){
   return setpath(index, path, remove);
 }
 
+int
+sys_ps(void){
+  // char* container;
+
+  // if(argstr(0, &container) < 0){
+  //   return -1;
+  // }
+  // return ps(container);
+
+  procdump();
+  return 0;
+}
+
+
+

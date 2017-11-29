@@ -4,44 +4,6 @@
 #include "user.h"
 #include "container.h"
 
-void itoa(int num, char* str, int base)
-{
-    char temp;
-    int rem, i = 0, j = 0;
- 
-    if (num == 0)
-    {
-        str[i++] = '0';
-        str[i] = '\0';
-        return;
-    }
- 
-    while (num != 0)
-    {
-        rem = num % base;
-        if(rem > 9)
-        {
-            rem = rem - 10;
-        }
-        /* Add the digit as a string */
-        str[i++] = rem + '0';
-        num = num/base;
-    }
-
-    str[i] = '\0';
-
-    for(j = 0; j < i / 2; j++)
-    {
-        temp = str[j];
-        str[j] = str[i - j - 1];
-        str[i - j - 1] = temp;
-    }
-
-    return;
-}
-
-
-
 void print_usage(int mode){
 
   if(mode == 0){ // not enough arguments
@@ -78,7 +40,7 @@ int start(int argc, char *argv[]){
     printf(1, "Failed to open console %s\n", argv[2]);
     exit();
   }
-  printf(1, "Opened console %s\n", argv[2]);
+  printf(1, "Opened console %s.\n", argv[2]);
   /* fork a child and exec argv[4] */
   id = fork();
 
