@@ -18,7 +18,9 @@ struct container{
 struct{
   struct container tuperwares[NUM_VCS];
   int used_disk;
+  int max_disk;
   int used_mem;
+  int max_mem;
   char active_fs[32];
 }cabinet;
 
@@ -53,10 +55,34 @@ int
 setusedmem(int index, int used_mem);
 
 int
+getallusedmem(void);
+
+int
+setallusedmem(int used_mem);
+
+int
+getallmaxmem(void);
+
+int
+setallmaxmem(int mem);
+
+int
 getuseddisk(int index);
 
 int
 setuseddisk(int index, int used_disk);
+
+int
+getalluseddisk(void);
+
+int
+setalluseddisk(int used_disk);
+
+int
+getallmaxdisk(void);
+
+int
+setallmaxdisk(int disk);
 
 int
 setvc(int index, char* vc);

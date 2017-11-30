@@ -113,8 +113,16 @@ extern int sys_getmaxdisk(void);
 extern int sys_setmaxdisk(void);
 extern int sys_getusedmem(void);
 extern int sys_setusedmem(void);
+extern int sys_getallusedmem(void);
+extern int sys_setallusedmem(void);
+extern int sys_getallmaxmem(void);
+extern int sys_setallmaxmem(void);
 extern int sys_getuseddisk(void);
 extern int sys_setuseddisk(void);
+extern int sys_getalluseddisk(void);
+extern int sys_setalluseddisk(void);
+extern int sys_getallmaxdisk(void);
+extern int sys_setallmaxdisk(void);
 extern int sys_setvc(void);
 extern int sys_getvcfs(void);
 extern int sys_setactivefs(void);
@@ -162,6 +170,14 @@ static int (*syscalls[])(void) = {
 [SYS_setusedmem]          sys_setusedmem,
 [SYS_getuseddisk]         sys_getuseddisk,
 [SYS_setuseddisk]         sys_setuseddisk,
+[SYS_getallusedmem]       sys_getallusedmem,
+[SYS_setallusedmem]       sys_setallusedmem,
+[SYS_getallmaxmem]        sys_getallmaxmem,
+[SYS_setallmaxmem]        sys_setallmaxmem,
+[SYS_getalluseddisk]      sys_getalluseddisk,
+[SYS_setalluseddisk]      sys_setalluseddisk,    
+[SYS_getallmaxdisk]       sys_getallmaxdisk,
+[SYS_setallmaxdisk]       sys_setallmaxdisk,  
 [SYS_setvc]               sys_setvc,
 [SYS_getvcfs]             sys_getvcfs,
 [SYS_setactivefs]         sys_setactivefs, 

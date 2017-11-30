@@ -124,7 +124,7 @@ int create(int argc, char *argv[]){
 
   setname(cindex, argv[2]);
   setmaxproc(cindex, atoi(argv[3]));
-  setmaxmem(cindex, atoi(argv[4]) * 1000000);
+  setmaxmem(cindex, atoi(argv[4]));
   setmaxdisk(cindex, atoi(argv[5]) * 1000000);
   setusedmem(cindex, 0);
   setuseddisk(cindex, 0);

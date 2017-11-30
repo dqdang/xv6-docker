@@ -69,12 +69,48 @@ int setusedmem(int index, int used_mem){
     return 0;
 }
 
+int getallusedmem(void){
+    return cabinet.used_mem;
+}
+
+int setallusedmem(int mem){
+    cabinet.used_mem = mem;
+    return 0;
+}
+
+int getallmaxmem(void){
+    return cabinet.max_mem;
+}
+
+int setallmaxmem(int mem){
+    cabinet.max_mem = mem;
+    return 0;
+}
+
 int getuseddisk(int index){
     return cabinet.tuperwares[index].used_disk;
 }
 
 int setuseddisk(int index, int used_disk){
     cabinet.tuperwares[index].used_disk = used_disk;
+    return 0;
+}
+
+int getalluseddisk(void){
+    return cabinet.used_disk;
+}
+
+int setalluseddisk(int disk){
+    cabinet.used_disk = disk;
+    return 0;
+}
+
+int getallmaxdisk(void){
+    return cabinet.max_disk;
+}
+
+int setallmaxdisk(int disk){
+    cabinet.max_disk = disk;
     return 0;
 }
 

@@ -44,4 +44,12 @@
 #define SYS_getpath          43
 #define SYS_setpath          44
 #define SYS_ps               45
+#define SYS_getallusedmem	 46
+#define SYS_setallusedmem    47
+#define SYS_getallmaxmem     48
+#define SYS_setallmaxmem     49
+#define SYS_getalluseddisk   50
+#define SYS_setalluseddisk   51
+#define SYS_getallmaxdisk    52
+#define SYS_setallmaxdisk    53
 

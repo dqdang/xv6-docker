@@ -362,5 +362,62 @@ sys_ps(void){
   return 0;
 }
 
+int
+sys_getallusedmem(void){
+  return getallusedmem();
+}
 
+int
+sys_setallusedmem(void){
+  int mem;
+  if(argint(0, &mem) < 0){
+    return -1;
+  }
 
+  return setallusedmem(mem);
+}
+
+int
+sys_getallmaxmem(void){
+  return getallmaxmem();
+}
+
+int
+sys_setallmaxmem(void){
+  int mem;
+  if(argint(0, &mem) < 0){
+    return -1;
+  }
+
+  return setallmaxmem(mem);
+}
+
+int
+sys_getalluseddisk(void){
+  return getalluseddisk();
+}
+
+int
+sys_setalluseddisk(void){
+  int disk;
+  if(argint(0, &disk) < 0){
+    return -1;
+  }
+
+  return setalluseddisk(disk);
+}
+
+int
+sys_getallmaxdisk(void){
+  return getallmaxdisk();
+}
+
+int
+sys_setallmaxdisk(void){
+  int disk;
+  if(argint(0, &disk) < 0){
+    return -1;
+  }
+
+  return setallmaxdisk(disk);
+}
