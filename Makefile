@@ -183,6 +183,7 @@ UPROGS=\
 	_usfsh\
 	_ctool\
 	_ps\
+	_free\
 
 _usfsh: usfsh.o list.o debug_panic.o $(ULIB)
 	$(LD) $(LDFLAGS) -N -e main -Ttext 0 -o $@ $^
@@ -257,7 +258,7 @@ qemu-nox-gdb: fs.img xv6.img .gdbinit
 EXTRA=\
 	mkfs.c ulib.c user.h cat.c echo.c forktest.c grep.c kill.c\
 	ln.c ls.c mkdir.c rm.c wc.c zombie.c\
-	printf.c umalloc.c echoloop.c usfsh.c ctool.c ps.c\
+	printf.c umalloc.c echoloop.c usfsh.c ctool.c ps.c free.c\
 	README dot-bochsrc *.pl toc.* runoff runoff1 runoff.list\
 	.gdbinit.tmpl gdbutil\
 

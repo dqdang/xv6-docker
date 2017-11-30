@@ -344,4 +344,5 @@ consoleinit(void)
 
   ioapicenable(IRQ_KBD, 0);
   setactivefs("//\0");
+  
 }

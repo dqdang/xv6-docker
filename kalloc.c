@@ -24,6 +24,8 @@ struct {
   struct run *freelist;
 } kmem;
 
+
+
 // Initialization happens in two phases.
 // 1. main() calls kinit1() while still using entrypgdir to place just
 // the pages mapped by entrypgdir on free list.
@@ -76,11 +78,17 @@ kfree(char *v)
   if(kmem.use_lock)
     release(&kmem.lock);
 
-  int index = getactivefsindex();
-  int c_used_mem = getusedmem(index);
+  
+  char fs[32];
+  getactivefs(fs);
+  if(fs[0] == '/' && fs[1] == '/'){
+    int index = getactivefsindex();
+    int c_used_mem = getusedmem(index);
+    setusedmem(index, c_used_mem-1);
+  }
   int all_mem = getallusedmem();
-  setusedmem(index, c_used_mem-1);
   setallusedmem(all_mem-1);
+
 
 }
 
@@ -100,11 +108,16 @@ kalloc(void)
   if(kmem.use_lock)
     release(&kmem.lock);
 
-  int index = getactivefsindex();
-  int c_used_mem = getusedmem(index);
+  char fs[32];
+  getactivefs(fs);
+  if(fs[0] == '/' && fs[1] == '/'){
+    int index = getactivefsindex();
+    int c_used_mem = getusedmem(index);
+    setusedmem(index, c_used_mem+1);
+  }
   int all_mem = getallusedmem();
-  setusedmem(index, c_used_mem+1);
   setallusedmem(all_mem+1);
+
 
   return (char*)r;
 }

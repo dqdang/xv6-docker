@@ -34,6 +34,8 @@ main(void)
   ideinit();       // disk 
   startothers();   // start other processors
   kinit2(P2V(4*1024*1024), P2V(PHYSTOP)); // must come after startothers()
+  setallusedmem(0);
+  setalluseddisk(0);
   userinit();      // first user process
   setallmaxdisk(FSSIZE);
   setallmaxmem(((P2V(PHYSTOP) - P2V(4*1024*1024)) / 4096) + ((P2V(4*1024*1024) - (void*)end) / 4096));

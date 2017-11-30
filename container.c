@@ -188,19 +188,19 @@ int setpath(int index, char *path, int update){
         path_arr[0] = "/";
 
         path_arr[i] = strtok(token_cab, "/");
-        // path_arr = ["/", "c0", ..., ...]
+        // building array from current path: path_arr = ["/", "c0", ..., ...]
         while (path_arr[i] != 0) {
             path_arr[++i] = strtok(0, "/");
         }
 
-        // check to see if it's a path like ..; not /c0/test/
+        // checking to see if path has multiple directory changes: cd ../../../work
         for(x = 0; x < strlen(path); x++){
             if(path[x] == '/'){
                 single = 0;
             }
         }
 
-        // /c0/test/something
+        // updating current path array to new path
         if(single == 0){
             token_path = strtok(token_path, "/");
 
