@@ -81,7 +81,7 @@ void* malloc(uint);
 void free(void*);
 int atoi(const char*);
 void itoa(int, char*, int);
-int copy(char*, char*, int, int);
+int copy(char*, char*);
 int isfscmd(char* cmd);
 int ifsafepath(char *path);
 

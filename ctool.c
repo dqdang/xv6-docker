@@ -10,13 +10,13 @@ void print_usage(int mode){
     printf(1, "Usage: ctool <mode> <args>\n");
   }
   if(mode == 1){ // create
-    printf(1, "Usage: ctool create <container> <max proc> <max mem> <max disk> <exec1> <exec2> ...\n");
+    printf(1, "Usage: ctool create <container> <exec1> <exec2> ...\n");
   }
   if(mode == 2){ // create with container created
     printf(1, "Container taken. Failed to create, exiting...\n");
   }
   if(mode == 3){ // start
-    printf(1, "Usage: ctool start <console> <container> <exec>\n");
+    printf(1, "Usage: ctool start <console> <container> <exec> <max proc> <max mem> <max disk>\n");
   }
   if(mode == 4){ // delete
     printf(1, "Usage: ctool delete <container>\n");
@@ -25,13 +25,23 @@ void print_usage(int mode){
   exit();
 }
 
-// ctool start vc0 c0 usfsh
+// ctool start vc0 c0 usfsh 8 8 8 
 int start(int argc, char *argv[]){
-  int id, fd, cindex = 1, ppid = getpid();
+
+
+ 
+
+  int id, fd, cindex, ppid = getpid();
   char index[2];
   index[0] = argv[3][strlen(argv[3])-1];
   index[1] = '\0';
   cindex = atoi(index);
+
+  setmaxproc(cindex, atoi(argv[5]));
+  setmaxmem(cindex, atoi(argv[6]));
+  setmaxdisk(cindex, atoi(argv[7]) * 1000000);
+  setusedmem(cindex, 0);
+  setuseddisk(cindex, 0);
 
   setvc(cindex, argv[2]);
 
@@ -108,9 +118,9 @@ int stop(char *argv[]){
 //   }return 1;
 // }
 
-// ctool create c0 8 8 8 cat ls echo sh ...
+// ctool create c0 cat ls echo sh ...
 int create(int argc, char *argv[]){
-  int i, id, bytes, cindex = 0;
+  int i, id, bytes, cindex;
   // num_files = argc - 6;
   char *mkdir[2];
   // char *files[num_files];
@@ -123,11 +133,6 @@ int create(int argc, char *argv[]){
   cindex = atoi(index);
 
   setname(cindex, argv[2]);
-  setmaxproc(cindex, atoi(argv[3]));
-  setmaxmem(cindex, atoi(argv[4]));
-  setmaxdisk(cindex, atoi(argv[5]) * 1000000);
-  setusedmem(cindex, 0);
-  setuseddisk(cindex, 0);
   char path[32];
   strcpy(path, "/");
   strcat(path, argv[2]);
@@ -144,7 +149,7 @@ int create(int argc, char *argv[]){
   }
   id = wait();
 
-  for(i = 6; i < argc; i++){ // going through ls echo cat ...
+  for(i = 3; i < argc; i++){ // going through ls echo cat ...
     char destination[32];
 
     strcpy(destination, "/");
@@ -154,25 +159,25 @@ int create(int argc, char *argv[]){
     strcat(destination, "\0");
 
     // ctable.tuperwares[i].files[i-6] = argv[i];
-    bytes = copy(argv[i], destination, getuseddisk(cindex), getmaxdisk(cindex));
+    bytes = copy(argv[i], destination);//, getuseddisk(cindex), getmaxdisk(cindex));
     printf(1, "Bytes for %s: %d\n", argv[i], bytes);
 
-    if(bytes > 0){
-      setuseddisk(cindex, getuseddisk(cindex) + bytes);
-    }
-    else{
-      printf(1, "\nCONTAINER OUT OF MEMORY!\nFailed to copy executable %s. Removing incomplete binary.\n\n", argv[i]);
-      id = fork();
-      if(id == 0){
-        char *remove_args[2];
-        remove_args[0] = "rm";
-        remove_args[1] = destination;
-        exec(remove_args[0], remove_args);
-      }
-      id = wait();
-    }
+    // if(bytes > 0){
+    //   setuseddisk(cindex, getuseddisk(cindex) + bytes);
+    // }
+    // else{
+    //   printf(1, "\nCONTAINER OUT OF MEMORY!\nFailed to copy executable %s. Removing incomplete binary.\n\n", argv[i]);
+    //   id = fork();
+    //   if(id == 0){
+    //     char *remove_args[2];
+    //     remove_args[0] = "rm";
+    //     remove_args[1] = destination;
+    //     exec(remove_args[0], remove_args);
+    //   }
+    //   id = wait();
+    // }
   }
-  printf(1, "Total used disk: %d\n", getuseddisk(cindex));
+  // printf(1, "Total used disk: %d bytes\n", getuseddisk(cindex));
 
   // TODO: IMPLEMENT GET/SET FILES
   // ctable.tuperwares[cindex].files = files;
@@ -195,7 +200,7 @@ int main(int argc, char *argv[]){
   }
 
   if(strcmp(argv[1], "create") == 0){
-    if(argc < 7){
+    if(argc < 4){
       print_usage(1);
     }
     if(chdir(argv[2]) > 0){

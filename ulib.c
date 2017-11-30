@@ -29,9 +29,9 @@ strcpy(char *s, char *t)
 }
 
 int 
-copy(char *inputfile, char *outputfile, int used_disk, int max_disk)
-{
-  int fd1, fd2, count, bytes = 0, max;
+copy(char *inputfile, char *outputfile){//, int used_disk, int max_disk)
+
+  int fd1, fd2, count, bytes = 0;
   char buffer[32];
       
   if((fd1 = open(inputfile, O_RDONLY)) < 0)
@@ -47,11 +47,11 @@ copy(char *inputfile, char *outputfile, int used_disk, int max_disk)
 
   while((count = read(fd1, buffer, 32)) > 0)
   {
-      max = used_disk+=count;
-      if(max > max_disk)
-      {
-        return -1;
-      }
+      // max = used_disk+=count;
+      // if(max > max_disk)
+      // {
+      //   return -1;
+      // }
       bytes = bytes + count;
       write(fd2, buffer, 32);
   }
