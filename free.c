@@ -4,18 +4,6 @@
 #include "user.h"
 #include "container.h"
 
-char *spaces(int amount, char spaces[]){
-  int i;
-  spaces[0] = ' ';
-  for(i = 1; i <= amount-1; i++){
-    spaces[i] = ' ';
-  }
-  spaces[i] = '\0';
-
-  return spaces;
-}
-
-
 
 int main(int argc, char *argv[]){
   char fs[128];
@@ -29,15 +17,15 @@ int main(int argc, char *argv[]){
   char maxbytes[100];
   char kallocs[100];
 
-  if(strcmp(fs, "//") == 0){
-    itoa((getallusedmem()*4096)/(getallmaxmem()*4096), percent, 10);
+  if(strcmp(fs, "/") == 0){
+    itoa((getallusedmem()*4096)/(getallmaxmem()*4096)*100, percent, 10);
     itoa((getallusedmem()*4096), usedbytes, 10);
     itoa((getallmaxmem()*4096), maxbytes, 10);
     itoa (getallusedmem(), kallocs, 10);
   }
   else{
     int index = getactivefsindex();
-    itoa((getusedmem(index)*4096)/(getmaxmem(index)*4096), percent, 10);
+    itoa((getusedmem(index)*4096)/(getmaxmem(index)*4096)*100, percent, 10);
     itoa((getusedmem(index)*4096), usedbytes, 10);
     itoa((getmaxmem(index)*4096), maxbytes, 10);
     itoa (getusedmem(index), kallocs, 10);

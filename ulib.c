@@ -28,6 +28,17 @@ strcpy(char *s, char *t)
   return os;
 }
 
+char *spaces(int amount, char spaces[]){
+  int i;
+  spaces[0] = ' ';
+  for(i = 1; i <= amount-1; i++){
+    spaces[i] = ' ';
+  }
+  spaces[i] = '\0';
+
+  return spaces;
+}
+
 int 
 copy(char *inputfile, char *outputfile){//, int used_disk, int max_disk)
 
