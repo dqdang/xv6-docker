@@ -4,6 +4,8 @@
 #include "stat.h"
 #include "user.h"
 #include "fcntl.h"
+#include "fs.h"
+
 
 char *argv[] = { "sh", 0 };
 
@@ -26,6 +28,52 @@ create_vcs(void)
 int
 main(void)
 {
+
+
+  char buf[512], *p;
+  int fd;
+  struct dirent de;
+  struct stat st;
+  char fs[32];
+  getactivefs(fs);
+
+  if((fd = open(fs, 0)) < 0){
+    printf(2, "cannot open %s\n", fs);
+    return 0;
+  }
+
+  if(fstat(fd, &st) < 0){
+    printf(2, "cannot stat %s\n", fs);
+    close(fd);
+    return 0;
+  }
+
+ 
+  if(strlen(fs) + 1 + DIRSIZ + 1 > sizeof buf){
+    printf(1, "path too long\n");
+    return 0;
+  }
+  strcpy(buf, fs);
+  p = buf+strlen(buf);
+  *p++ = '/';
+  while(read(fd, &de, sizeof(de)) == sizeof(de)){
+    if(de.inum == 0)
+      continue;
+    memmove(p, de.name, DIRSIZ);
+    p[DIRSIZ] = 0;
+    if(stat(buf, &st) < 0){
+      printf(1, "cannot stat %s\n", buf);
+      continue;
+    }
+    int all_disk = getalluseddisk();
+    setalluseddisk(all_disk+st.size);
+    // printf(1, "%s %d %d %d\n", fmtname(buf), st.type, st.ino, st.size);
+  }
+
+  close(fd);
+
+
+
   int pid, wpid;
 
   if(open("console", O_RDWR) < 0){

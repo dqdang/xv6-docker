@@ -222,17 +222,17 @@ sys_unlink(void)
   if(writei(dp, (char*)&de, off, sizeof(de)) != sizeof(de))
     panic("unlink: writei");
 
-  cprintf("Freeing %d bytes on disk\n", sizeof(de));
+
 
   char fs[32];
   getactivefs(fs);
   if(fs[1] != '\0'){
     int index = getactivefsindex();
     int c_used_disk = getuseddisk(index);
-    setuseddisk(index, c_used_disk-sizeof(de)*2);
+    setuseddisk(index, c_used_disk-ip->size);
   }
   int all_disk = getalluseddisk();
-  setalluseddisk(all_disk-sizeof(de)*2);
+  setalluseddisk(all_disk-ip->size);
 
   if(ip->type == T_DIR){
     dp->nlink--;

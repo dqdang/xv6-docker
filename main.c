@@ -36,9 +36,9 @@ main(void)
   kinit2(P2V(4*1024*1024), P2V(PHYSTOP)); // must come after startothers()
   setallusedmem(0);
   setalluseddisk(0);
-  userinit();      // first user process
   setallmaxdisk(FSSIZE*512);
   setallmaxmem(((P2V(PHYSTOP) - P2V(4*1024*1024)) / 4096) + ((P2V(4*1024*1024) - (void*)end) / 4096));
+  userinit();      // first user process
   mpmain();        // finish this processor's setup
 }
 

@@ -15,3 +15,6 @@ DONE = (cstart) Start a container - give a virtual console, container directory,
 (cresume) Resume a container
 
 (cstop) Stop a container
+
+(cadd) adds executable to container
+
