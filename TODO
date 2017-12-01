@@ -1,8 +1,8 @@
 (ps) A ps command that lists processes
 
-DONE = (free) A free command that show the available and used memory
+DONE KINDA = (ADD IN DISK ERROR CHECK (free) A free command that show the available 
 
-(df) Disk space usage
+DONE KINDA = (ADD IN MEM ERROR CHECK) (df) Disk space usage
 
 DONE = (cinfo) A cinfo command that can only execute in the root container
 

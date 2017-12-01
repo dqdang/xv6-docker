@@ -229,10 +229,10 @@ sys_unlink(void)
   if(fs[1] != '\0'){
     int index = getactivefsindex();
     int c_used_disk = getuseddisk(index);
-    setuseddisk(index, c_used_disk-sizeof(de));
+    setuseddisk(index, c_used_disk-sizeof(de)*2);
   }
   int all_disk = getalluseddisk();
-  setalluseddisk(all_disk-sizeof(de));
+  setalluseddisk(all_disk-sizeof(de)*2);
 
   if(ip->type == T_DIR){
     dp->nlink--;
