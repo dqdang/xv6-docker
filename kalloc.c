@@ -81,7 +81,8 @@ kfree(char *v)
   
   char fs[32];
   getactivefs(fs);
-  if(fs[0] == '/' && fs[1] == '/'){
+  if(fs[1] != '\0'){
+    // cprintf("INSIDE CONTAINER UPDATE DEALLOCATE");
     int index = getactivefsindex();
     int c_used_mem = getusedmem(index);
     setusedmem(index, c_used_mem-1);
@@ -110,7 +111,9 @@ kalloc(void)
 
   char fs[32];
   getactivefs(fs);
-  if(fs[0] == '/' && fs[1] == '/'){
+
+  if(fs[1] != '\0'){
+    // cprintf("INSIDE CONTAINER UPDATE ALLOCATE");
     int index = getactivefsindex();
     int c_used_mem = getusedmem(index);
     setusedmem(index, c_used_mem+1);

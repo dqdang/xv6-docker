@@ -28,9 +28,6 @@ void print_usage(int mode){
 // ctool start vc0 c0 usfsh 8 8 8 
 int start(int argc, char *argv[]){
 
-
- 
-
   int id, fd, cindex, ppid = getpid();
   char index[2];
   index[0] = argv[3][strlen(argv[3])-1];

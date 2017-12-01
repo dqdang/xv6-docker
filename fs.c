@@ -20,6 +20,8 @@
 #include "fs.h"
 #include "buf.h"
 #include "file.h"
+#include "container.h"
+
 
 #define min(a, b) ((a) < (b) ? (a) : (b))
 static void itrunc(struct inode*);
@@ -485,9 +487,23 @@ writei(struct inode *ip, char *src, uint off, uint n)
   uint tot, m;
   struct buf *bp;
 
+  //this is where we need to count bytes writen to disk
+
   if(ip->type == T_DEV){
     if(ip->major < 0 || ip->major >= NDEV || !devsw[ip->major].write)
       return -1;
+
+    cprintf("Writing %d bytes to disk\n", n);
+    char fs[32];
+    getactivefs(fs);
+    if(fs[1] != '\0'){
+      int index = getactivefsindex();
+      int c_used_disk = getuseddisk(index);
+      setuseddisk(index, c_used_disk+n);
+    }
+    int all_disk = getalluseddisk();
+    setalluseddisk(all_disk+n);
+
     return devsw[ip->major].write(ip, src, n);
   }
 
