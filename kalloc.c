@@ -99,6 +99,24 @@ kfree(char *v)
 char*
 kalloc(void)
 {
+
+  char fs[32];
+  getactivefs(fs);
+  int new_all_mem = getallusedmem() + 1;
+  if(fs[1] != '\0'){
+    int index = getactivefsindex();
+    int new_used_mem = getusedmem(index) + 1;
+    if(new_all_mem > getallmaxmem() || new_used_mem > getmaxmem(index)){
+      cprintf("Max memory usage reached please review mem parameters!")
+      return 0;
+    }
+    setusedmem(index, new_used_mem);
+  }
+  setallusedmem(new_all_mem);
+
+
+
+
   struct run *r;
   //add 1 to memcounter
   if(kmem.use_lock)
@@ -108,19 +126,6 @@ kalloc(void)
     kmem.freelist = r->next;
   if(kmem.use_lock)
     release(&kmem.lock);
-
-  char fs[32];
-  getactivefs(fs);
-
-  if(fs[1] != '\0'){
-    // cprintf("INSIDE CONTAINER UPDATE ALLOCATE");
-    int index = getactivefsindex();
-    int c_used_mem = getusedmem(index);
-    setusedmem(index, c_used_mem+1);
-  }
-  int all_mem = getallusedmem();
-  setallusedmem(all_mem+1);
-
 
   return (char*)r;
 }

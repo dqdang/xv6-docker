@@ -498,13 +498,17 @@ writei(struct inode *ip, char *src, uint off, uint n)
 
   char fs[32];
   getactivefs(fs);
+  int new_all_disk = getalluseddisk() + n;
   if(fs[1] != '\0'){
     int index = getactivefsindex();
-    int c_used_disk = getuseddisk(index);
-    setuseddisk(index, c_used_disk+n);
+    int new_used_disk = getuseddisk(index) + n;
+    if(new_all_disk > getallmaxdisk() || new_used_disk > getmaxdisk(index)){
+      cprintf("Max disk usage reached please review fs parameters!")
+      return 0;
+    }
+    setuseddisk(index, new_used_disk);
   }
-  int all_disk = getalluseddisk();
-  setalluseddisk(all_disk+n);
+  setalluseddisk(new_all_disk);
 
   if(off > ip->size || off + n < off)
     return -1;
