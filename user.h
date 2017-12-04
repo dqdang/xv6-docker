@@ -56,6 +56,7 @@ int setatroot(int, int);
 int getatroot(int);
 int getpath(int, char*);
 int setpath(int, char*, int);
+int setalive(int, int);
 int ps(void);
 
 

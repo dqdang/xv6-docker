@@ -131,6 +131,7 @@ int create(int argc, char *argv[]){
   cindex = atoi(index);
 
   setname(cindex, argv[2]);
+  setalive(cindex, 1);
   char path[32];
   strcpy(path, "/");
   strcat(path, argv[2]);

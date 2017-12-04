@@ -136,6 +136,7 @@ extern int sys_setatroot(void);
 extern int sys_getpath(void);
 extern int sys_setpath(void);
 extern int sys_ps(void);
+extern int sys_setalive(void);
 
 static int (*syscalls[])(void) = {
 [SYS_fork]                sys_fork,
@@ -192,6 +193,7 @@ static int (*syscalls[])(void) = {
 [SYS_getpath]             sys_getpath,
 [SYS_setpath]             sys_setpath,
 [SYS_ps]                  sys_ps,
+[SYS_setalive]            sys_setalive,
 };
 
 void

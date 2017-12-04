@@ -61,4 +61,5 @@ SYSCALL(setatroot)
 SYSCALL(getatroot)
 SYSCALL(getpath)
 SYSCALL(setpath)
+SYSCALL(setalive);
 SYSCALL(ps)

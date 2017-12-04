@@ -585,16 +585,52 @@ psroot()
   
 }
 
+void
+pscontainer(int index)
+{
+  static char *states[] = {
+  [UNUSED]    "unused",
+  [EMBRYO]    "embryo",
+  [SLEEPING]  "sleep ",
+  [RUNNABLE]  "runble",
+  [RUNNING]   "run   ",
+  [ZOMBIE]    "zombie"
+  };
+  int i;
+  struct proc *p;
+  char *state;
+  uint pc[10];
+
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    if(p->cid == index){
+      if(p->state == UNUSED)
+        continue;
+      if(p->state >= 0 && p->state < NELEM(states) && states[p->state])
+        state = states[p->state];
+      else
+        state = "???";
+
+    
+      cprintf("Container %d: ", p->cid);
+      cprintf("%d %s %s", p->pid, state, p->name);
+      if(p->state == SLEEPING){
+        getcallerpcs((uint*)p->context->ebp+2, pc);
+        for(i=0; i<10 && pc[i] != 0; i++)
+          cprintf(" %p", pc[i]);
+      }
+      cprintf("\n");
+    }
+  }
+  
+}
+
 int ps(){
-  cprintf("INSIDE PS");
   int index = getactivefsindex();
   if(index == -1){
-      cprintf("INSIDE PS ROOT");
-
     psroot();
   }
   else{
-    // psdump(1, index);
+    pscontainer(index);
   }
   return 0;
 }

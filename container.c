@@ -144,10 +144,21 @@ int getactivefs(char *fs){
     return 0;
 }
 
+int setalive(int index, int val){
+    cabinet.tuperwares[index].alive = val;
+    return 0;
+}
+
+int getalive(int index){
+    return cabinet.tuperwares[index].alive;
+}
+
+
 int getactivefsindex(void){
     int i, index = -1;
     for(i = 0; i < NUM_VCS; i++){
-        if(strcmp(&cabinet.active_fs[1], cabinet.tuperwares[i].name) == 0){
+
+        if(cabinet.tuperwares[i].alive && strcmp(&cabinet.active_fs[1], cabinet.tuperwares[i].name) == 0){
             index = i;
             break;
         }

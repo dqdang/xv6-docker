@@ -1,6 +1,7 @@
 #define NUM_VCS 4
 
 struct container{
+  int alive;
   char name[32];
   char vc[32];
   char path[256];
@@ -113,3 +114,6 @@ getpath(int index, char *path);
 
 int
 setpath(int index, char *path, int remove);
+
+int
+setalive(int index, int val);

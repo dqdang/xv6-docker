@@ -25,6 +25,19 @@ sys_forkC(void)
   return forkC(cid);
 }
 
+int 
+sys_setalive(void)
+{
+  int index;
+  int val;
+
+  if(argint(0, &index) < 0 || argint(1, &val) < 0){
+    return -1;
+  }
+
+  return setalive(index, val);
+}
+
 int
 sys_exit(void)
 {
