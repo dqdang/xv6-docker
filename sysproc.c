@@ -15,6 +15,16 @@ sys_fork(void)
   return fork();
 }
 
+int 
+sys_forkC(void)
+{
+  int cid;
+
+  if(argint(0, &cid) < 0)
+    return -1;
+  return forkC(cid);
+}
+
 int
 sys_exit(void)
 {
@@ -351,14 +361,9 @@ sys_setpath(void){
 
 int
 sys_ps(void){
-  // char* container;
 
-  // if(argstr(0, &container) < 0){
-  //   return -1;
-  // }
-  // return ps(container);
 
-  procdump();
+  ps();
   return 0;
 }
 

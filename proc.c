@@ -6,6 +6,7 @@
 #include "x86.h"
 #include "proc.h"
 #include "spinlock.h"
+#include "container.h"
 
 struct {
   struct spinlock lock;
@@ -17,6 +18,7 @@ static struct proc *initproc;
 int nextpid = 1;
 extern void forkret(void);
 extern void trapret(void);
+int forkC(int cid);
 
 static void wakeup1(void *chan);
 
@@ -138,6 +140,7 @@ userinit(void)
   p->tf->eflags = FL_IF;
   p->tf->esp = PGSIZE;
   p->tf->eip = 0;  // beginning of initcode.S
+  p->cid = -1;
 
   safestrcpy(p->name, "initcode", sizeof(p->name));
   p->cwd = namei("/");
@@ -180,6 +183,13 @@ growproc(int n)
 int
 fork(void)
 {
+
+  return forkC(myproc()->cid);
+
+}
+
+int
+forkC(int cid){
   int i, pid;
   struct proc *np;
   struct proc *curproc = myproc();
@@ -197,6 +207,7 @@ fork(void)
     return -1;
   }
   np->sz = curproc->sz;
+  np->cid = cid;
   np->parent = curproc;
   *np->tf = *curproc->tf;
 
@@ -220,6 +231,7 @@ fork(void)
 
   return pid;
 }
+
 
 // Exit the current process.  Does not return.
 // An exited process remains in the zombie state
@@ -533,15 +545,56 @@ procdump(void)
   }
 }
 
-int ps(char* container){
-  // if(container == "/"){
-  //   procdump();
-  //   return 0;
-  // }
-  // else{
-  //   // print only container processes
-  //   // can either put container as member of process,
-  //   // or have each container store its own processes.
-  // }
+void
+psroot()
+{
+  static char *states[] = {
+  [UNUSED]    "unused",
+  [EMBRYO]    "embryo",
+  [SLEEPING]  "sleep ",
+  [RUNNABLE]  "runble",
+  [RUNNING]   "run   ",
+  [ZOMBIE]    "zombie"
+  };
+  int i;
+  struct proc *p;
+  char *state;
+  uint pc[10];
+
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    if(p->state == UNUSED)
+      continue;
+    if(p->state >= 0 && p->state < NELEM(states) && states[p->state])
+      state = states[p->state];
+    else
+      state = "???";
+
+    if(p->cid == -1){
+      cprintf("ROOT: ");
+    }else{
+      cprintf("Container %d: ", p->cid);
+    }
+    cprintf("%d %s %s", p->pid, state, p->name);
+    if(p->state == SLEEPING){
+      getcallerpcs((uint*)p->context->ebp+2, pc);
+      for(i=0; i<10 && pc[i] != 0; i++)
+        cprintf(" %p", pc[i]);
+    }
+    cprintf("\n");
+  }
+  
+}
+
+int ps(){
+  cprintf("INSIDE PS");
+  int index = getactivefsindex();
+  if(index == -1){
+      cprintf("INSIDE PS ROOT");
+
+    psroot();
+  }
+  else{
+    // psdump(1, index);
+  }
   return 0;
 }

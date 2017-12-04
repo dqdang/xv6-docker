@@ -47,7 +47,7 @@ int start(int argc, char *argv[]){
   }
   printf(1, "Opened console %s.\n", argv[2]);
   /* fork a child and exec argv[4] */
-  id = fork();
+  id = forkC(cindex);
 
   if(id == 0){
     close(0);

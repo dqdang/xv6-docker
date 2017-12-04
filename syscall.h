@@ -52,4 +52,5 @@
 #define SYS_setalluseddisk   51
 #define SYS_getallmaxdisk    52
 #define SYS_setallmaxdisk    53
+#define SYS_forkC 			 54
 
