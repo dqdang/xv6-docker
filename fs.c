@@ -502,8 +502,12 @@ writei(struct inode *ip, char *src, uint off, uint n)
   if(fs[1] != '\0'){
     int index = getactivefsindex();
     int new_used_disk = getuseddisk(index) + n;
-    if(new_all_disk > getallmaxdisk() || new_used_disk > getmaxdisk(index)){
-      cprintf("Max disk usage reached please review fs parameters!")
+    if(new_all_disk > getallmaxdisk()){
+      cprintf("Operating System reached Max disk usage reached please review disk parameters!");
+      return 0;
+    }
+    else if(getmaxdisk(index) != 0 && new_used_disk > getmaxdisk(index)){
+      cprintf("Container reached Max disk usage reached please review disk parameters!");
       return 0;
     }
     setuseddisk(index, new_used_disk);

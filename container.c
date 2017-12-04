@@ -243,25 +243,68 @@ int tostring(char *string){
     strcat(string, cabinet.active_fs);
     strcat(string, "\n\n");
     for(i = 0; i < NUM_VCS; i++){
+        strcat(string, "Name: ");
         if(cabinet.tuperwares[i].name != 0){
-            strcat(string, "Name: ");
             strcat(string, cabinet.tuperwares[i].name);
         }
         else{
             strcat(string, "NULL");
         }
         strcat(string, "\n");
+        strcat(string, "VC: ");
         if(cabinet.tuperwares[i].vc != 0){
-            strcat(string, "VC: ");
             strcat(string, cabinet.tuperwares[i].vc);
         }
         else{
             strcat(string, "NULL");
         }
         strcat(string, "\n");
+        strcat(string, "CURRENT PATH: ");
         if(cabinet.tuperwares[i].path != 0){
-            strcat(string, "PATH: ");
             strcat(string, cabinet.tuperwares[i].path);
+        }
+        else{
+            strcat(string, "NULL");
+        }
+        strcat(string, "\n");
+        strcat(string, "MAX PROC:  ");
+        if(cabinet.tuperwares[i].max_proc != 0){
+            char num_string[32];
+            strcat(string, itoa(cabinet.tuperwares[i].max_proc, num_string, 10));
+        }
+        else{
+            strcat(string, "NULL");
+        }
+        strcat(string, "\n");
+        strcat(string, "USED MEM:  ");
+        if(cabinet.tuperwares[i].used_mem != 0){
+            char num_string[32];
+            strcat(string, itoa(cabinet.tuperwares[i].used_mem*4096, num_string, 10));
+        }else{
+            strcat(string, "NULL");
+        }
+        strcat(string, "\n");
+        strcat(string, "MAX MEM:   ");
+        if(cabinet.tuperwares[i].max_mem != 0){
+            char num_string[32];
+            strcat(string, itoa(cabinet.tuperwares[i].max_mem*4096, num_string, 10));
+        }
+        else{
+            strcat(string, "NULL");
+        }
+        strcat(string, "\n");
+        strcat(string, "USED DISK: ");
+        if(cabinet.tuperwares[i].used_disk != 0){
+            char num_string[32];
+            strcat(string, itoa(cabinet.tuperwares[i].used_disk, num_string, 10));
+        }else{
+            strcat(string, "NULL");
+        }
+        strcat(string, "\n");
+        strcat(string, "MAX DISK:  ");
+        if(cabinet.tuperwares[i].max_disk != 0){
+            char num_string[32];
+            strcat(string, itoa(cabinet.tuperwares[i].max_disk, num_string, 10));
         }
         else{
             strcat(string, "NULL");
