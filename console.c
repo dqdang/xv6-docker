@@ -32,8 +32,6 @@ static int panicked = 0;
 
 static int active = 0;
 
-// struct input buf1 = {"", 0, 0, 0};
-// struct input buf2 = {"", 0, 0, 0};
 struct input inputs[NUM_VCS + 1];
 
 
