@@ -690,9 +690,9 @@ int cpause(int index){
   struct proc *p;
 
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-    if(p->cid == index && p->state == RUNNABLE){
+    if(p->cid == index && p->state == SLEEPING){
       // sleep(p, &ptable.lock);
-      p->state = SLEEPING;
+      p->state = EMBRYO;
     }
   }
   return 0;
@@ -711,7 +711,7 @@ int cstop(int index){
 int cresume(int index){
   struct proc *p;
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-    if(p->cid == index && p->state == SLEEPING){
+    if(p->cid == index && p->state == EMBRYO){
       // wakeup1(p);
       p->state = RUNNABLE;
     }
