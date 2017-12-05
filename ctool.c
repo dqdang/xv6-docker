@@ -34,18 +34,26 @@ void print_usage(int mode){
   exit();
 }
 
-// ctool start vc0 c0 usfsh 8 8 8 
+// ctool start vc0 c0 usfsh (optinal) -> 8 8 8
 int start(int argc, char *argv[]){
+
+
 
   int id, fd, cindex, ppid = getpid();
   char index[2];
   index[0] = argv[3][strlen(argv[3])-1];
   index[1] = '\0';
   cindex = atoi(index);
-
-  setmaxproc(cindex, atoi(argv[5]));
-  setmaxmem(cindex, atoi(argv[6]));
-  setmaxdisk(cindex, atoi(argv[7]) * 1000000);
+  if(argc == 5){
+    setmaxproc(cindex, 10);
+    setmaxmem(cindex, 500);
+    setmaxdisk(cindex, 4 * 1000000);
+  }else{
+    setmaxproc(cindex, atoi(argv[5]));
+    setmaxmem(cindex, atoi(argv[6]));
+    setmaxdisk(cindex, atoi(argv[7]) * 1000000);
+  }
+  
 
   setvc(cindex, argv[2]);
 
@@ -87,7 +95,6 @@ int stop(char *argv[]){
   cindex = atoi(index);
 
   cstop(cindex);
-  // TODO: loop through processes and kill them
   return 1;
 }
 
@@ -100,7 +107,6 @@ int pause(char *argv[]){
   cindex = atoi(index);
 
   cpause(cindex);
-  // TODO: loop through processes and sleep them
   return 1;
 }
 
@@ -113,7 +119,6 @@ int resume(char *argv[]){
   cindex = atoi(index);
 
   cresume(cindex);
-  // TODO: loop through processes and make them runnable
   return 1;
 }
 
@@ -237,7 +242,7 @@ int main(int argc, char *argv[]){
   }
 
   if(strcmp(argv[1], "start") == 0){
-    if(argc < 8){
+    if(argc < 5){
       print_usage(3);
     }
     start(argc, argv);

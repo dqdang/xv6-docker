@@ -17,21 +17,17 @@ int main(int argc, char *argv[]){
   char maxbytes[100];
 
   if(strcmp(fs, "/") == 0){
-    // itoa(((getalluseddisk())/(getallmaxdisk())) * 100, percent, 10);
     itoa((getalluseddisk()), usedbytes, 10);
     itoa((getallmaxdisk()), maxbytes, 10);
     itoa((getallmaxdisk() - getalluseddisk()), available, 10);
   }
   else{
     int index = getactivefsindex();
-    // itoa(((getuseddisk(index))/(getmaxmem(index)*4096)) * 100, percent, 10);
     itoa((getuseddisk(index)), usedbytes, 10);
     itoa((getmaxdisk(index)), maxbytes, 10);
     itoa((getallmaxdisk() - getalluseddisk()), available, 10);
   }
-  // printf(1, "%s\n", "Filesystem                  Used       Total      Use%");
-  printf(1, "%s\n", "Filesystem                  Used       Total          Available");
-  // printf(1, "%s%s%s%s%s%s%s\n",fs, spaces(28-strlen(fs), space1), usedbytes, spaces(11-strlen(usedbytes), space3), maxbytes, spaces(15-strlen(maxbytes), space4), percent);
-  printf(1, "%s%s%s%s%s%s%s\n",fs, spaces(28-strlen(fs), space1), usedbytes, spaces(11-strlen(usedbytes), space3), maxbytes, spaces(15-strlen(maxbytes), space4), available);
+  printf(1, "%s\n", "Filesystem              Used         Available         Total");
+  printf(1, "%s%s%s%s%s%s%s\n",fs, spaces(24-strlen(fs), space1), usedbytes, spaces(13-strlen(usedbytes), space3), available, spaces(18-strlen(available), space4), maxbytes);
   exit();
 }

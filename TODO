@@ -1,8 +1,8 @@
-(ps) A ps command that lists processes
+DONE = (ps) A ps command that lists processes
 
-DONE KINDA = (ADD IN DISK ERROR CHECK (free) A free command that show the available 
+DONE = (ADD IN DISK ERROR CHECK (free) A free command that show the available 
 
-DONE KINDA = (ADD IN MEM ERROR CHECK) (df) Disk space usage
+DONE = (ADD IN MEM ERROR CHECK) (df) Disk space usage
 
 DONE = (cinfo) A cinfo command that can only execute in the root container
 
@@ -10,11 +10,23 @@ DONE = (ccreate) Create a container and populate a container FS
 
 DONE = (cstart) Start a container - give a virtual console, container directory, an initial 
 
-(cpause) Pause a container
+DONE = (cpause) Pause a container
 
-(cresume) Resume a container
+DONE = (cresume) Resume a container
 
-(cstop) Stop a container
+DONE = (cstop) Stop a container
+
+DONE = fix free and df text output
+
+DONE = add PAUSED type to procs to fix pause 
+
+update ctool info !!!
+
+process name space isolation!!!
+
+file system executable isolation fix aka /ctool
 
 (cadd) adds executable to container
+
+(csleep) writes container state to file to put it to sleep on shutdown
 

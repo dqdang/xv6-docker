@@ -572,7 +572,8 @@ procdump(void)
   [SLEEPING]  "sleep ",
   [RUNNABLE]  "runble",
   [RUNNING]   "run   ",
-  [ZOMBIE]    "zombie"
+  [ZOMBIE]    "zombie",
+  [PAUSED]    "paused"
   };
   int i;
   struct proc *p;
@@ -605,7 +606,8 @@ psroot()
   [SLEEPING]  "sleep ",
   [RUNNABLE]  "runble",
   [RUNNING]   "run   ",
-  [ZOMBIE]    "zombie"
+  [ZOMBIE]    "zombie",
+  [PAUSED]    "paused"
   };
   int i;
   struct proc *p;
@@ -646,7 +648,8 @@ pscontainer(int index)
   [SLEEPING]  "sleep ",
   [RUNNABLE]  "runble",
   [RUNNING]   "run   ",
-  [ZOMBIE]    "zombie"
+  [ZOMBIE]    "zombie",
+  [PAUSED]    "paused"
   };
   int i;
   struct proc *p;
@@ -691,8 +694,7 @@ int cpause(int index){
 
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
     if(p->cid == index && p->state == SLEEPING){
-      // sleep(p, &ptable.lock);
-      p->state = EMBRYO;
+      p->state = PAUSED;
     }
   }
   return 0;
@@ -711,8 +713,7 @@ int cstop(int index){
 int cresume(int index){
   struct proc *p;
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-    if(p->cid == index && p->state == EMBRYO){
-      // wakeup1(p);
+    if(p->cid == index && p->state == PAUSED){
       p->state = RUNNABLE;
     }
   }
