@@ -50,6 +50,7 @@ struct proc {
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
   int cid;
+  int tickets;
 };
 
 // Process memory is laid out contiguously, low addresses first:
@@ -57,3 +58,7 @@ struct proc {
 //   original data and bss
 //   fixed-size stack
 //   expandable heap
+
+#define MIN_TICKETS 10
+#define MAX_TICKETS 1000
+#define DEFAULT_TICKETS 100

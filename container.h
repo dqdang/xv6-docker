@@ -13,7 +13,6 @@ struct container{
   int used_mem;
   int used_disk;
   int atroot;
-
 };
 
 struct{
@@ -117,3 +116,6 @@ setpath(int index, char *path, int remove);
 
 int
 setalive(int index, int val);
+
+int
+getnumcontainers(void);

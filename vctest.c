@@ -19,7 +19,7 @@ main(int argc, char *argv[])
   printf(1, "fd = %d\n", fd);
 
   /* fork a child and exec argv[1] */
-  id = fork();
+  id = fork(0);
 
   if (id == 0){
     close(0);

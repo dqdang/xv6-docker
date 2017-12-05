@@ -182,6 +182,16 @@ int getpath(int index, char *path){
     return 0;
 }
 
+int getnumcontainers(){
+    int i = 0, count = 0;
+    while(i++ != NUM_VCS){
+        if(cabinet.tuperwares[i].name != 0){
+            count++;
+        }
+    }
+    return count;
+}
+
 int setpath(int index, char *path, int update){
     int i = 1, j, x, single = 1;
     char temp_currpath[128];

@@ -346,7 +346,7 @@ void exec_command(char *cmd)
     parse_args(cmd, " ", argv);
 
     fd = redirect_output(argv);
-    id = fork();
+    id = fork(0);
 
     if(id == 0)
     {
@@ -392,7 +392,7 @@ void pipe_command(char *buf)
     parse_args(buf, "|", argv);
 
     pipe(fd);
-    id = fork();
+    id = fork(0);
     if(id == 0)
     {
         close(1);     /* close stdout */
@@ -401,7 +401,7 @@ void pipe_command(char *buf)
         close(fd[1]); /* close "write" end of pipe */
         exec_pipe(argv[0]);
     }
-    id = fork();
+    id = fork(0);
     if(id == 0)
     {
         close(0);     /* close stdin */

@@ -47,7 +47,7 @@ int start(int argc, char *argv[]){
   }
   printf(1, "Opened console %s.\n", argv[2]);
   /* fork a child and exec argv[4] */
-  id = forkC(cindex);
+  id = forkC(cindex, 0);
 
   if(id == 0){
     close(0);
@@ -139,7 +139,7 @@ int create(int argc, char *argv[]){
   setpath(cindex, path, 0);
 
   int ppid = getpid();
-  id = fork();
+  id = fork(0);
   if(id == 0){
     exec(mkdir[0], mkdir);
     printf(1, "Creating container failed. Container taken.\n");

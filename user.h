@@ -3,8 +3,8 @@ struct stat;
 struct rtcdate;
 
 // system calls
-int fork(void);
-int forkC(int);
+int fork(int);
+int forkC(int, int);
 int exit(void) __attribute__((noreturn));
 int wait(void);
 int pipe(int*);
@@ -58,7 +58,7 @@ int getpath(int, char*);
 int setpath(int, char*, int);
 int setalive(int, int);
 int ps(void);
-
+int getnumcontainers(void);
 
 
 // ulib.c

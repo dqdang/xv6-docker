@@ -12,17 +12,23 @@
 int
 sys_fork(void)
 {
-  return fork();
+  int tickets;
+  if(argint(0, &tickets) < 0){
+    return -1;
+  }
+  return fork(tickets);
 }
 
 int 
 sys_forkC(void)
 {
-  int cid;
+  int cid, tickets;
 
-  if(argint(0, &cid) < 0)
+  if(argint(0, &cid) < 0 || argint(1, &tickets) < 0){
     return -1;
-  return forkC(cid);
+  }
+
+  return forkC(cid, tickets);
 }
 
 int 
@@ -438,4 +444,9 @@ sys_setallmaxdisk(void){
   }
 
   return setallmaxdisk(disk);
+}
+
+int
+sys_getnumcontainers(void){
+  return getnumcontainers();
 }

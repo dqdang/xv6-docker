@@ -18,7 +18,7 @@ static struct proc *initproc;
 int nextpid = 1;
 extern void forkret(void);
 extern void trapret(void);
-int forkC(int cid);
+int forkC(int cid, int tickets);
 
 static void wakeup1(void *chan);
 
@@ -141,6 +141,7 @@ userinit(void)
   p->tf->esp = PGSIZE;
   p->tf->eip = 0;  // beginning of initcode.S
   p->cid = -1;
+  p->tickets = DEFAULT_TICKETS;
 
   safestrcpy(p->name, "initcode", sizeof(p->name));
   p->cwd = namei("/");
@@ -181,15 +182,15 @@ growproc(int n)
 // Sets up stack to return as if from system call.
 // Caller must set state of returned proc to RUNNABLE.
 int
-fork(void)
+fork(int tickets)
 {
 
-  return forkC(myproc()->cid);
+  return forkC(myproc()->cid, tickets);
 
 }
 
 int
-forkC(int cid){
+forkC(int cid, int tickets){
   int i, pid;
   struct proc *np;
   struct proc *curproc = myproc();
@@ -210,6 +211,16 @@ forkC(int cid){
   np->cid = cid;
   np->parent = curproc;
   *np->tf = *curproc->tf;
+
+  if (tickets == 0) {
+    np->tickets = DEFAULT_TICKETS;
+  } else if (tickets < 0) {
+    np->tickets = MIN_TICKETS;
+  } else if (tickets > MAX_TICKETS){
+    np->tickets = MAX_TICKETS;
+  } else {
+    np->tickets = tickets;
+  }
 
   // Clear %eax so that fork returns 0 in the child.
   np->tf->eax = 0;
@@ -323,6 +334,27 @@ wait(void)
   }
 }
 
+unsigned long randstate = 1;
+unsigned int
+rand()
+{
+  randstate = randstate * 1664525 + 1013904223;
+  return randstate;
+}
+
+int 
+gettotaltickets(void) {
+  struct proc *p;
+  int total = 0;
+  for (p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
+    if (p->state == RUNNABLE) {
+      total += p->tickets;
+    }
+  }
+  //cprintf("%d ", total);
+  return total;
+}
+
 //PAGEBREAK: 42
 // Per-CPU process scheduler.
 // Each CPU calls scheduler() after setting itself up.
@@ -336,7 +368,7 @@ scheduler(void)
 {
   struct proc *p;
   struct cpu *c = mycpu();
-  c->proc = 0;
+  int total_tickets, winner;
   
   for(;;){
     // Enable interrupts on this processor.
@@ -344,23 +376,39 @@ scheduler(void)
 
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
-    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-      if(p->state != RUNNABLE)
-        continue;
 
-      // Switch to chosen process.  It is the process's job
-      // to release ptable.lock and then reacquire it
-      // before jumping back to us.
-      c->proc = p;
-      switchuvm(p);
-      p->state = RUNNING;
+    total_tickets = gettotaltickets();
+    if (total_tickets > 0){
+        winner  = rand();
+        if(winner < 0){
+          winner = winner * -1;
+          // cprintf("Rand returned negative");
+        }
+        if(total_tickets < winner){
+          winner = winner % total_tickets;
+        }
 
-      swtch(&(c->scheduler), p->context);
-      switchkvm();
+        for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+          if (p->state == RUNNABLE) {
+            winner = winner - p->tickets;
+          } 
+          if(p->state != RUNNABLE || winner >= 0) {
+            continue;
+          }
+          // Switch to chosen process.  It is the process's job
+          // to release ptable.lock and then reacquire it
+          // before jumping back to us.
+          c->proc = p;
+          switchuvm(p);
+          p->state = RUNNING;
 
-      // Process is done running for now.
-      // It should have changed its p->state before coming back.
-      c->proc = 0;
+          swtch(&(c->scheduler), p->context);
+          switchkvm();
+
+          c->proc = 0;
+          // Process is done running for now.
+          // It should have changed its p->state before coming back.
+        }
     }
     release(&ptable.lock);
 

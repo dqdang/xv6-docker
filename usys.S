@@ -63,3 +63,4 @@ SYSCALL(getpath)
 SYSCALL(setpath)
 SYSCALL(setalive);
 SYSCALL(ps)
+SYSCALL(getnumcontainers);
