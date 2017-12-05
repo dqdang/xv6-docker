@@ -64,3 +64,4 @@ SYSCALL(setpath)
 SYSCALL(setalive);
 SYSCALL(ps)
 SYSCALL(getnumcontainers);
+SYSCALL(getticks);

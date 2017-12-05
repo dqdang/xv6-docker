@@ -107,11 +107,11 @@ kalloc(void)
     int index = getactivefsindex();
     int new_used_mem = getusedmem(index) + 1;
     if(new_all_mem > getallmaxmem()){
-      cprintf("Operating System reached Max memory usage reached please review mem parameters!");
+      cprintf("Operating System reached Max memory usage reached please review mem parameters!\n");
       return 0;
     }
     else if(getmaxmem(index) != 0 && new_used_mem > getmaxmem(index)){
-      cprintf("Container reached Max memory usage reached please review mem parameters!");
+      cprintf("Container reached Max memory usage reached please review mem parameters!\n");
       return 0;
     }
     setusedmem(index, new_used_mem);

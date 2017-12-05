@@ -16,6 +16,8 @@ struct {
 static struct proc *initproc;
 
 int nextpid = 1;
+unsigned long randstate = 1;
+
 extern void forkret(void);
 extern void trapret(void);
 int forkC(int cid, int tickets);
@@ -113,6 +115,8 @@ found:
   p->context = (struct context*)sp;
   memset(p->context, 0, sizeof *p->context);
   p->context->eip = (uint)forkret;
+
+  p->ticks = 0;
 
   return p;
 }
@@ -334,7 +338,6 @@ wait(void)
   }
 }
 
-unsigned long randstate = 1;
 unsigned int
 rand()
 {
@@ -343,13 +346,17 @@ rand()
 }
 
 int 
-gettotaltickets(void) {
+gettotaltickets(int container) {
   struct proc *p;
   int total = 0;
   for (p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
     if (p->state == RUNNABLE) {
       total += p->tickets;
     }
+  }
+
+  if(container >= 0){
+    total = total / getnumcontainers();
   }
   //cprintf("%d ", total);
   return total;
@@ -368,7 +375,7 @@ scheduler(void)
 {
   struct proc *p;
   struct cpu *c = mycpu();
-  int total_tickets, winner;
+  int total_tickets, drawing, container = getactivefsindex();
   
   for(;;){
     // Enable interrupts on this processor.
@@ -377,22 +384,22 @@ scheduler(void)
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
 
-    total_tickets = gettotaltickets();
+    total_tickets = gettotaltickets(container);
     if (total_tickets > 0){
-        winner  = rand();
-        if(winner < 0){
-          winner = winner * -1;
+        drawing  = rand();
+        if(drawing < 0){
+          drawing = drawing * -1;
           // cprintf("Rand returned negative");
         }
-        if(total_tickets < winner){
-          winner = winner % total_tickets;
+        if(drawing > total_tickets){
+          drawing = drawing % total_tickets;
         }
 
         for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-          if (p->state == RUNNABLE) {
-            winner = winner - p->tickets;
+          if (p->state == RUNNABLE){
+            drawing = drawing - p->tickets;
           } 
-          if(p->state != RUNNABLE || winner >= 0) {
+          if(p->state != RUNNABLE || drawing > 0 || p->cid != container){
             continue;
           }
           // Switch to chosen process.  It is the process's job

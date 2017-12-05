@@ -37,6 +37,7 @@ idtinit(void)
 void
 trap(struct trapframe *tf)
 {
+  struct proc *p;
   if(tf->trapno == T_SYSCALL){
     if(myproc()->killed)
       exit();
@@ -55,6 +56,10 @@ trap(struct trapframe *tf)
       // myproc()->ticks++;
       wakeup(&ticks);
       release(&tickslock);
+    }
+    p = myproc();
+    if(p != 0){
+      p->ticks++;
     }
     lapiceoi();
     break;

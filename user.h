@@ -59,6 +59,7 @@ int setpath(int, char*, int);
 int setalive(int, int);
 int ps(void);
 int getnumcontainers(void);
+int getticks(void);
 
 
 // ulib.c

@@ -138,6 +138,7 @@ extern int sys_setpath(void);
 extern int sys_ps(void);
 extern int sys_setalive(void);
 extern int sys_getnumcontainers(void);
+extern int sys_getticks(void);
 
 static int (*syscalls[])(void) = {
 [SYS_fork]                sys_fork,
@@ -196,6 +197,7 @@ static int (*syscalls[])(void) = {
 [SYS_ps]                  sys_ps,
 [SYS_setalive]            sys_setalive,
 [SYS_getnumcontainers]    sys_getnumcontainers,
+[SYS_getticks]            sys_getticks,
 };
 
 void

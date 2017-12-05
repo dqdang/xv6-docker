@@ -55,3 +55,5 @@
 #define SYS_forkC 			 54
 #define SYS_setalive		 55
 #define SYS_getnumcontainers 56
+#define SYS_getticks         57
+

@@ -450,3 +450,9 @@ int
 sys_getnumcontainers(void){
   return getnumcontainers();
 }
+
+int
+sys_getticks(void){
+  return myproc()->ticks;
+}
+

@@ -49,6 +49,7 @@ struct proc {
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
+  int ticks;
   int cid;
   int tickets;
 };
@@ -61,4 +62,4 @@ struct proc {
 
 #define MIN_TICKETS 10
 #define MAX_TICKETS 1000
-#define DEFAULT_TICKETS 100
+#define DEFAULT_TICKETS 500
