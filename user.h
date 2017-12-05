@@ -60,6 +60,9 @@ int setalive(int, int);
 int ps(void);
 int getnumcontainers(void);
 int getticks(void);
+int cpause(int);
+int cstop(int);
+int cresume(int);
 
 
 // ulib.c

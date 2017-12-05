@@ -18,7 +18,16 @@ void print_usage(int mode){
   if(mode == 3){ // start
     printf(1, "Usage: ctool start <console> <container> <exec> <max proc> <max mem> <max disk>\n");
   }
-  if(mode == 4){ // delete
+  if(mode == 4){ // pause
+    printf(1, "Usage: ctool pause <container>\n");
+  }
+  if(mode == 5){ // stop
+    printf(1, "Usage: ctool stop <container>\n");
+  }
+  if(mode == 6){ // resume
+    printf(1, "Usage: ctool resume <container>\n");
+  }
+  if(mode == 7){ // delete
     printf(1, "Usage: ctool delete <container>\n");
   }
   
@@ -69,10 +78,46 @@ int start(int argc, char *argv[]){
   return 0;
 }
 
+// ctool stop c0
 int stop(char *argv[]){
+  int cindex;
+  char index[2];
+  index[0] = argv[3][strlen(argv[3])-1];
+  index[1] = '\0';
+  cindex = atoi(index);
+
+  cstop(cindex);
   // TODO: loop through processes and kill them
   return 1;
 }
+
+// ctool pause c0
+int pause(char *argv[]){
+  int cindex;
+  char index[2];
+  index[0] = argv[3][strlen(argv[3])-1];
+  index[1] = '\0';
+  cindex = atoi(index);
+
+  cpause(cindex);
+  // TODO: loop through processes and sleep them
+  return 1;
+}
+
+// ctool resume c0
+int resume(char *argv[]){
+  int cindex;
+  char index[2];
+  index[0] = argv[3][strlen(argv[3])-1];
+  index[1] = '\0';
+  cindex = atoi(index);
+
+  cresume(cindex);
+  // TODO: loop through processes and make them runnable
+  return 1;
+}
+
+
 
 // int delete(char *argv[]){
 //   int id, i, j, cindex;
@@ -162,7 +207,6 @@ int create(int argc, char *argv[]){
   }
   strcpy(fs, "/\0");
   setactivefs(fs);
-  // TODO: IMPLEMENT GET/SET FILES
   // ctable.tuperwares[cindex].files = files;
   return 0;
 }
@@ -199,16 +243,37 @@ int main(int argc, char *argv[]){
     start(argc, argv);
   }
 
-  if(strcmp(argv[1], "info") == 0){
-    info();
+  if(strcmp(argv[1], "pause") == 0){
+    if(argc < 3){
+      print_usage(4);
+    }
+    pause(argv);
+  }
+
+  if(strcmp(argv[1], "stop") == 0){
+    if(argc < 3){
+      print_usage(5);
+    }
+    stop(argv);
+  }
+
+  if(strcmp(argv[1], "resume") == 0){
+    if(argc < 3){
+      print_usage(6);
+    }
+    resume(argv);
   }
 
   // if(strcmp(argv[1], "delete") == 0){
   //   if(argc < 3){
-  //     print_usage(4);
+  //     print_usage(7);
   //   }
   //   delete(argv);
   // }
-  exit();
 
+  if(strcmp(argv[1], "info") == 0){
+    info();
+  }
+  
+  exit();
 }

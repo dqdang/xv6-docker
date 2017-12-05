@@ -56,4 +56,6 @@
 #define SYS_setalive		 55
 #define SYS_getnumcontainers 56
 #define SYS_getticks         57
-
+#define SYS_cpause           58
+#define SYS_cstop            59
+#define SYS_cresume          60

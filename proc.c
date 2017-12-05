@@ -188,9 +188,7 @@ growproc(int n)
 int
 fork(int tickets)
 {
-
   return forkC(myproc()->cid, tickets);
-
 }
 
 int
@@ -246,7 +244,6 @@ forkC(int cid, int tickets){
 
   return pid;
 }
-
 
 // Exit the current process.  Does not return.
 // An exited process remains in the zombie state
@@ -358,7 +355,6 @@ gettotaltickets(int container) {
   if(container >= 0){
     total = total / getnumcontainers();
   }
-  // cprintf("%d ", total);
   return total;
 }
 
@@ -401,7 +397,7 @@ scheduler(void)
           if (p->state == RUNNABLE){
             drawing = drawing - p->tickets;
           } 
-          // cprintf("pid: %d: ", p->pid);
+
           // Switch to chosen process.  It is the process's job
           // to release ptable.lock and then reacquire it
           // before jumping back to us.
@@ -632,8 +628,9 @@ psroot()
     cprintf("%d %s %s", p->pid, state, p->name);
     if(p->state == SLEEPING){
       getcallerpcs((uint*)p->context->ebp+2, pc);
-      for(i=0; i<10 && pc[i] != 0; i++)
+      for(i=0; i<10 && pc[i] != 0; i++){
         cprintf(" %p", pc[i]);
+      }
     }
     cprintf("\n");
   }
@@ -665,27 +662,59 @@ pscontainer(int index)
       else
         state = "???";
 
-    
       cprintf("Container %d: ", p->cid);
       cprintf("%d %s %s", p->pid, state, p->name);
       if(p->state == SLEEPING){
         getcallerpcs((uint*)p->context->ebp+2, pc);
-        for(i=0; i<10 && pc[i] != 0; i++)
+        for(i=0; i<10 && pc[i] != 0; i++){
           cprintf(" %p", pc[i]);
+        }
       }
       cprintf("\n");
     }
   }
-  
 }
 
-int ps(){
+int ps(void){
   int index = getactivefsindex();
   if(index == -1){
     psroot();
   }
   else{
     pscontainer(index);
+  }
+  return 0;
+}
+
+int cpause(int index){
+  struct proc *p;
+
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    if(p->cid == index && p->state == RUNNABLE){
+      // sleep(p, &ptable.lock);
+      p->state = SLEEPING;
+    }
+  }
+  return 0;
+}
+
+int cstop(int index){
+  struct proc *p;
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    if(p->cid == index){
+      kill(p->pid);
+    }
+  }
+  return 0;
+}
+
+int cresume(int index){
+  struct proc *p;
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    if(p->cid == index && p->state == SLEEPING){
+      // wakeup1(p);
+      p->state = RUNNABLE;
+    }
   }
   return 0;
 }

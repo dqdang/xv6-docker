@@ -63,3 +63,7 @@ struct proc {
 #define MIN_TICKETS 10
 #define MAX_TICKETS 1000
 #define DEFAULT_TICKETS 500
+
+int cpause(int);
+int cstop(int);
+int cresume(int);

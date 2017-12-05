@@ -139,6 +139,10 @@ extern int sys_ps(void);
 extern int sys_setalive(void);
 extern int sys_getnumcontainers(void);
 extern int sys_getticks(void);
+extern int sys_cpause(void);
+extern int sys_cstop(void);
+extern int sys_cresume(void);
+
 
 static int (*syscalls[])(void) = {
 [SYS_fork]                sys_fork,
@@ -198,6 +202,9 @@ static int (*syscalls[])(void) = {
 [SYS_setalive]            sys_setalive,
 [SYS_getnumcontainers]    sys_getnumcontainers,
 [SYS_getticks]            sys_getticks,
+[SYS_cpause]              sys_cpause,
+[SYS_cstop]               sys_cstop,
+[SYS_cresume]             sys_cresume,
 };
 
 void

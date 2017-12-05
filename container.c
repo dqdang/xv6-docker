@@ -153,7 +153,6 @@ int getalive(int index){
     return cabinet.tuperwares[index].alive;
 }
 
-
 int getactivefsindex(void){
     int i, index = -1;
     for(i = 0; i < NUM_VCS; i++){

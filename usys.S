@@ -65,3 +65,7 @@ SYSCALL(setalive);
 SYSCALL(ps)
 SYSCALL(getnumcontainers);
 SYSCALL(getticks);
+SYSCALL(cpause);
+SYSCALL(cstop);
+SYSCALL(cresume);
+

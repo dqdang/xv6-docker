@@ -456,3 +456,32 @@ sys_getticks(void){
   return myproc()->ticks;
 }
 
+int 
+sys_cpause(void){
+  int cindex;
+  if(argint(0, &cindex) < 0){
+    return -1;
+  }
+
+  return cpause(cindex);
+}
+
+int 
+sys_cstop(void){
+  int cindex;
+  if(argint(0, &cindex) < 0){
+    return -1;
+  }
+
+  return cstop(cindex);
+}
+
+int 
+sys_cresume(void){
+  int cindex;
+  if(argint(0, &cindex) < 0){
+    return -1;
+  }
+
+  return cresume(cindex);
+}
