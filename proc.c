@@ -216,7 +216,7 @@ forkC(int cid, int tickets){
   np->parent = curproc;
   *np->tf = *curproc->tf;
 
-  if (tickets == 0) {
+  if(tickets == 0) {
     np->tickets = DEFAULT_TICKETS;
   } else if (tickets < 0) {
     np->tickets = MIN_TICKETS;
@@ -358,7 +358,7 @@ gettotaltickets(int container) {
   if(container >= 0){
     total = total / getnumcontainers();
   }
-  //cprintf("%d ", total);
+  // cprintf("%d ", total);
   return total;
 }
 
@@ -389,19 +389,19 @@ scheduler(void)
         drawing  = rand();
         if(drawing < 0){
           drawing = drawing * -1;
-          // cprintf("Rand returned negative");
         }
         if(drawing > total_tickets){
           drawing = drawing % total_tickets;
         }
 
         for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+          if(p->state != RUNNABLE){
+            continue;
+          }
           if (p->state == RUNNABLE){
             drawing = drawing - p->tickets;
           } 
-          if(p->state != RUNNABLE || drawing > 0 || p->cid != container){
-            continue;
-          }
+          // cprintf("pid: %d: ", p->pid);
           // Switch to chosen process.  It is the process's job
           // to release ptable.lock and then reacquire it
           // before jumping back to us.

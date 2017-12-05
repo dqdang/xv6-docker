@@ -38,6 +38,7 @@ void
 trap(struct trapframe *tf)
 {
   struct proc *p;
+  
   if(tf->trapno == T_SYSCALL){
     if(myproc()->killed)
       exit();
