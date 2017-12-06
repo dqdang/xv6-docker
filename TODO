@@ -22,8 +22,8 @@ DONE = add PAUSED type to procs to fix pause
 
 DONE = update ctool info !!!
 
-process name space isolation!!!
+DONE = process name space isolation!!!
 
 DONE = file system executable isolation fix aka /ctool
 
-fair scheduling
+FAIL = fair scheduling

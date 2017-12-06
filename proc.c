@@ -85,7 +85,7 @@ allocproc(int cid, int updating)
 
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
     if(p->state == UNUSED){
-      cprintf("starting a process at index %d\n", i);
+      // cprintf("starting a process at index %d\n", i);
       goto found;
     }i++;
   }
