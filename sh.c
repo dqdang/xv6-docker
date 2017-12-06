@@ -64,9 +64,13 @@ runcmd(struct cmd *cmd)
   struct listcmd *lcmd;
   struct pipecmd *pcmd;
   struct redircmd *rcmd;
+  char new_path[32];
+  char fs[32];
 
-  if(cmd == 0)
+
+  if(cmd == 0){
     exit();
+  }
 
   switch(cmd->type){
   default:
@@ -77,10 +81,30 @@ runcmd(struct cmd *cmd)
     if(ecmd->argv[0] == 0)
       exit();
 
-    if(isfscmd(ecmd->argv[0]) && !ifsafepath(ecmd->argv[1])){
-      printf(2, "You dont have permission to go here! \"%s\"\n", ecmd->argv[1]);
-      break;
+    if(isfscmd(ecmd->argv[0])){
+      if(ecmd->argv[1][0] == '/' && !addedcpath(ecmd->argv[1])){
+        char fs[32];
+        getactivefs(fs);
+        strcpy(new_path, fs);
+        strcat(new_path, ecmd->argv[1]);
+        strcat(new_path, "\0");
+        strcpy(ecmd->argv[1], new_path);
+      }
+      if(!ifsafepath(ecmd->argv[1])){
+        printf(2, "You dont have permission to go here! \"%s\"\n", ecmd->argv[1]);
+        break;
+      }
     }
+    getactivefs(fs);
+    if((strcmp(fs, "/") != 0) && ecmd->argv[0][0] == '/' && !addedcpath(ecmd->argv[0])){
+      char fs[32];
+      getactivefs(fs);
+      strcpy(new_path, fs);
+      strcat(new_path, ecmd->argv[0]);
+      strcat(new_path, "\0");
+      strcpy(ecmd->argv[0], new_path);
+    }
+
     exec(ecmd->argv[0], ecmd->argv);
     printf(2, "exec %s failed\n", ecmd->argv[0]);
     break;

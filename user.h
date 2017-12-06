@@ -90,6 +90,7 @@ void itoa(int, char*, int);
 char *spaces(int, char[]);
 int copy(char*, char*);
 int isfscmd(char*);
+int addedcpath(char*);
 int ifsafepath(char*);
 
 

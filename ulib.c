@@ -3,6 +3,7 @@
 #include "fcntl.h"
 #include "user.h"
 #include "x86.h"
+#include "container.h"
 
 void *NULL = 0;
 
@@ -445,7 +446,22 @@ isfscmd(char* cmd){
 }
 
 int
+addedcpath(char *cmd){
+  char temp_path[128];
+  strcpy(temp_path, cmd);
+  strcat(temp_path, "\0");
+  char fs[32];
+  getactivefs(fs);
+  char *tok_currpath = strtok(temp_path, "/");
+
+  return (strcmp(&fs[1], tok_currpath) == 0);
+
+
+}
+
+int
 ifsafepath(char *path){
+
   char temp_path[128];
   if(path == 0){
     return 1;
@@ -460,7 +476,7 @@ ifsafepath(char *path){
   getpath(index, currpath);
   char *tok_currpath = strtok(currpath, "/");
 
-  while(tok_currpath != 0){//while ((tok_currpath = strtok(tok_currpath, "/")) != 0){
+  while(tok_currpath != 0){
     path_len++;
     tok_currpath = strtok(0, "/");
   }
@@ -471,10 +487,8 @@ ifsafepath(char *path){
     new_path_len = 0;
   }
 
-  // printf(1, "path len = %d\n", new_path_len);
   tok_path = strtok(tok_path, "/");
   while (tok_path != 0){
-    // printf(1, "token = %s\n", tok_path);
     if(strcmp(tok_path, "..") == 0){
       new_path_len--;
     }else{
