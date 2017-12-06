@@ -333,28 +333,6 @@ wait(void)
   }
 }
 
-// unsigned int
-// rand()
-// {
-//   randstate = randstate * 1664525 + 1013904223;
-//   return randstate;
-// }
-
-// int 
-// gettotaltickets(int container) {
-//   struct proc *p;
-//   int total = 0;
-//   for (p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
-//     if (p->state == RUNNABLE) {
-//       total += p->tickets;
-//     }
-//   }
-
-//   if(container >= 0){
-//     total = total / getnumcontainers();
-//   }
-//   return total;
-// }
 
 //PAGEBREAK: 42
 // Per-CPU process scheduler.
@@ -385,7 +363,6 @@ scheduler(void)
       }
       else{
         if(cabinet.tuperwares[i].alive){
-          cprintf("INSIDE CONTAINER SCHEDULE\n");
           p = &ptable.proc[cabinet.tuperwares[i].next_proc];
           setnextproc(i, nextvalidproc(i, cabinet.tuperwares[i].next_proc));
         }else{
@@ -413,6 +390,41 @@ scheduler(void)
 
   }
 }
+// void
+// scheduler(void)
+// {
+//   struct proc *p;
+//   struct cpu *c = mycpu();
+//   c->proc = 0;
+
+//   for(;;){
+//     // Enable interrupts on this processor.
+//     sti();
+
+//     // Loop over process table looking for process to run.
+//     acquire(&ptable.lock);
+//     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+//       if(p->state != RUNNABLE)
+//         continue;
+
+//       // Switch to chosen process.  It is the process's job
+//       // to release ptable.lock and then reacquire it
+//       // before jumping back to us.
+//       c->proc = p;
+//       switchuvm(p);
+//       p->state = RUNNING;
+
+//       swtch(&(c->scheduler), p->context);
+//       switchkvm();
+
+//       // Process is done running for now.
+//       // It should have changed its p->state before coming back.
+//       c->proc = 0;
+//     }
+//     release(&ptable.lock);
+
+//   }
+// }
 
 int
 nextvalidproc(int cid, int index){
@@ -431,10 +443,8 @@ nextvalidproc(int cid, int index){
   }
 
   end:
-    // cprintf("found valid process at %d\n", i);
 
-
-    return i;
+  return i;
 
 }
 
