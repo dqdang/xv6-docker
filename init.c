@@ -5,6 +5,7 @@
 #include "user.h"
 #include "fcntl.h"
 #include "fs.h"
+#include "container.h"
 
 
 char *argv[] = { "sh", 0 };

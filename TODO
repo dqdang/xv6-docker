@@ -20,15 +20,10 @@ DONE = fix free and df text output
 
 DONE = add PAUSED type to procs to fix pause 
 
-update ctool info !!!
+DONE = update ctool info !!!
 
 process name space isolation!!!
 
-file system executable isolation fix aka /ctool
+DONE = file system executable isolation fix aka /ctool
 
-(cadd) adds executable to container
-
-(cdelete) deletes container fs / struct
-
-(csleep) writes container state to file to put it to sleep on shutdown
-
+fair scheduling

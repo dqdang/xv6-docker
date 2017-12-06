@@ -170,6 +170,16 @@ int setatroot(int index, int val){
     return 0;
 }
 
+int setnextproc(int index, int val){
+    if(index > -1){
+        cabinet.tuperwares[index].next_proc = val;
+        return 0;
+    }else{
+        cabinet.next_proc = val;
+        return 0;
+    }return -1;
+}
+
 int getatroot(int index){
     return cabinet.tuperwares[index].atroot;
 }

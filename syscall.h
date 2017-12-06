@@ -59,3 +59,4 @@
 #define SYS_cpause           58
 #define SYS_cstop            59
 #define SYS_cresume          60
+#define SYS_setnextproc      61

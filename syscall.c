@@ -142,6 +142,7 @@ extern int sys_getticks(void);
 extern int sys_cpause(void);
 extern int sys_cstop(void);
 extern int sys_cresume(void);
+extern int sys_setnextproc(void);
 
 
 static int (*syscalls[])(void) = {
@@ -205,6 +206,7 @@ static int (*syscalls[])(void) = {
 [SYS_cpause]              sys_cpause,
 [SYS_cstop]               sys_cstop,
 [SYS_cresume]             sys_cresume,
+[SYS_setnextproc]         sys_setnextproc,
 };
 
 void

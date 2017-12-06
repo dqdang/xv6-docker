@@ -68,4 +68,5 @@ SYSCALL(getticks);
 SYSCALL(cpause);
 SYSCALL(cstop);
 SYSCALL(cresume);
+SYSCALL(setnextproc);
 

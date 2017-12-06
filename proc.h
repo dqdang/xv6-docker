@@ -51,7 +51,6 @@ struct proc {
   char name[16];               // Process name (debugging)
   int ticks;
   int cid;
-  int tickets;
 };
 
 // Process memory is laid out contiguously, low addresses first:
@@ -60,11 +59,10 @@ struct proc {
 //   fixed-size stack
 //   expandable heap
 
-#define MIN_TICKETS 10
-#define MAX_TICKETS 1000
-#define DEFAULT_TICKETS 500
 
 int cpause(int);
 int cstop(int);
 int cresume(int);
 void pscontainer(int);
+int nextvalidproc(int, int);
+

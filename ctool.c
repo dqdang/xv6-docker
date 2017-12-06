@@ -69,7 +69,7 @@ int start(int argc, char *argv[]){
   }
   printf(1, "Opened console %s.\n", argv[2]);
   /* fork a child and exec argv[4] */
-  id = forkC(cindex, 0);
+  id = forkC(cindex, 1);
 
 
   if(id == 0){

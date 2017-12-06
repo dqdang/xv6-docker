@@ -44,6 +44,19 @@ sys_setalive(void)
   return setalive(index, val);
 }
 
+int 
+sys_setnextproc(void)
+{
+  int index;
+  int val;
+
+  if(argint(0, &index) < 0 || argint(1, &val) < 0){
+    return -1;
+  }
+
+  return setnextproc(index, val);
+}
+
 int
 sys_exit(void)
 {

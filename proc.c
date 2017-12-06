@@ -75,21 +75,29 @@ myproc(void) {
 // state required to run in the kernel.
 // Otherwise return 0.
 static struct proc*
-allocproc(void)
+allocproc(int cid, int updating)
 {
   struct proc *p;
+  int i = 0;
   char *sp;
 
   acquire(&ptable.lock);
 
-  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
-    if(p->state == UNUSED)
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    if(p->state == UNUSED){
+      cprintf("starting a process at index %d\n", i);
       goto found;
+    }i++;
+  }
 
   release(&ptable.lock);
   return 0;
 
 found:
+  if(updating){
+    setnextproc(cid, i);
+  }
+
   p->state = EMBRYO;
   p->pid = nextpid++;
 
@@ -129,7 +137,7 @@ userinit(void)
   struct proc *p;
   extern char _binary_initcode_start[], _binary_initcode_size[];
 
-  p = allocproc();
+  p = allocproc(-1, 1);
   
   initproc = p;
   if((p->pgdir = setupkvm()) == 0)
@@ -145,7 +153,6 @@ userinit(void)
   p->tf->esp = PGSIZE;
   p->tf->eip = 0;  // beginning of initcode.S
   p->cid = -1;
-  p->tickets = DEFAULT_TICKETS;
 
   safestrcpy(p->name, "initcode", sizeof(p->name));
   p->cwd = namei("/");
@@ -186,19 +193,19 @@ growproc(int n)
 // Sets up stack to return as if from system call.
 // Caller must set state of returned proc to RUNNABLE.
 int
-fork(int tickets)
+fork(int updating)
 {
-  return forkC(myproc()->cid, tickets);
+  return forkC(myproc()->cid, updating);
 }
 
 int
-forkC(int cid, int tickets){
+forkC(int cid, int updating){
   int i, pid;
   struct proc *np;
   struct proc *curproc = myproc();
 
   // Allocate process.
-  if((np = allocproc()) == 0){
+  if((np = allocproc(cid, updating)) == 0){
     return -1;
   }
 
@@ -214,16 +221,7 @@ forkC(int cid, int tickets){
   np->parent = curproc;
   *np->tf = *curproc->tf;
 
-  if(tickets == 0) {
-    np->tickets = DEFAULT_TICKETS;
-  } else if (tickets < 0) {
-    np->tickets = MIN_TICKETS;
-  } else if (tickets > MAX_TICKETS){
-    np->tickets = MAX_TICKETS;
-  } else {
-    np->tickets = tickets;
-  }
-
+  
   // Clear %eax so that fork returns 0 in the child.
   np->tf->eax = 0;
 
@@ -335,28 +333,28 @@ wait(void)
   }
 }
 
-unsigned int
-rand()
-{
-  randstate = randstate * 1664525 + 1013904223;
-  return randstate;
-}
+// unsigned int
+// rand()
+// {
+//   randstate = randstate * 1664525 + 1013904223;
+//   return randstate;
+// }
 
-int 
-gettotaltickets(int container) {
-  struct proc *p;
-  int total = 0;
-  for (p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
-    if (p->state == RUNNABLE) {
-      total += p->tickets;
-    }
-  }
+// int 
+// gettotaltickets(int container) {
+//   struct proc *p;
+//   int total = 0;
+//   for (p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
+//     if (p->state == RUNNABLE) {
+//       total += p->tickets;
+//     }
+//   }
 
-  if(container >= 0){
-    total = total / getnumcontainers();
-  }
-  return total;
-}
+//   if(container >= 0){
+//     total = total / getnumcontainers();
+//   }
+//   return total;
+// }
 
 //PAGEBREAK: 42
 // Per-CPU process scheduler.
@@ -370,53 +368,77 @@ void
 scheduler(void)
 {
   struct proc *p;
+  int i;
   struct cpu *c = mycpu();
-  int total_tickets, drawing, container = getactivefsindex();
-  
+  c->proc = 0;
+
   for(;;){
     // Enable interrupts on this processor.
     sti();
 
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
-
-    total_tickets = gettotaltickets(container);
-    if (total_tickets > 0){
-        drawing  = rand();
-        if(drawing < 0){
-          drawing = drawing * -1;
+    for(i = -1; i < NUM_VCS; i++){
+      if(i == -1){
+        p = &ptable.proc[cabinet.next_proc];
+        setnextproc(i, nextvalidproc(i, cabinet.next_proc));
+      }
+      else{
+        if(cabinet.tuperwares[i].alive){
+          cprintf("INSIDE CONTAINER SCHEDULE\n");
+          p = &ptable.proc[cabinet.tuperwares[i].next_proc];
+          setnextproc(i, nextvalidproc(i, cabinet.tuperwares[i].next_proc));
+        }else{
+          continue;
         }
-        if(drawing > total_tickets){
-          drawing = drawing % total_tickets;
-        }
+      }
 
-        for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-          if(p->state != RUNNABLE){
-            continue;
-          }
-          if (p->state == RUNNABLE){
-            drawing = drawing - p->tickets;
-          } 
+  
 
-          // Switch to chosen process.  It is the process's job
-          // to release ptable.lock and then reacquire it
-          // before jumping back to us.
-          c->proc = p;
-          switchuvm(p);
-          p->state = RUNNING;
+      // Switch to chosen process.  It is the process's job
+      // to release ptable.lock and then reacquire it
+      // before jumping back to us.
+      c->proc = p;
+      switchuvm(p);
+      p->state = RUNNING;
 
-          swtch(&(c->scheduler), p->context);
-          switchkvm();
+      swtch(&(c->scheduler), p->context);
+      switchkvm();
 
-          c->proc = 0;
-          // Process is done running for now.
-          // It should have changed its p->state before coming back.
-        }
+      // Process is done running for now.
+      // It should have changed its p->state before coming back.
+      c->proc = 0;
     }
     release(&ptable.lock);
 
   }
 }
+
+int
+nextvalidproc(int cid, int index){
+  int i = -1;
+  for(i = index+1; i <= NPROC; i++){
+    // cprintf("i = %d\n", i);
+    if(ptable.proc[i].cid == cid && ptable.proc[i].state == RUNNABLE){
+      goto end;
+    }
+  }
+  for(i = 0; i < index; i++){
+    // cprintf("i = %d\n", i);
+    if(ptable.proc[i].cid == cid && ptable.proc[i].state == RUNNABLE){
+      goto end;
+    }
+  }
+
+  end:
+    // cprintf("found valid process at %d\n", i);
+
+
+    return i;
+
+}
+
+
 
 // Enter scheduler.  Must hold only ptable.lock
 // and have changed proc->state. Saves and restores
@@ -546,7 +568,7 @@ kill(int pid)
 
   acquire(&ptable.lock);
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-    if(p->pid == pid){
+    if(p->pid == pid && p->cid == getactivefsindex()){
       p->killed = 1;
       // Wake process from sleep if necessary.
       if(p->state == SLEEPING)

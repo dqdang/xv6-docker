@@ -63,6 +63,7 @@ int getticks(void);
 int cpause(int);
 int cstop(int);
 int cresume(int);
+int setnextproc(int, int);
 
 
 // ulib.c

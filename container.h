@@ -13,6 +13,7 @@ struct container{
   int used_mem;
   int used_disk;
   int atroot;
+  int next_proc;
 };
 
 struct{
@@ -22,10 +23,14 @@ struct{
   int used_mem;
   int max_mem;
   char active_fs[32];
+  int next_proc;
 }cabinet;
 
 int
 getname(int index, char* name);
+
+int
+setnextproc(int index, int val);
 
 int 
 setname(int index, char* name);
