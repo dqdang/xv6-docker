@@ -639,7 +639,7 @@ kill(int pid)
 
   acquire(&ptable.lock);
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-    if(p->pid == pid && p->cid == getactivefsindex()){
+    if(p->pid == pid && (p->cid == getactivefsindex() || getactivefsindex() == -1)){
       p->killed = 1;
       // Wake process from sleep if necessary.
       if(p->state == SLEEPING)

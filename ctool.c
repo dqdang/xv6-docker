@@ -88,7 +88,6 @@ int start(int argc, char *argv[]){
     close(fd);
     exit();
   }
-  printf(1, "%s\n", "HERE");
   strcpy(fs, "/\0");
   setactivefs(fs);
   return 0;
@@ -98,7 +97,7 @@ int start(int argc, char *argv[]){
 int stop(char *argv[]){
   int cindex;
   char index[2];
-  index[0] = argv[3][strlen(argv[3])-1];
+  index[0] = argv[2][strlen(argv[2])-1];
   index[1] = '\0';
   cindex = atoi(index);
 
@@ -110,10 +109,9 @@ int stop(char *argv[]){
 int pause(char *argv[]){
   int cindex;
   char index[2];
-  index[0] = argv[3][strlen(argv[3])-1];
+  index[0] = argv[2][strlen(argv[2])-1];
   index[1] = '\0';
   cindex = atoi(index);
-
   cpause(cindex);
   return 1;
 }
@@ -122,7 +120,7 @@ int pause(char *argv[]){
 int resume(char *argv[]){
   int cindex;
   char index[2];
-  index[0] = argv[3][strlen(argv[3])-1];
+  index[0] = argv[2][strlen(argv[2])-1];
   index[1] = '\0';
   cindex = atoi(index);
 
