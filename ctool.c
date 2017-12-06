@@ -9,7 +9,7 @@ void print_usage(int mode){
   if(mode == 0){ // not enough arguments
     printf(1, "Usage: ctool <mode> <args>\n");
   }
-  if(mode == 1){ // create
+  if(mode == 1){ // crea te
     printf(1, "Usage: ctool create <container> <exec1> <exec2> ...\n");
   }
   if(mode == 2){ // create with container created
@@ -36,11 +36,19 @@ void print_usage(int mode){
 
 // ctool start vc0 c0 usfsh (optinal) -> 8 8 8
 int start(int argc, char *argv[]){
+  char fs[32];
+  strcpy(fs, "/");
+  strcat(fs, argv[3]);
+  strcat(fs, "\0");
+  setactivefs(fs);
+
   int id, fd, cindex, ppid = getpid();
   char index[2];
   index[0] = argv[3][strlen(argv[3])-1];
   index[1] = '\0';
   cindex = atoi(index);
+
+  
   if(argc == 5){
     setmaxproc(cindex, 10);
     setmaxmem(cindex, 500);
@@ -63,6 +71,7 @@ int start(int argc, char *argv[]){
   /* fork a child and exec argv[4] */
   id = forkC(cindex, 0);
 
+
   if(id == 0){
     close(0);
     close(1);
@@ -79,7 +88,9 @@ int start(int argc, char *argv[]){
     close(fd);
     exit();
   }
-
+  printf(1, "%s\n", "HERE");
+  strcpy(fs, "/\0");
+  setactivefs(fs);
   return 0;
 }
 
@@ -169,6 +180,7 @@ int create(int argc, char *argv[]){
   strcat(fs, argv[2]);
   strcat(fs, "\0");
   setactivefs(fs);
+
   mkdir[0] = "mkdir";
   mkdir[1] = argv[2];
 
@@ -209,7 +221,6 @@ int create(int argc, char *argv[]){
   }
   strcpy(fs, "/\0");
   setactivefs(fs);
-  // ctable.tuperwares[cindex].files = files;
   return 0;
 }
 
