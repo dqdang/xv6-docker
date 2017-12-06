@@ -97,7 +97,7 @@ int
 getvcfs(char *vc, char *fs);
 
 int
-tostring(char *string);
+tostring(void);
 
 int
 getactivefsindex(void);

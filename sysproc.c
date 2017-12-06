@@ -317,13 +317,8 @@ sys_getvcfs(void){
 
 int
 sys_tostring(void){
-  char *string;
-
-  if(argstr(0, &string) < 0){
-    return -1;
-  }
-
-  return tostring(string);
+  
+  return tostring();
 }
 
 

@@ -455,8 +455,6 @@ addedcpath(char *cmd){
   char *tok_currpath = strtok(temp_path, "/");
 
   return (strcmp(&fs[1], tok_currpath) == 0);
-
-
 }
 
 int

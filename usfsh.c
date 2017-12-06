@@ -341,6 +341,7 @@ int redirect_output(char **argv)
 void exec_command(char *cmd)
 {
     int id, fd;
+    char fs[32], new_path[32];
     char *argv[MAX_ARGS];
 
     parse_args(cmd, " ", argv);
@@ -356,6 +357,34 @@ void exec_command(char *cmd)
             dup(fd);
             close(fd);
         }
+        if(isfscmd(argv[0]))
+        {
+            if(argv[1][0] == '/' && !addedcpath(argv[1]))
+            {
+                char fs[32];
+                getactivefs(fs);
+                strcpy(new_path, fs);
+                strcat(new_path, argv[1]);
+                strcat(new_path, "\0");
+                strcpy(argv[1], new_path);
+            }
+            if(!ifsafepath(argv[1]))
+            {
+                printf(2, "You dont have permission to go here! \"%s\"\n", argv[1]);
+                return;
+            }
+        }
+        getactivefs(fs);
+        if((strcmp(fs, "/") != 0) && argv[0][0] == '/' && !addedcpath(argv[0]))
+        {
+          char fs[32];
+          getactivefs(fs);
+          strcpy(new_path, fs);
+          strcat(new_path, argv[0]);
+          strcat(new_path, "\0");
+          strcpy(argv[0], new_path);
+        }
+
         exec(argv[0], argv);
         printf(1, "%s: command not found.\n", cmd);
         exit();
@@ -369,6 +398,7 @@ void exec_command(char *cmd)
 void exec_pipe(char *cmd)
 {
     int fd;
+    char fs[32], new_path[32];
     char* argv[MAX_ARGS];
     
     parse_args(cmd, " ", argv);
@@ -379,6 +409,34 @@ void exec_pipe(char *cmd)
         close(1);
         dup(fd);
         close(fd);
+    }
+
+    if(isfscmd(argv[0]))
+    {
+        if(argv[1][0] == '/' && !addedcpath(argv[1]))
+        {
+            char fs[32];
+            getactivefs(fs);
+            strcpy(new_path, fs);
+            strcat(new_path, argv[1]);
+            strcat(new_path, "\0");
+            strcpy(argv[1], new_path);
+        }
+        if(!ifsafepath(argv[1]))
+        {
+            printf(2, "You dont have permission to go here! \"%s\"\n", argv[1]);
+            return;
+        }
+    }
+    getactivefs(fs);
+    if((strcmp(fs, "/") != 0) && argv[0][0] == '/' && !addedcpath(argv[0]))
+    {
+      char fs[32];
+      getactivefs(fs);
+      strcpy(new_path, fs);
+      strcat(new_path, argv[0]);
+      strcat(new_path, "\0");
+      strcpy(argv[0], new_path);
     }
 
     exec(argv[0], argv);
@@ -468,10 +526,6 @@ int exec_shell_command(char *buf)
             exec_history(cn);
         }
     }
-    // else if(strcmp(buf, "cd") == 0)
-    // {
-    //     chdir("/");
-    // }
     else if(strcmp(buf, "history") == 0)
     {
         print_history();

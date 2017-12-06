@@ -50,7 +50,7 @@ int setactivefs(char*);
 int getactivefs(char*);
 int getvcfs(char*, char*);
 int getcwd(void*, int);
-int tostring(char*);
+int tostring(void);
 int getactivefsindex(void);
 int setatroot(int, int);
 int getatroot(int);

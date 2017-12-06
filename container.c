@@ -257,86 +257,80 @@ int setpath(int index, char *path, int update){
     return 0;
 }
 
-int tostring(char *string){
+int tostring(){
     int i;
-    strncpy(string, "Active FS: ", 11);
-    strcat(string, cabinet.active_fs);
-    strcat(string, "\n\n");
+    cprintf("Active FS: ");
+    cprintf(cabinet.active_fs);
+    cprintf("\n\n");
     for(i = 0; i < NUM_VCS; i++){
-        strcat(string, "Name: ");
+        cprintf("Name: ");
         if(cabinet.tuperwares[i].name != 0){
-            strcat(string, cabinet.tuperwares[i].name);
+            cprintf(cabinet.tuperwares[i].name);
         }
         else{
-            strcat(string, "NULL");
+            cprintf("NULL");
         }
-        strcat(string, "\n");
-        strcat(string, "VC: ");
+        cprintf("\n");
+        cprintf("VC: ");
         if(cabinet.tuperwares[i].vc != 0){
-            strcat(string, cabinet.tuperwares[i].vc);
+            cprintf(cabinet.tuperwares[i].vc);
         }
         else{
-            strcat(string, "NULL");
+            cprintf("NULL");
         }
-        strcat(string, "\n");
-        strcat(string, "CURRENT PATH: ");
+        cprintf("\n");
+        cprintf("CURRENT PATH: ");
         if(cabinet.tuperwares[i].path != 0){
-            strcat(string, cabinet.tuperwares[i].path);
+            cprintf(cabinet.tuperwares[i].path);
         }
         else{
-            strcat(string, "NULL");
+            cprintf("NULL");
         }
-        strcat(string, "\n");
-        strcat(string, "MAX PROC:  ");
+        cprintf("\n");
+        cprintf("MAX PROC:  ");
         if(cabinet.tuperwares[i].max_proc != 0){
-            char num_string[32];
-            strcat(string, itoa(cabinet.tuperwares[i].max_proc, num_string, 10));
+            cprintf("%d", cabinet.tuperwares[i].max_proc);
         }
         else{
-            strcat(string, "NULL");
+            cprintf("NULL");
         }
-        strcat(string, "\n");
-        strcat(string, "USED MEM:  ");
+        cprintf("\n");
+        cprintf("USED MEM:  ");
         if(cabinet.tuperwares[i].used_mem != 0){
-            char num_string[32];
-            strcat(string, itoa(cabinet.tuperwares[i].used_mem*4096, num_string, 10));
+            cprintf("%d", cabinet.tuperwares[i].used_mem*4096);
         }else{
-            strcat(string, "NULL");
+            cprintf("NULL");
         }
-        strcat(string, "\n");
-        strcat(string, "MAX MEM:   ");
+        cprintf("\n");
+        cprintf("MAX MEM:   ");
         if(cabinet.tuperwares[i].max_mem != 0){
-            char num_string[32];
-            strcat(string, itoa(cabinet.tuperwares[i].max_mem*4096, num_string, 10));
+            cprintf("%d", cabinet.tuperwares[i].max_mem*4096);
         }
         else{
-            strcat(string, "NULL");
+            cprintf("NULL");
         }
-        strcat(string, "\n");
-        strcat(string, "USED DISK: ");
+        cprintf("\n");
+        cprintf("USED DISK: ");
         if(cabinet.tuperwares[i].used_disk != 0){
-            char num_string[32];
-            strcat(string, itoa(cabinet.tuperwares[i].used_disk, num_string, 10));
+            cprintf("%d", cabinet.tuperwares[i].used_disk);
         }else{
-            strcat(string, "NULL");
+            cprintf("NULL");
         }
-        strcat(string, "\n");
-        strcat(string, "MAX DISK:  ");
+        cprintf("\n");
+        cprintf("MAX DISK:  ");
         if(cabinet.tuperwares[i].max_disk != 0){
-            char num_string[32];
-            strcat(string, itoa(cabinet.tuperwares[i].max_disk, num_string, 10));
+            cprintf("%d", cabinet.tuperwares[i].max_disk);
         }
         else{
-            strcat(string, "NULL");
+            cprintf("NULL");
         }
-        strcat(string, "\n");
-        strcat(string, "Index: ");
-        char num_string[32];
-        itoa(i, num_string, 10);
-        strcat(string, num_string);
-        strcat(string, "\n\n");
+        cprintf("\n");
+        cprintf("Index: ");
+        cprintf("%d", i);
+        cprintf("\n");
+        pscontainer(i);
+        cprintf("\n\n");
     }
-    strcat(string, "\0");
     return 0;
 }
 

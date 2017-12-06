@@ -28,8 +28,6 @@ create_vcs(void)
 int
 main(void)
 {
-
-
   char buf[512], *p;
   int fd;
   struct dirent de;
@@ -67,12 +65,9 @@ main(void)
     }
     int all_disk = getalluseddisk();
     setalluseddisk(all_disk+st.size);
-    // printf(1, "%s %d %d %d\n", fmtname(buf), st.type, st.ino, st.size);
   }
 
   close(fd);
-
-
 
   int pid, wpid;
 

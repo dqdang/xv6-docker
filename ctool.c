@@ -216,10 +216,7 @@ int create(int argc, char *argv[]){
 
 
 int info(){
-
-  char containers[512];
-  tostring(containers);
-  printf(1, "%s\n", containers);
+  tostring();
   return 0;
 }
 

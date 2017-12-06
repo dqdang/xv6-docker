@@ -67,7 +67,6 @@ runcmd(struct cmd *cmd)
   char new_path[32];
   char fs[32];
 
-
   if(cmd == 0){
     exit();
   }
@@ -490,7 +489,7 @@ parseexec(char **ps, char *es)
   return ret;
 }
 
-// NUL-terminate all the counted strings.
+// NULL-terminate all the counted strings.
 struct cmd*
 nulterminate(struct cmd *cmd)
 {

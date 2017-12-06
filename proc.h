@@ -67,3 +67,4 @@ struct proc {
 int cpause(int);
 int cstop(int);
 int cresume(int);
+void pscontainer(int);
