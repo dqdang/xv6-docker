@@ -34,6 +34,59 @@ void print_usage(int mode){
   exit();
 }
 
+// ctool create c0 cat ls echo sh ...
+int create(int argc, char *argv[]){
+  int i, id, bytes, cindex;
+  char *mkdir[2];
+  char fs[32];
+  strcpy(fs, "/");
+  strcat(fs, argv[2]);
+  strcat(fs, "\0");
+  setactivefs(fs);
+
+  mkdir[0] = "mkdir";
+  mkdir[1] = argv[2];
+
+  char index[2];
+  index[0] = argv[2][strlen(argv[2])-1];
+  index[1] = '\0';
+  cindex = atoi(index);
+
+  setname(cindex, argv[2]);
+  setalive(cindex, 1);
+  char path[32];
+  strcpy(path, "/");
+  strcat(path, argv[2]);
+  strcat(path, "\0");
+  setpath(cindex, path, 0);
+
+  int ppid = getpid();
+  id = fork(0);
+  if(id == 0){
+    exec(mkdir[0], mkdir);
+    printf(1, "Creating container failed. Container taken.\n");
+    kill(ppid);
+    exit();
+  }
+  id = wait();
+
+  for(i = 3; i < argc; i++){ // going through ls echo cat ...
+    char destination[32];
+
+    strcpy(destination, "/");
+    strcat(destination, mkdir[1]);
+    strcat(destination, "/");
+    strcat(destination, argv[i]);
+    strcat(destination, "\0");
+
+    bytes = copy(argv[i], destination);//, getuseddisk(cindex), getmaxdisk(cindex));
+    printf(1, "Bytes for %s: %d\n", argv[i], bytes);
+  }
+  strcpy(fs, "/\0");
+  setactivefs(fs);
+  return 0;
+}
+
 // ctool start vc0 c0 usfsh (optinal) -> 8 8 8
 int start(int argc, char *argv[]){
   char fs[32];
@@ -168,61 +221,6 @@ int resume(char *argv[]){
 //     }
 //   }return 1;
 // }
-
-// ctool create c0 cat ls echo sh ...
-int create(int argc, char *argv[]){
-  int i, id, bytes, cindex;
-  char *mkdir[2];
-  char fs[32];
-  strcpy(fs, "/");
-  strcat(fs, argv[2]);
-  strcat(fs, "\0");
-  setactivefs(fs);
-
-  mkdir[0] = "mkdir";
-  mkdir[1] = argv[2];
-
-  char index[2];
-  index[0] = argv[2][strlen(argv[2])-1];
-  index[1] = '\0';
-  cindex = atoi(index);
-
-  setname(cindex, argv[2]);
-  setalive(cindex, 1);
-  char path[32];
-  strcpy(path, "/");
-  strcat(path, argv[2]);
-  strcat(path, "\0");
-  setpath(cindex, path, 0);
-
-  int ppid = getpid();
-  id = fork(0);
-  if(id == 0){
-    exec(mkdir[0], mkdir);
-    printf(1, "Creating container failed. Container taken.\n");
-    kill(ppid);
-    exit();
-  }
-  id = wait();
-
-  for(i = 3; i < argc; i++){ // going through ls echo cat ...
-    char destination[32];
-
-    strcpy(destination, "/");
-    strcat(destination, mkdir[1]);
-    strcat(destination, "/");
-    strcat(destination, argv[i]);
-    strcat(destination, "\0");
-
-    bytes = copy(argv[i], destination);//, getuseddisk(cindex), getmaxdisk(cindex));
-    printf(1, "Bytes for %s: %d\n", argv[i], bytes);
-  }
-  strcpy(fs, "/\0");
-  setactivefs(fs);
-  return 0;
-}
-
-
 
 int info(){
   tostring();
