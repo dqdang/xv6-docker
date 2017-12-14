@@ -20,6 +20,7 @@ struct cmd {
 
 struct execcmd {
   int type;
+  int argc;
   char *argv[MAXARGS];
   char *eargv[MAXARGS];
 };
@@ -77,9 +78,11 @@ runcmd(struct cmd *cmd)
 
   case EXEC:
     ecmd = (struct execcmd*)cmd;
+    while(ecmd->argv[ecmd->argc] != 0){
+      ecmd->argc = ecmd->argc + 1;
+    }
     if(ecmd->argv[0] == 0)
       exit();
-
     if(isfscmd(ecmd->argv[0])){
       if(ecmd->argv[1][0] == '/' && !addedcpath(ecmd->argv[1])){
         char fs[32];
@@ -111,6 +114,18 @@ runcmd(struct cmd *cmd)
   case REDIR:
     rcmd = (struct redircmd*)cmd;
     close(rcmd->fd);
+    if(rcmd->file[0] == '/' && !addedcpath(rcmd->file)){
+      char fs[32];
+      getactivefs(fs);
+      strcpy(new_path, fs);
+      strcat(new_path, rcmd->file);
+      strcat(new_path, "\0");
+      strcpy(rcmd->file, new_path);
+    }
+    if(!ifsafepath(rcmd->file)){
+      printf(2, "You dont have permission to go here! \"%s\"\n", ecmd->argv[ecmd->argc-1]);
+      break;
+    }
     if(open(rcmd->file, rcmd->mode) < 0){
       printf(2, "open %s failed\n", rcmd->file);
       exit();

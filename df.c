@@ -25,7 +25,7 @@ int main(int argc, char *argv[]){
     int index = getactivefsindex();
     itoa((getuseddisk(index)), usedbytes, 10);
     itoa((getmaxdisk(index)), maxbytes, 10);
-    itoa((getallmaxdisk() - getalluseddisk()), available, 10);
+    itoa((getmaxdisk(index) - getuseddisk(index)), available, 10);
   }
   printf(1, "%s\n", "Filesystem              Used         Available         Total");
   printf(1, "%s%s%s%s%s%s%s\n",fs, spaces(24-strlen(fs), space1), usedbytes, spaces(13-strlen(usedbytes), space3), available, spaces(18-strlen(available), space4), maxbytes);

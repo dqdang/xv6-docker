@@ -27,34 +27,31 @@ create_vcs(void)
 }
 
 int
-main(void)
-{
-  char buf[512], *p;
+count_files(char* p){
+  char buf[512];
   int fd;
   struct dirent de;
   struct stat st;
-  char fs[32];
-  getactivefs(fs);
 
-  if((fd = open(fs, 0)) < 0){
-    printf(2, "cannot open %s\n", fs);
+  if((fd = open(p, 0)) < 0){
+    printf(2, "cannot open %s\n", p);
     return 0;
   }
 
   if(fstat(fd, &st) < 0){
-    printf(2, "cannot stat %s\n", fs);
+    printf(2, "cannot stat %s\n", p);
     close(fd);
     return 0;
   }
 
- 
-  if(strlen(fs) + 1 + DIRSIZ + 1 > sizeof buf){
+  if(strlen(p) + 1 + DIRSIZ + 1 > sizeof buf){
     printf(1, "path too long\n");
     return 0;
   }
-  strcpy(buf, fs);
+  strcpy(buf, p);
   p = buf+strlen(buf);
   *p++ = '/';
+
   while(read(fd, &de, sizeof(de)) == sizeof(de)){
     if(de.inum == 0)
       continue;
@@ -65,10 +62,27 @@ main(void)
       continue;
     }
     int all_disk = getalluseddisk();
-    setalluseddisk(all_disk+st.size);
+    if(st.type != 1)
+    {
+      setalluseddisk(all_disk+st.size);
+    }
+    else
+    {
+      // printf(1, "HERE\n");
+      count_files(&p);
+    }
   }
 
   close(fd);
+  return 0;
+}
+
+int
+main(void)
+{
+  char fs[32];
+  getactivefs(fs);
+  count_files(&fs);
 
   int pid, wpid;
 

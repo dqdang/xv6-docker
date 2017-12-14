@@ -1,0 +1,11 @@
+Process Isolation:
+We gave each process a container ID. This allows us to isolate processes with the same container ID to a container.
+
+Filesystem Isolation:
+By manipulating paths in the shell and setting the path for each container, we can check whether or not the path from the buffer is valid within a container.
+
+Memory Tracking:
+Each container keeps track of the max memory and used memory. Incremented in kalloc and decremented in kfree. Each time kalloc allocates a page, check to see the memory allocated for a certain process has maxed out. Add afterwards.
+
+Disk Tracking:
+Each container keeps track of the max disk and used disk. Incremented in writei, decremented in unlink.
