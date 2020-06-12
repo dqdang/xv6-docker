@@ -5,8 +5,8 @@ struct inode;
 struct pipe;
 struct proc;
 struct rtcdate;
-struct spinlock;
 struct sleeplock;
+struct spinlock;
 struct stat;
 struct superblock;
 

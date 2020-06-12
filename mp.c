@@ -1,5 +1,5 @@
 // Multiprocessor support
-// Search memory for MP description structures.
+// Search memory for MP description structures
 // http://developer.intel.com/design/pentium/datashts/24201606.pdf
 
 #include "types.h"
@@ -53,7 +53,7 @@ mpsearch(void)
   struct mp *mp;
 
   bda = (uchar *) P2V(0x400);
-  if((p = ((bda[0x0F]<<8)| bda[0x0E]) << 4)){
+  if((p = ((bda[0x0F]<<8)| bda[0x0E]) << 4)) {
     if((mp = mpsearch1(p, 1024)))
       return mp;
   } else {
@@ -102,8 +102,8 @@ mpinit(void)
     panic("Expect to run on an SMP");
   ismp = 1;
   lapic = (uint*)conf->lapicaddr;
-  for(p=(uchar*)(conf+1), e=(uchar*)conf+conf->length; p<e; ){
-    switch(*p){
+  for(p=(uchar*)(conf+1), e=(uchar*)conf+conf->length; p<e; ) {
+    switch(*p) {
     case MPPROC:
       proc = (struct mpproc*)p;
       if(ncpu < NCPU) {
@@ -130,7 +130,7 @@ mpinit(void)
   if(!ismp)
     panic("Didn't find a suitable machine");
 
-  if(mp->imcrp){
+  if(mp->imcrp) {
     // Bochs doesn't support IMCR, so this doesn't run on Bochs.
     // But it would on real hardware.
     outb(0x22, 0x70);   // Select IMCR

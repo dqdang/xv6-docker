@@ -8,12 +8,11 @@
 #include "proc.h"
 #include "container.h"
 
-
 int
 sys_fork(void)
 {
   int tickets;
-  if(argint(0, &tickets) < 0){
+  if(argint(0, &tickets) < 0) {
     return -1;
   }
   return fork(tickets);
@@ -24,7 +23,7 @@ sys_forkC(void)
 {
   int cid, tickets;
 
-  if(argint(0, &cid) < 0 || argint(1, &tickets) < 0){
+  if(argint(0, &cid) < 0 || argint(1, &tickets) < 0) {
     return -1;
   }
 
@@ -37,7 +36,7 @@ sys_setalive(void)
   int index;
   int val;
 
-  if(argint(0, &index) < 0 || argint(1, &val) < 0){
+  if(argint(0, &index) < 0 || argint(1, &val) < 0) {
     return -1;
   }
 
@@ -50,7 +49,7 @@ sys_setnextproc(void)
   int index;
   int val;
 
-  if(argint(0, &index) < 0 || argint(1, &val) < 0){
+  if(argint(0, &index) < 0 || argint(1, &val) < 0) {
     return -1;
   }
 
@@ -110,8 +109,8 @@ sys_sleep(void)
     return -1;
   acquire(&tickslock);
   ticks0 = ticks;
-  while(ticks - ticks0 < n){
-    if(myproc()->killed){
+  while(ticks - ticks0 < n) {
+    if(myproc()->killed) {
       release(&tickslock);
       return -1;
     }
@@ -140,7 +139,7 @@ sys_getname(void)
   int index;
   char *name;
 
-  if(argint(0, &index) < 0 || argstr(1, &name) < 0){
+  if(argint(0, &index) < 0 || argstr(1, &name) < 0) {
     return -1;
   }
 
@@ -153,7 +152,7 @@ sys_setname(void)
   int index;
   char *name;
 
-  if(argint(0, &index) < 0 || argstr(1, &name) < 0){
+  if(argint(0, &index) < 0 || argstr(1, &name) < 0) {
     return -1;
   }
 
@@ -165,7 +164,7 @@ sys_getmaxproc(void)
 {
   int index;
 
-  if(argint(0, &index) < 0){
+  if(argint(0, &index) < 0) {
     return -1;
   }
 
@@ -177,7 +176,7 @@ sys_setmaxproc(void)
 {
   int index, max;
 
-  if(argint(0, &index) < 0 || argint(1, &max)){
+  if(argint(0, &index) < 0 || argint(1, &max)) {
     return -1;
   }
 
@@ -189,7 +188,7 @@ sys_getmaxmem(void)
 {
   int index;
 
-  if(argint(0, &index) < 0){
+  if(argint(0, &index) < 0) {
     return -1;
   }
 
@@ -201,7 +200,7 @@ sys_setmaxmem(void)
 {
   int index, max;
 
-  if(argint(0, &index) < 0 || argint(1, &max)){
+  if(argint(0, &index) < 0 || argint(1, &max)) {
     return -1;
   }
 
@@ -213,7 +212,7 @@ sys_getmaxdisk(void)
 {
   int index;
 
-  if(argint(0, &index) < 0){
+  if(argint(0, &index) < 0) {
     return -1;
   }
 
@@ -225,7 +224,7 @@ sys_setmaxdisk(void)
 {
   int index, max;
 
-  if(argint(0, &index) < 0 || argint(1, &max)){
+  if(argint(0, &index) < 0 || argint(1, &max)) {
     return -1;
   }
 
@@ -237,7 +236,7 @@ sys_getusedmem(void)
 {
   int index;
 
-  if(argint(0, &index) < 0){
+  if(argint(0, &index) < 0) {
     return -1;
   }
 
@@ -249,7 +248,7 @@ sys_setusedmem(void)
 {
   int index, max;
 
-  if(argint(0, &index) < 0 || argint(1, &max)){
+  if(argint(0, &index) < 0 || argint(1, &max)) {
     return -1;
   }
 
@@ -261,7 +260,7 @@ sys_getuseddisk(void)
 {
   int index;
 
-  if(argint(0, &index) < 0){
+  if(argint(0, &index) < 0) {
     return -1;
   }
 
@@ -273,7 +272,7 @@ sys_setuseddisk(void)
 {
   int index, max;
 
-  if(argint(0, &index) < 0 || argint(1, &max)){
+  if(argint(0, &index) < 0 || argint(1, &max)) {
     return -1;
   }
 
@@ -282,11 +281,11 @@ sys_setuseddisk(void)
 
 
 int
-sys_setvc(void){
+sys_setvc(void) {
   int index;
   char *vc;
 
-  if(argint(0, &index) < 0 || argstr(1, &vc) < 0){
+  if(argint(0, &index) < 0 || argstr(1, &vc) < 0) {
     return -1;
   }
 
@@ -294,10 +293,10 @@ sys_setvc(void){
 }
 
 int
-sys_setactivefs(void){
+sys_setactivefs(void) {
   char *fs;
 
-  if(argstr(0, &fs) < 0){
+  if(argstr(0, &fs) < 0) {
     return -1;
   }
 
@@ -305,10 +304,10 @@ sys_setactivefs(void){
 }
 
 int
-sys_getactivefs(void){
+sys_getactivefs(void) {
   char *fs;
 
-  if(argstr(0, &fs) < 0){
+  if(argstr(0, &fs) < 0) {
     return -1;
   }
 
@@ -317,11 +316,11 @@ sys_getactivefs(void){
 
 
 int
-sys_getvcfs(void){
+sys_getvcfs(void) {
   char *vc;
   char *fs;
 
-  if(argstr(0, &vc) < 0 || argstr(1, &fs) < 0){
+  if(argstr(0, &vc) < 0 || argstr(1, &fs) < 0) {
     return -1;
   }
 
@@ -329,22 +328,22 @@ sys_getvcfs(void){
 }
 
 int
-sys_tostring(void){
+sys_tostring(void) {
   
   return tostring();
 }
 
 
 int
-sys_getactivefsindex(void){
+sys_getactivefsindex(void) {
     return getactivefsindex();
 }
 
 int
-sys_setatroot(void){
+sys_setatroot(void) {
   int index, val;
 
-  if(argint(0, &index) < 0 || argint(1, &val) < 0){
+  if(argint(0, &index) < 0 || argint(1, &val) < 0) {
     return -1;
   }
 
@@ -352,10 +351,10 @@ sys_setatroot(void){
 }
 
 int
-sys_getatroot(void){
+sys_getatroot(void) {
   int index;
 
-  if(argint(0, &index) < 0){
+  if(argint(0, &index) < 0) {
     return -1;
   }
 
@@ -363,11 +362,11 @@ sys_getatroot(void){
 }
 
 int
-sys_getpath(void){
+sys_getpath(void) {
   int index;
   char *path;
 
-  if(argint(0, &index) < 0 || argstr(1, &path) < 0){
+  if(argint(0, &index) < 0 || argstr(1, &path) < 0) {
     return -1;
   }
 
@@ -375,11 +374,11 @@ sys_getpath(void){
 }
 
 int
-sys_setpath(void){
+sys_setpath(void) {
   int index, remove;
   char *path;
 
-  if(argint(0, &index) < 0 || argstr(1, &path) < 0 || argint(2, &remove) < 0){
+  if(argint(0, &index) < 0 || argstr(1, &path) < 0 || argint(2, &remove) < 0) {
     return -1;
   }
 
@@ -387,7 +386,7 @@ sys_setpath(void){
 }
 
 int
-sys_ps(void){
+sys_ps(void) {
 
 
   ps();
@@ -395,14 +394,14 @@ sys_ps(void){
 }
 
 int
-sys_getallusedmem(void){
+sys_getallusedmem(void) {
   return getallusedmem();
 }
 
 int
-sys_setallusedmem(void){
+sys_setallusedmem(void) {
   int mem;
-  if(argint(0, &mem) < 0){
+  if(argint(0, &mem) < 0) {
     return -1;
   }
 
@@ -410,14 +409,14 @@ sys_setallusedmem(void){
 }
 
 int
-sys_getallmaxmem(void){
+sys_getallmaxmem(void) {
   return getallmaxmem();
 }
 
 int
-sys_setallmaxmem(void){
+sys_setallmaxmem(void) {
   int mem;
-  if(argint(0, &mem) < 0){
+  if(argint(0, &mem) < 0) {
     return -1;
   }
 
@@ -425,14 +424,14 @@ sys_setallmaxmem(void){
 }
 
 int
-sys_getalluseddisk(void){
+sys_getalluseddisk(void) {
   return getalluseddisk();
 }
 
 int
-sys_setalluseddisk(void){
+sys_setalluseddisk(void) {
   int disk;
-  if(argint(0, &disk) < 0){
+  if(argint(0, &disk) < 0) {
     return -1;
   }
 
@@ -440,14 +439,14 @@ sys_setalluseddisk(void){
 }
 
 int
-sys_getallmaxdisk(void){
+sys_getallmaxdisk(void) {
   return getallmaxdisk();
 }
 
 int
-sys_setallmaxdisk(void){
+sys_setallmaxdisk(void) {
   int disk;
-  if(argint(0, &disk) < 0){
+  if(argint(0, &disk) < 0) {
     return -1;
   }
 
@@ -455,19 +454,19 @@ sys_setallmaxdisk(void){
 }
 
 int
-sys_getnumcontainers(void){
+sys_getnumcontainers(void) {
   return getnumcontainers();
 }
 
 int
-sys_getticks(void){
+sys_getticks(void) {
   return myproc()->ticks;
 }
 
 int 
-sys_cpause(void){
+sys_cpause(void) {
   int cindex;
-  if(argint(0, &cindex) < 0){
+  if(argint(0, &cindex) < 0) {
     return -1;
   }
 
@@ -475,9 +474,9 @@ sys_cpause(void){
 }
 
 int 
-sys_cstop(void){
+sys_cstop(void) {
   int cindex;
-  if(argint(0, &cindex) < 0){
+  if(argint(0, &cindex) < 0) {
     return -1;
   }
 
@@ -485,9 +484,9 @@ sys_cstop(void){
 }
 
 int 
-sys_cresume(void){
+sys_cresume(void) {
   int cindex;
-  if(argint(0, &cindex) < 0){
+  if(argint(0, &cindex) < 0) {
     return -1;
   }
 

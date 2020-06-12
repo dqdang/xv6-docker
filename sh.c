@@ -68,23 +68,23 @@ runcmd(struct cmd *cmd)
   char new_path[32];
   char fs[32];
 
-  if(cmd == 0){
+  if(cmd == 0) {
     exit();
   }
 
-  switch(cmd->type){
+  switch(cmd->type) {
   default:
     panic("runcmd");
 
   case EXEC:
     ecmd = (struct execcmd*)cmd;
-    while(ecmd->argv[ecmd->argc] != 0){
+    while(ecmd->argv[ecmd->argc] != 0) {
       ecmd->argc = ecmd->argc + 1;
     }
     if(ecmd->argv[0] == 0)
       exit();
-    if(isfscmd(ecmd->argv[0])){
-      if(ecmd->argv[1][0] == '/' && !addedcpath(ecmd->argv[1])){
+    if(isfscmd(ecmd->argv[0])) {
+      if(ecmd->argv[1][0] == '/' && !addedcpath(ecmd->argv[1])) {
         char fs[32];
         getactivefs(fs);
         strcpy(new_path, fs);
@@ -92,13 +92,13 @@ runcmd(struct cmd *cmd)
         strcat(new_path, "\0");
         strcpy(ecmd->argv[1], new_path);
       }
-      if(!ifsafepath(ecmd->argv[1])){
+      if(!ifsafepath(ecmd->argv[1])) {
         printf(2, "You dont have permission to go here! \"%s\"\n", ecmd->argv[1]);
         break;
       }
     }
     getactivefs(fs);
-    if((strcmp(fs, "/") != 0) && ecmd->argv[0][0] == '/' && !addedcpath(ecmd->argv[0])){
+    if((strcmp(fs, "/") != 0) && ecmd->argv[0][0] == '/' && !addedcpath(ecmd->argv[0])) {
       char fs[32];
       getactivefs(fs);
       strcpy(new_path, fs);
@@ -114,7 +114,7 @@ runcmd(struct cmd *cmd)
   case REDIR:
     rcmd = (struct redircmd*)cmd;
     close(rcmd->fd);
-    if(rcmd->file[0] == '/' && !addedcpath(rcmd->file)){
+    if(rcmd->file[0] == '/' && !addedcpath(rcmd->file)) {
       char fs[32];
       getactivefs(fs);
       strcpy(new_path, fs);
@@ -122,11 +122,11 @@ runcmd(struct cmd *cmd)
       strcat(new_path, "\0");
       strcpy(rcmd->file, new_path);
     }
-    if(!ifsafepath(rcmd->file)){
+    if(!ifsafepath(rcmd->file)) {
       printf(2, "You dont have permission to go here! \"%s\"\n", ecmd->argv[ecmd->argc-1]);
       break;
     }
-    if(open(rcmd->file, rcmd->mode) < 0){
+    if(open(rcmd->file, rcmd->mode) < 0) {
       printf(2, "open %s failed\n", rcmd->file);
       exit();
     }
@@ -145,14 +145,14 @@ runcmd(struct cmd *cmd)
     pcmd = (struct pipecmd*)cmd;
     if(pipe(p) < 0)
       panic("pipe");
-    if(fork1() == 0){
+    if(fork1() == 0) {
       close(1);
       dup(p[1]);
       close(p[0]);
       close(p[1]);
       runcmd(pcmd->left);
     }
-    if(fork1() == 0){
+    if(fork1() == 0) {
       close(0);
       dup(p[0]);
       close(p[0]);
@@ -192,8 +192,8 @@ main(void)
   int fd;
 
   // Ensure that three file descriptors are open.
-  while((fd = open("console", O_RDWR)) >= 0){
-    if(fd >= 3){
+  while((fd = open("console", O_RDWR)) >= 0) {
+    if(fd >= 3) {
       close(fd);
       break;
     }
@@ -201,21 +201,21 @@ main(void)
 
 
   // Read and run input commands.
-  while(getcmd(buf, sizeof(buf)) >= 0){
+  while(getcmd(buf, sizeof(buf)) >= 0) {
     char fs[32];
     int index = getactivefsindex();
     getactivefs(fs);
-    if((strcmp(buf, "cd /\n") == 0) || (buf[0] == 'c' && buf[1] == 'd' && buf[2] == 10)){
+    if((strcmp(buf, "cd /\n") == 0) || (buf[0] == 'c' && buf[1] == 'd' && buf[2] == 10)) {
       setpath(index, fs, 0);
       if(chdir(fs) < 0)
         printf(2, "cannot cd %s\n", fs);
       continue;
     }
-    else if(buf[0] == 'c' && buf[1] == 'd' && buf[2] == ' '){
+    else if(buf[0] == 'c' && buf[1] == 'd' && buf[2] == ' ') {
 
       // Chdir must be called by the parent, not the child.
       buf[strlen(buf)-1] = 0;  // chop \n
-      if(ifsafepath(buf+3)){
+      if(ifsafepath(buf+3)) {
         setpath(index, buf+3, 1);
         if(chdir(buf+3) < 0)
           printf(2, "cannot cd %s\n", buf+3);
@@ -333,7 +333,7 @@ gettoken(char **ps, char *es, char **q, char **eq)
   if(q)
     *q = s;
   ret = *s;
-  switch(*s){
+  switch(*s) {
   case 0:
     break;
   case '|':
@@ -346,7 +346,7 @@ gettoken(char **ps, char *es, char **q, char **eq)
     break;
   case '>':
     s++;
-    if(*s == '>'){
+    if(*s == '>') {
       ret = '+';
       s++;
     }
@@ -392,7 +392,7 @@ parsecmd(char *s)
   es = s + strlen(s);
   cmd = parseline(&s, es);
   peek(&s, es, "");
-  if(s != es){
+  if(s != es) {
     printf(2, "leftovers: %s\n", s);
     panic("syntax");
   }
@@ -406,11 +406,11 @@ parseline(char **ps, char *es)
   struct cmd *cmd;
 
   cmd = parsepipe(ps, es);
-  while(peek(ps, es, "&")){
+  while(peek(ps, es, "&")) {
     gettoken(ps, es, 0, 0);
     cmd = backcmd(cmd);
   }
-  if(peek(ps, es, ";")){
+  if(peek(ps, es, ";")) {
     gettoken(ps, es, 0, 0);
     cmd = listcmd(cmd, parseline(ps, es));
   }
@@ -423,7 +423,7 @@ parsepipe(char **ps, char *es)
   struct cmd *cmd;
 
   cmd = parseexec(ps, es);
-  if(peek(ps, es, "|")){
+  if(peek(ps, es, "|")) {
     gettoken(ps, es, 0, 0);
     cmd = pipecmd(cmd, parsepipe(ps, es));
   }
@@ -436,11 +436,11 @@ parseredirs(struct cmd *cmd, char **ps, char *es)
   int tok;
   char *q, *eq;
 
-  while(peek(ps, es, "<>")){
+  while(peek(ps, es, "<>")) {
     tok = gettoken(ps, es, 0, 0);
     if(gettoken(ps, es, &q, &eq) != 'a')
       panic("missing file for redirection");
-    switch(tok){
+    switch(tok) {
     case '<':
       cmd = redircmd(cmd, q, eq, O_RDONLY, 0);
       break;
@@ -487,7 +487,7 @@ parseexec(char **ps, char *es)
 
   argc = 0;
   ret = parseredirs(ret, ps, es);
-  while(!peek(ps, es, "|)&;")){
+  while(!peek(ps, es, "|)&;")) {
     if((tok=gettoken(ps, es, &q, &eq)) == 0)
       break;
     if(tok != 'a')
@@ -518,7 +518,7 @@ nulterminate(struct cmd *cmd)
   if(cmd == 0)
     return 0;
 
-  switch(cmd->type){
+  switch(cmd->type) {
   case EXEC:
     ecmd = (struct execcmd*)cmd;
     for(i=0; ecmd->argv[i]; i++)

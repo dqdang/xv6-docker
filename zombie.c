@@ -1,5 +1,5 @@
 // Create a zombie process that
-// must be reparented at exit.
+// must be reparented at exit
 
 #include "types.h"
 #include "stat.h"

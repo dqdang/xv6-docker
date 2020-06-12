@@ -594,5 +594,5 @@ int main(int argc, char *argv[])
         done = process_one_command(&command_counter);
     }
     
-    exit();    
+    exit();
 }

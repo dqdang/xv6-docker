@@ -29,10 +29,10 @@ strcpy(char *s, char *t)
   return os;
 }
 
-char *spaces(int amount, char spaces[]){
+char *spaces(int amount, char spaces[]) {
   int i;
   spaces[0] = ' ';
-  for(i = 1; i <= amount-1; i++){
+  for(i = 1; i <= amount-1; i++) {
     spaces[i] = ' ';
   }
   spaces[i] = '\0';
@@ -41,7 +41,7 @@ char *spaces(int amount, char spaces[]){
 }
 
 int 
-copy(char *inputfile, char *outputfile){//, int used_disk, int max_disk)
+copy(char *inputfile, char *outputfile) {//, int used_disk, int max_disk)
 
   int fd1, fd2, count, bytes = 0;
   char buffer[32];
@@ -357,7 +357,7 @@ gets(char *buf, int max)
   int i, cc;
   char c;
 
-  for(i=0; i+1 < max; ){
+  for(i=0; i+1 < max; ) {
     cc = read(0, &c, 1);
     if(cc < 1)
       break;
@@ -439,14 +439,14 @@ memmove(void *vdst, void *vsrc, int n)
 }
 
 int 
-isfscmd(char* cmd){
-  if(strcmp(cmd, "mkdir") == 0 || strcmp(cmd, "ls") == 0){
+isfscmd(char* cmd) {
+  if(strcmp(cmd, "mkdir") == 0 || strcmp(cmd, "ls") == 0) {
     return 1;
   }return 0;
 }
 
 int
-addedcpath(char *cmd){
+addedcpath(char *cmd) {
   char temp_path[128];
   strcpy(temp_path, cmd);
   strcat(temp_path, "\0");
@@ -458,10 +458,10 @@ addedcpath(char *cmd){
 }
 
 int
-ifsafepath(char *path){
+ifsafepath(char *path) {
 
   char temp_path[128];
-  if(path == 0){
+  if(path == 0) {
     return 1;
   }
   int path_len = 0;
@@ -474,20 +474,20 @@ ifsafepath(char *path){
   getpath(index, currpath);
   char *tok_currpath = strtok(currpath, "/");
 
-  while(tok_currpath != 0){
+  while(tok_currpath != 0) {
     path_len++;
     tok_currpath = strtok(0, "/");
   }
 
-  if(path[0] != '/'){
+  if(path[0] != '/') {
     new_path_len = path_len;
   }else{
     new_path_len = 0;
   }
 
   tok_path = strtok(tok_path, "/");
-  while (tok_path != 0){
-    if(strcmp(tok_path, "..") == 0){
+  while (tok_path != 0) {
+    if(strcmp(tok_path, "..") == 0) {
       new_path_len--;
     }else{
       new_path_len++;
@@ -497,5 +497,3 @@ ifsafepath(char *path){
 
   return new_path_len > 0;
 }
-
-

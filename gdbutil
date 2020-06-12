@@ -2,7 +2,7 @@
 
 # Utility functions to pretty-print x86 segment/interrupt descriptors.
 # To load this file, run "source gdbutil" in gdb.
-# printdesc and printdescs are the main entry points.
+# Main entry points: printdesc and printdescs.
 
 # IA32 2007, Volume 3A, Table 3-2
 set $STS_T16A = 0x1

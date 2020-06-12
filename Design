@@ -1,5 +1,5 @@
 Process Isolation:
-We gave each process a container ID. This allows us to isolate processes with the same container ID to a container.
+Givve each process a container ID. This allows an isolation of processes with the same container ID to a container.
 
 Filesystem Isolation:
 By manipulating paths in the shell and setting the path for each container, we can check whether or not the path from the buffer is valid within a container.

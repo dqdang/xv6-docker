@@ -1,4 +1,4 @@
-// Intel 8250 serial port (UART).
+// Intel 8250 serial port (UART)
 
 #include "types.h"
 #include "defs.h"

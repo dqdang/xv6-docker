@@ -126,10 +126,10 @@ void
 begin_op(void)
 {
   acquire(&log.lock);
-  while(1){
-    if(log.committing){
+  while(1) {
+    if(log.committing) {
       sleep(&log, &log.lock);
-    } else if(log.lh.n + (log.outstanding+1)*MAXOPBLOCKS > LOGSIZE){
+    } else if(log.lh.n + (log.outstanding+1)*MAXOPBLOCKS > LOGSIZE) {
       // this op might exhaust log space; wait for commit.
       sleep(&log, &log.lock);
     } else {
@@ -151,7 +151,7 @@ end_op(void)
   log.outstanding -= 1;
   if(log.committing)
     panic("log.committing");
-  if(log.outstanding == 0){
+  if(log.outstanding == 0) {
     do_commit = 1;
     log.committing = 1;
   } else {
@@ -162,7 +162,7 @@ end_op(void)
   }
   release(&log.lock);
 
-  if(do_commit){
+  if(do_commit) {
     // call commit w/o holding locks, since not allowed
     // to sleep with locks.
     commit();
@@ -231,4 +231,3 @@ log_write(struct buf *b)
   b->flags |= B_DIRTY; // prevent eviction
   release(&log.lock);
 }
-

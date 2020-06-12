@@ -21,7 +21,7 @@ exec(char *path, char **argv)
 
   begin_op();
 
-  if((ip = namei(path)) == 0){
+  if((ip = namei(path)) == 0) {
     end_op();
     cprintf("exec: fail\n");
     return -1;
@@ -40,7 +40,7 @@ exec(char *path, char **argv)
 
   // Load program into memory.
   sz = 0;
-  for(i=0, off=elf.phoff; i<elf.phnum; i++, off+=sizeof(ph)){
+  for(i=0, off=elf.phoff; i<elf.phnum; i++, off+=sizeof(ph)) {
     if(readi(ip, (char*)&ph, off, sizeof(ph)) != sizeof(ph))
       goto bad;
     if(ph.type != ELF_PROG_LOAD)
@@ -106,7 +106,7 @@ exec(char *path, char **argv)
  bad:
   if(pgdir)
     freevm(pgdir);
-  if(ip){
+  if(ip) {
     iunlockput(ip);
     end_op();
   }

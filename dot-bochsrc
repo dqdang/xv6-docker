@@ -730,7 +730,7 @@ keyboard_mapping: enabled=0, map=
 
 #=======================================================================
 # for Macintosh, use the style of pathnames in the following
-# examples.
+# examples:
 #
 # vgaromimage: :bios:VGABIOS-elpin-2.40
 # romimage: file=:bios:BIOS-bochs-latest, address=0xf0000

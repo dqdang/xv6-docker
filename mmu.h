@@ -224,5 +224,4 @@ struct gatedesc {
   (gate).p = 1;                                           \
   (gate).off_31_16 = (uint)(off) >> 16;                  \
 }
-
 #endif

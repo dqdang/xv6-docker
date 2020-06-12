@@ -1,5 +1,5 @@
-// Fake IDE disk; stores blocks in memory.
-// Useful for running kernel without scratch disk.
+// Fake IDE disk; stores blocks in memory
+// Useful for running kernel without scratch disk
 
 #include "types.h"
 #include "defs.h"
@@ -51,7 +51,7 @@ iderw(struct buf *b)
 
   p = memdisk + b->blockno*BSIZE;
 
-  if(b->flags & B_DIRTY){
+  if(b->flags & B_DIRTY) {
     b->flags &= ~B_DIRTY;
     memmove(p, b->data, BSIZE);
   } else

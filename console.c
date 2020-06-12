@@ -1,5 +1,3 @@
-
-
 // Console input and output.
 // Input is from the keyboard or serial port.
 // Output is written to the screen and serial port.
@@ -82,15 +80,15 @@ cprintf(char *fmt, ...)
     panic("null fmt");
 
   argp = (uint*)(void*)(&fmt + 1);
-  for(i = 0; (c = fmt[i] & 0xff) != 0; i++){
-    if(c != '%'){
+  for(i = 0; (c = fmt[i] & 0xff) != 0; i++) {
+    if(c != '%') {
       consputc(c);
       continue;
     }
     c = fmt[++i] & 0xff;
     if(c == 0)
       break;
-    switch(c){
+    switch(c) {
     case 'd':
       printint(*argp++, 10, 1);
       break;
@@ -157,7 +155,7 @@ cgaputc(int c)
 
   if(c == '\n')
     pos += 80 - pos%80;
-  else if(c == BACKSPACE){
+  else if(c == BACKSPACE) {
     if(pos > 0) --pos;
   } else
     crt[pos++] = (c&0xff) | 0x0700;  // black on white
@@ -165,7 +163,7 @@ cgaputc(int c)
   if(pos < 0 || pos > 25*80)
     panic("pos under/overflow");
 
-  if((pos/80) >= 24){  // Scroll up.
+  if((pos/80) >= 24) {  // Scroll up.
     memmove(crt, crt+80, sizeof(crt[0])*23*80);
     pos -= 80;
     memset(crt+pos, 0, sizeof(crt[0])*(24*80 - pos));
@@ -181,13 +179,13 @@ cgaputc(int c)
 void
 consputc(int c)
 {
-  if(panicked){
+  if(panicked) {
     cli();
     for(;;)
       ;
   }
 
-  if(c == BACKSPACE){
+  if(c == BACKSPACE) {
     uartputc('\b'); uartputc(' '); uartputc('\b');
   } else
     uartputc(c);
@@ -212,8 +210,8 @@ consoleintr(int (*getc)(void))
   int c, doprocdump = 0, doconsoleswitch = 0;
 
   acquire(&cons.lock);
-  while((c = getc()) >= 0){
-    switch(c){
+  while((c = getc()) >= 0) {
+    switch(c) {
     case C('P'):  // Process listing.
       // procdump() locks cons.lock indirectly; invoke later
       doprocdump = 1;
@@ -224,7 +222,7 @@ consoleintr(int (*getc)(void))
       input = inputs[active];
       doconsoleswitch = 1;
       char fs[32];
-      if(active > 0){
+      if(active > 0) {
         char active_string[32];
         itoa(active-1, active_string, 10);
         strcat(active_string, "\0");
@@ -244,23 +242,23 @@ consoleintr(int (*getc)(void))
       break;
     case C('U'):  // Kill line.
       while(input.e != input.w &&
-            input.buf[(input.e-1) % INPUT_BUF] != '\n'){
+            input.buf[(input.e-1) % INPUT_BUF] != '\n') {
         input.e--;
         consputc(BACKSPACE);
       }
       break;
     case C('H'): case '\x7f':  // Backspace
-      if(input.e != input.w){
+      if(input.e != input.w) {
         input.e--;
         consputc(BACKSPACE);
       }
       break;
     default:
-      if(c != 0 && input.e-input.r < INPUT_BUF){
+      if(c != 0 && input.e-input.r < INPUT_BUF) {
         c = (c == '\r') ? '\n' : c;
         input.buf[input.e++ % INPUT_BUF] = c;
         consputc(c);
-        if(c == '\n' || c == C('D') || input.e == input.r+INPUT_BUF){
+        if(c == '\n' || c == C('D') || input.e == input.r+INPUT_BUF) {
           input.w = input.e;
           wakeup(&input.r);
         }
@@ -269,10 +267,10 @@ consoleintr(int (*getc)(void))
     }
   }
   release(&cons.lock);
-  if(doprocdump){
+  if(doprocdump) {
     procdump();  // now call procdump() wo. cons.lock held
   }
-  if(doconsoleswitch){
+  if(doconsoleswitch) {
     cprintf("\nActive console now: %d\n", active);
   }
 }
@@ -286,9 +284,9 @@ consoleread(struct inode *ip, char *dst, int n)
   iunlock(ip);
   target = n;
   acquire(&cons.lock);
-  while(n > 0){
-    while((input.r == input.w) || (active != ip->minor-1)){
-      if(myproc()->killed){
+  while(n > 0) {
+    while((input.r == input.w) || (active != ip->minor-1)) {
+      if(myproc()->killed) {
         release(&cons.lock);
         ilock(ip);
         return -1;
@@ -296,8 +294,8 @@ consoleread(struct inode *ip, char *dst, int n)
       sleep(&input.r, &cons.lock);
     }
     c = input.buf[input.r++ % INPUT_BUF];
-    if(c == C('D')){  // EOF
-      if(n < target){
+    if(c == C('D')) {  // EOF
+      if(n < target) {
         // Save ^D for next time, to make sure
         // caller gets a 0-byte result.
         input.r--;
@@ -320,7 +318,7 @@ consolewrite(struct inode *ip, char *buf, int n)
 {
   int i;
 
-  if (active == ip->minor-1){
+  if (active == ip->minor-1) {
     iunlock(ip);
     acquire(&cons.lock);
     for(i = 0; i < n; i++)
@@ -342,5 +340,4 @@ consoleinit(void)
   
   ioapicenable(IRQ_KBD, 0);
   setactivefs("/\0");
-  
 }

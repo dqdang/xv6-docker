@@ -1,4 +1,4 @@
-// Boot loader.
+// Boot loader
 //
 // Part of the boot block, along with bootasm.S, which calls bootmain().
 // bootasm.S has put the processor into protected 32-bit mode.
@@ -34,7 +34,7 @@ bootmain(void)
   // Load each program segment (ignores ph flags).
   ph = (struct proghdr*)((uchar*)elf + elf->phoff);
   eph = ph + elf->phnum;
-  for(; ph < eph; ph++){
+  for(; ph < eph; ph++) {
     pa = (uchar*)ph->paddr;
     readseg(pa, ph->filesz, ph->off);
     if(ph->memsz > ph->filesz)

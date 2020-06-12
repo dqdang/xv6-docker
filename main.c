@@ -79,7 +79,7 @@ startothers(void)
   code = P2V(0x7000);
   memmove(code, _binary_entryother_start, (uint)_binary_entryother_size);
 
-  for(c = cpus; c < cpus+ncpu; c++){
+  for(c = cpus; c < cpus+ncpu; c++) {
     if(c == mycpu())  // We've started already.
       continue;
 

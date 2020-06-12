@@ -10,7 +10,7 @@ sheet1: left
 # means it must start in the left of the two columns (00).  "odd" means it
 # must start in the right of the two columns (50).
 #
-# You'd think these would be the other way around.
+# You'd think these would be the other way around
 
 # types.h either
 # param.h either

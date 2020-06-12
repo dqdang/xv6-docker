@@ -5,7 +5,7 @@
 #include "container.h"
 
 
-int main(int argc, char *argv[]){
+int main(int argc, char *argv[]) {
   char fs[128];
   getactivefs(fs);
   char space1[128];
@@ -21,7 +21,7 @@ int main(int argc, char *argv[]){
   char maxkallocs[100];
 
 
-  if(strcmp(fs, "/") == 0){
+  if(strcmp(fs, "/") == 0) {
     itoa((getallusedmem()*4096), usedbytes, 10);
     itoa((getallmaxmem()-getallusedmem())*4096, available, 10);
     itoa((getallmaxmem()*4096), maxbytes, 10);

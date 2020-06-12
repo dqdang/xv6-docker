@@ -15,11 +15,10 @@ main(int argc, char *argv[])
 
   ticks = atoi(argv[1]);
 
-  while(1){
+  while(1) {
 	  for(i = 2; i < argc; i++)
     	printf(1, "%s%s", argv[i], i+1 < argc ? " " : "\n");
     sleep(ticks);
   }
-
   exit();
 }

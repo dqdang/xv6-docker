@@ -16,7 +16,7 @@ struct container{
   int next_proc;
 };
 
-struct{
+struct {
   struct container tuperwares[NUM_VCS];
   int used_disk;
   int max_disk;
@@ -24,7 +24,7 @@ struct{
   int max_mem;
   char active_fs[32];
   int next_proc;
-}cabinet;
+} cabinet;
 
 int
 getname(int index, char* name);

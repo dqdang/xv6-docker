@@ -10,12 +10,12 @@
 # and then adding this menu entry:
 #
 # menuentry "xv6" {
-# 	insmod ext2
-# 	set root='(hd0,msdos1)'
-# 	set kernel='/boot/kernel'
-# 	echo "Loading ${kernel}..."
-# 	multiboot ${kernel} ${kernel}
-# 	boot
+#   insmod ext2
+#   set root='(hd0,msdos1)'
+#   set kernel='/boot/kernel'
+#   echo "Loading ${kernel}..."
+#   multiboot ${kernel} ${kernel}
+#   boot
 # }
 
 #include "asm.h"

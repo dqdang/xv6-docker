@@ -24,8 +24,6 @@ struct {
   struct run *freelist;
 } kmem;
 
-
-
 // Initialization happens in two phases.
 // 1. main() calls kinit1() while still using entrypgdir to place just
 // the pages mapped by entrypgdir on free list.
@@ -81,7 +79,7 @@ kfree(char *v)
   
   char fs[32];
   getactivefs(fs);
-  if(fs[1] != '\0'){
+  if(fs[1] != '\0') {
     int index = getactivefsindex();
     int c_used_mem = getusedmem(index);
     setusedmem(index, c_used_mem-1);
@@ -102,23 +100,20 @@ kalloc(void)
   char fs[32];
   getactivefs(fs);
   int new_all_mem = getallusedmem() + 1;
-  if(fs[1] != '\0'){
+  if(fs[1] != '\0') {
     int index = getactivefsindex();
     int new_used_mem = getusedmem(index) + 1;
-    if(new_all_mem > getallmaxmem()){
+    if(new_all_mem > getallmaxmem()) {
       cprintf("Operating System reached Max memory usage reached please review mem parameters!\n");
       return 0;
     }
-    else if(getmaxmem(index) != 0 && new_used_mem > getmaxmem(index)){
+    else if(getmaxmem(index) != 0 && new_used_mem > getmaxmem(index)) {
       cprintf("Container reached Max memory usage reached please review mem parameters!\n");
       return 0;
     }
     setusedmem(index, new_used_mem);
   }
   setallusedmem(new_all_mem);
-
-
-
 
   struct run *r;
   //add 1 to memcounter
@@ -132,4 +127,3 @@ kalloc(void)
 
   return (char*)r;
 }
-

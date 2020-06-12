@@ -31,7 +31,7 @@ struct mpproc {         // processor table entry
   uchar apicid;                 // local APIC id
   uchar version;                // local APIC verison
   uchar flags;                  // CPU flags
-    #define MPBOOT 0x02           // This proc is the bootstrap processor.
+  #define MPBOOT 0x02           // This proc is the bootstrap processor.
   uchar signature[4];           // CPU signature
   uint feature;                 // feature flags from CPUID instruction
   uchar reserved[8];

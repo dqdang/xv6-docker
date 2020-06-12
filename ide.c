@@ -58,8 +58,8 @@ ideinit(void)
 
   // Check if disk 1 is present
   outb(0x1f6, 0xe0 | (1<<4));
-  for(i=0; i<1000; i++){
-    if(inb(0x1f7) != 0){
+  for(i=0; i<1000; i++) {
+    if(inb(0x1f7) != 0) {
       havedisk1 = 1;
       break;
     }
@@ -91,7 +91,7 @@ idestart(struct buf *b)
   outb(0x1f4, (sector >> 8) & 0xff);
   outb(0x1f5, (sector >> 16) & 0xff);
   outb(0x1f6, 0xe0 | ((b->dev&1)<<4) | ((sector>>24)&0x0f));
-  if(b->flags & B_DIRTY){
+  if(b->flags & B_DIRTY) {
     outb(0x1f7, write_cmd);
     outsl(0x1f0, b->data, BSIZE/4);
   } else {
@@ -108,7 +108,7 @@ ideintr(void)
   // First queued buffer is the active request.
   acquire(&idelock);
 
-  if((b = idequeue) == 0){
+  if((b = idequeue) == 0) {
     release(&idelock);
     return;
   }
@@ -159,10 +159,8 @@ iderw(struct buf *b)
     idestart(b);
 
   // Wait for request to finish.
-  while((b->flags & (B_VALID|B_DIRTY)) != B_VALID){
+  while((b->flags & (B_VALID|B_DIRTY)) != B_VALID) {
     sleep(b, &idelock);
   }
-
-
   release(&idelock);
 }

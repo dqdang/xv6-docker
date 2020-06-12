@@ -2,7 +2,7 @@
 // appends to the idequeue results in a race.
 
 // For this to work, you should also add a spin within iderw's
-// idequeue traversal loop.  Adding the following demonstrated a panic
+// idequeue traversal loop. Adding the following demonstrated a panic
 // after about 5 runs of stressfs in QEMU on a 2.1GHz CPU:
 //    for (i = 0; i < 40000; i++)
 //      asm volatile("");

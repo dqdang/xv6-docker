@@ -5,7 +5,7 @@
 #include "container.h"
 
 
-int main(int argc, char *argv[]){
+int main(int argc, char *argv[]) {
   char fs[128];
   getactivefs(fs);
   char space1[128];
@@ -16,12 +16,12 @@ int main(int argc, char *argv[]){
   char usedbytes[100];
   char maxbytes[100];
 
-  if(strcmp(fs, "/") == 0){
+  if(strcmp(fs, "/") == 0) {
     itoa((getalluseddisk()), usedbytes, 10);
     itoa((getallmaxdisk()), maxbytes, 10);
     itoa((getallmaxdisk() - getalluseddisk()), available, 10);
   }
-  else{
+  else {
     int index = getactivefsindex();
     itoa((getuseddisk(index)), usedbytes, 10);
     itoa((getmaxdisk(index)), maxbytes, 10);

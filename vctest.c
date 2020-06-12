@@ -21,7 +21,7 @@ main(int argc, char *argv[])
   /* fork a child and exec argv[1] */
   id = fork(0);
 
-  if (id == 0){
+  if (id == 0) {
     close(0);
     close(1);
     close(2);

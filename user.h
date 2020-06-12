@@ -2,7 +2,7 @@
 struct stat;
 struct rtcdate;
 
-// system calls
+// System calls
 int fork(int);
 int forkC(int, int);
 int exit(void) __attribute__((noreturn));
@@ -93,5 +93,3 @@ int copy(char*, char*);
 int isfscmd(char*);
 int addedcpath(char*);
 int ifsafepath(char*);
-
-

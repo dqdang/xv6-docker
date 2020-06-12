@@ -1,4 +1,4 @@
-// Mutual exclusion spin locks.
+// Mutual exclusion spin locks
 
 #include "types.h"
 #include "defs.h"
@@ -75,7 +75,7 @@ getcallerpcs(void *v, uint pcs[])
   int i;
 
   ebp = (uint*)v - 2;
-  for(i = 0; i < 10; i++){
+  for(i = 0; i < 10; i++) {
     if(ebp == 0 || ebp < (uint*)KERNBASE || ebp == (uint*)0xffffffff)
       break;
     pcs[i] = ebp[1];     // saved %eip
@@ -119,4 +119,3 @@ popcli(void)
   if(mycpu()->ncli == 0 && mycpu()->intena)
     sti();
 }
-

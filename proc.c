@@ -83,8 +83,8 @@ allocproc(int cid, int updating)
 
   acquire(&ptable.lock);
 
-  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-    if(p->state == UNUSED){
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
+    if(p->state == UNUSED) {
       // cprintf("starting a process at index %d\n", i);
       goto found;
     }i++;
@@ -94,7 +94,7 @@ allocproc(int cid, int updating)
   return 0;
 
 found:
-  if(updating){
+  if(updating) {
     setnextproc(cid, i);
   }
 
@@ -104,7 +104,7 @@ found:
   release(&ptable.lock);
 
   // Allocate kernel stack.
-  if((p->kstack = kalloc()) == 0){
+  if((p->kstack = kalloc()) == 0) {
     p->state = UNUSED;
     return 0;
   }
@@ -177,10 +177,10 @@ growproc(int n)
   struct proc *curproc = myproc();
 
   sz = curproc->sz;
-  if(n > 0){
+  if(n > 0) {
     if((sz = allocuvm(curproc->pgdir, sz, sz + n)) == 0)
       return -1;
-  } else if(n < 0){
+  } else if(n < 0) {
     if((sz = deallocuvm(curproc->pgdir, sz, sz + n)) == 0)
       return -1;
   }
@@ -199,18 +199,18 @@ fork(int updating)
 }
 
 int
-forkC(int cid, int updating){
+forkC(int cid, int updating) {
   int i, pid;
   struct proc *np;
   struct proc *curproc = myproc();
 
   // Allocate process.
-  if((np = allocproc(cid, updating)) == 0){
+  if((np = allocproc(cid, updating)) == 0) {
     return -1;
   }
 
   // Copy process state from proc.
-  if((np->pgdir = copyuvm(curproc->pgdir, curproc->sz)) == 0){
+  if((np->pgdir = copyuvm(curproc->pgdir, curproc->sz)) == 0) {
     kfree(np->kstack);
     np->kstack = 0;
     np->state = UNUSED;
@@ -257,8 +257,8 @@ exit(void)
     panic("init exiting");
 
   // Close all open files.
-  for(fd = 0; fd < NOFILE; fd++){
-    if(curproc->ofile[fd]){
+  for(fd = 0; fd < NOFILE; fd++) {
+    if(curproc->ofile[fd]) {
       fileclose(curproc->ofile[fd]);
       curproc->ofile[fd] = 0;
     }
@@ -275,8 +275,8 @@ exit(void)
   wakeup1(curproc->parent);
 
   // Pass abandoned children to init.
-  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-    if(p->parent == curproc){
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
+    if(p->parent == curproc) {
       p->parent = initproc;
       if(p->state == ZOMBIE)
         wakeup1(initproc);
@@ -299,14 +299,14 @@ wait(void)
   struct proc *curproc = myproc();
   
   acquire(&ptable.lock);
-  for(;;){
+  for(;;) {
     // Scan through table looking for exited children.
     havekids = 0;
-    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
       if(p->parent != curproc)
         continue;
       havekids = 1;
-      if(p->state == ZOMBIE){
+      if(p->state == ZOMBIE) {
         // Found one.
         pid = p->pid;
         kfree(p->kstack);
@@ -323,7 +323,7 @@ wait(void)
     }
 
     // No point waiting if we don't have any children.
-    if(!havekids || curproc->killed){
+    if(!havekids || curproc->killed) {
       release(&ptable.lock);
       return -1;
     }
@@ -349,7 +349,7 @@ wait(void)
 //   struct cpu *c = mycpu();
 //   int total_tickets, drawing, container = getactivefsindex();
   
-//   for(;;){
+//   for(;;) {
 //     // Enable interrupts on this processor.
 //     sti();
 
@@ -357,20 +357,20 @@ wait(void)
 //     acquire(&ptable.lock);
 
 //     total_tickets = gettotaltickets(container);
-//     if (total_tickets > 0){
+//     if (total_tickets > 0) {
 //         drawing  = rand();
-//         if(drawing < 0){
+//         if(drawing < 0) {
 //           drawing = drawing * -1;
 //         }
-//         if(drawing > total_tickets){
+//         if(drawing > total_tickets) {
 //           drawing = drawing % total_tickets;
 //         }
 
-//         for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-//           if (p->state == RUNNABLE){
+//         for(p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
+//           if (p->state == RUNNABLE) {
 //             drawing = drawing - p->tickets;
 //           } 
-//           if(p->state != RUNNABLE || drawing > ){
+//           if(p->state != RUNNABLE || drawing > ) {
 //             continue;
 //           }
 //           
@@ -411,19 +411,19 @@ wait(void)
 //   struct cpu *c = mycpu();
 //   c->proc = 0;
 
-//   for(;;){
+//   for(;;) {
 //     // Enable interrupts on this processor.
 //     sti();
 
 //     // Loop over process table looking for process to run.
 //     acquire(&ptable.lock);
-//     for(i = -1; i < NUM_VCS; i++){
-//       if(i == -1){
+//     for(i = -1; i < NUM_VCS; i++) {
+//       if(i == -1) {
 //         p = &ptable.proc[cabinet.next_proc];
 //         setnextproc(i, nextvalidproc(i, cabinet.next_proc));
 //       }
 //       else{
-//         if(cabinet.tuperwares[i].alive){
+//         if(cabinet.tuperwares[i].alive) {
 //           p = &ptable.proc[cabinet.tuperwares[i].next_proc];
 //           setnextproc(i, nextvalidproc(i, cabinet.tuperwares[i].next_proc));
 //         }else{
@@ -459,13 +459,13 @@ scheduler(void)
   struct cpu *c = mycpu();
   c->proc = 0;
 
-  for(;;){
+  for(;;) {
     // Enable interrupts on this processor.
     sti();
 
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
-    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
       if(p->state != RUNNABLE)
         continue;
 
@@ -489,17 +489,17 @@ scheduler(void)
 }
 
 int
-nextvalidproc(int cid, int index){
+nextvalidproc(int cid, int index) {
   int i = -1;
-  for(i = index+1; i <= NPROC; i++){
+  for(i = index+1; i <= NPROC; i++) {
     // cprintf("i = %d\n", i);
-    if(ptable.proc[i].cid == cid && ptable.proc[i].state == RUNNABLE){
+    if(ptable.proc[i].cid == cid && ptable.proc[i].state == RUNNABLE) {
       goto end;
     }
   }
-  for(i = 0; i < index; i++){
+  for(i = 0; i < index; i++) {
     // cprintf("i = %d\n", i);
-    if(ptable.proc[i].cid == cid && ptable.proc[i].state == RUNNABLE){
+    if(ptable.proc[i].cid == cid && ptable.proc[i].state == RUNNABLE) {
       goto end;
     }
   }
@@ -588,7 +588,7 @@ sleep(void *chan, struct spinlock *lk)
   // guaranteed that we won't miss any wakeup
   // (wakeup runs with ptable.lock locked),
   // so it's okay to release lk.
-  if(lk != &ptable.lock){  //DOC: sleeplock0
+  if(lk != &ptable.lock) {  //DOC: sleeplock0
     acquire(&ptable.lock);  //DOC: sleeplock1
     release(lk);
   }
@@ -602,7 +602,7 @@ sleep(void *chan, struct spinlock *lk)
   p->chan = 0;
 
   // Reacquire original lock.
-  if(lk != &ptable.lock){  //DOC: sleeplock2
+  if(lk != &ptable.lock) {  //DOC: sleeplock2
     release(&ptable.lock);
     acquire(lk);
   }
@@ -639,8 +639,8 @@ kill(int pid)
   struct proc *p;
 
   acquire(&ptable.lock);
-  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-    if(p->pid == pid && (p->cid == getactivefsindex() || getactivefsindex() == -1)){
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
+    if(p->pid == pid && (p->cid == getactivefsindex() || getactivefsindex() == -1)) {
       p->killed = 1;
       // Wake process from sleep if necessary.
       if(p->state == SLEEPING)
@@ -674,7 +674,7 @@ procdump(void)
   char *state;
   uint pc[10];
 
-  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
     if(p->state == UNUSED)
       continue;
     if(p->state >= 0 && p->state < NELEM(states) && states[p->state])
@@ -682,7 +682,7 @@ procdump(void)
     else
       state = "???";
     cprintf("%d %s %s %d", p->pid, state, p->name, p->ticks);
-    if(p->state == SLEEPING){
+    if(p->state == SLEEPING) {
       getcallerpcs((uint*)p->context->ebp+2, pc);
       for(i=0; i<10 && pc[i] != 0; i++)
         cprintf(" %p", pc[i]);
@@ -708,7 +708,7 @@ psroot()
   char *state;
   uint pc[10];
 
-  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
     if(p->state == UNUSED)
       continue;
     if(p->state >= 0 && p->state < NELEM(states) && states[p->state])
@@ -716,15 +716,15 @@ psroot()
     else
       state = "???";
 
-    if(p->cid == -1){
+    if(p->cid == -1) {
       cprintf("ROOT: ");
     }else{
       cprintf("Container %d: ", p->cid);
     }
     cprintf("%d %s %s %d", p->pid, state, p->name, p->ticks);
-    if(p->state == SLEEPING){
+    if(p->state == SLEEPING) {
       getcallerpcs((uint*)p->context->ebp+2, pc);
-      for(i=0; i<10 && pc[i] != 0; i++){
+      for(i=0; i<10 && pc[i] != 0; i++) {
         cprintf(" %p", pc[i]);
       }
     }
@@ -750,8 +750,8 @@ pscontainer(int index)
   char *state;
   uint pc[10];
 
-  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-    if(p->cid == index){
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
+    if(p->cid == index) {
       if(p->state == UNUSED)
         continue;
       if(p->state >= 0 && p->state < NELEM(states) && states[p->state])
@@ -761,9 +761,9 @@ pscontainer(int index)
 
       cprintf("Container %d: ", p->cid);
       cprintf("%d %s %s %d", p->pid, state, p->name, p->ticks);
-      if(p->state == SLEEPING){
+      if(p->state == SLEEPING) {
         getcallerpcs((uint*)p->context->ebp+2, pc);
-        for(i=0; i<10 && pc[i] != 0; i++){
+        for(i=0; i<10 && pc[i] != 0; i++) {
           cprintf(" %p", pc[i]);
         }
       }
@@ -772,9 +772,9 @@ pscontainer(int index)
   }
 }
 
-int ps(void){
+int ps(void) {
   int index = getactivefsindex();
-  if(index == -1){
+  if(index == -1) {
     psroot();
   }
   else{
@@ -783,31 +783,31 @@ int ps(void){
   return 0;
 }
 
-int cpause(int index){
+int cpause(int index) {
   struct proc *p;
 
-  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-    if(p->cid == index && p->state == SLEEPING){
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
+    if(p->cid == index && p->state == SLEEPING) {
       p->state = PAUSED;
     }
   }
   return 0;
 }
 
-int cstop(int index){
+int cstop(int index) {
   struct proc *p;
-  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-    if(p->cid == index){
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
+    if(p->cid == index) {
       kill(p->pid);
     }
   }
   return 0;
 }
 
-int cresume(int index){
+int cresume(int index) {
   struct proc *p;
-  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-    if(p->cid == index && p->state == PAUSED){
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
+    if(p->cid == index && p->state == PAUSED) {
       p->state = RUNNABLE;
     }
   }
