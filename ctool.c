@@ -87,7 +87,7 @@ int create(int argc, char *argv[]) {
   return 0;
 }
 
-// ctool start vc0 c0 usfsh (optinal) -> 8 8 8
+// ctool start vc0 c0 usfsh (optional) -> 8 8 8
 int start(int argc, char *argv[]) {
   char fs[32];
   strcpy(fs, "/");
@@ -101,17 +101,16 @@ int start(int argc, char *argv[]) {
   index[1] = '\0';
   cindex = atoi(index);
 
-  
   if(argc == 5) {
     setmaxproc(cindex, 10);
     setmaxmem(cindex, 500);
     setmaxdisk(cindex, 4 * 1000000);
-  }else{
+  }
+  else {
     setmaxproc(cindex, atoi(argv[5]));
     setmaxmem(cindex, atoi(argv[6]));
     setmaxdisk(cindex, atoi(argv[7]) * 1000000);
   }
-  
 
   setvc(cindex, argv[2]);
 
@@ -123,7 +122,6 @@ int start(int argc, char *argv[]) {
   printf(1, "Opened console %s.\n", argv[2]);
   /* fork a child and exec argv[4] */
   id = forkC(cindex, 1);
-
 
   if(id == 0) {
     close(0);
@@ -180,8 +178,6 @@ int resume(char *argv[]) {
   cresume(cindex);
   return 1;
 }
-
-
 
 // int delete(char *argv[]) {
 //   int id, i, j, cindex;

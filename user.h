@@ -64,7 +64,9 @@ int cpause(int);
 int cstop(int);
 int cresume(int);
 int setnextproc(int, int);
-
+int getcticks(int);
+int setcticks(int);
+int getcurrentcontainer(void);
 
 // ulib.c
 int stat(char*, struct stat*);

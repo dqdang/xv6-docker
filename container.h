@@ -14,6 +14,7 @@ struct container{
   int used_disk;
   int atroot;
   int next_proc;
+  int ticks;
 };
 
 struct {
@@ -108,6 +109,12 @@ int
 getactivefsindex(void);
 
 int
+getcticks(int index);
+
+int
+setcticks(int index, int val);
+
+int
 setatroot(int index, int val);
 
 int
@@ -124,3 +131,6 @@ setalive(int index, int val);
 
 int
 getnumcontainers(void);
+
+int
+getcurrentcontainer(void);

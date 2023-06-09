@@ -8,6 +8,8 @@
 #include "spinlock.h"
 #include "container.h"
 
+#define NULL ((void*)0)
+
 struct {
   struct spinlock lock;
   struct proc proc[NPROC];
@@ -125,6 +127,7 @@ found:
   p->context->eip = (uint)forkret;
 
   p->ticks = 0;
+  p->container = NULL;
 
   return p;
 }
@@ -221,7 +224,8 @@ forkC(int cid, int updating) {
   np->parent = curproc;
   *np->tf = *curproc->tf;
 
-  
+  np->container = curproc->container;
+
   // Clear %eax so that fork returns 0 in the child.
   np->tf->eax = 0;
 
@@ -333,68 +337,6 @@ wait(void)
   }
 }
 
-
-// //PAGEBREAK: 42
-// // Per-CPU process scheduler.
-// // Each CPU calls scheduler() after setting itself up.
-// // Scheduler never returns.  It loops, doing:
-// //  - choose a process to run
-// //  - swtch to start running that process
-// //  - eventually that process transfers control
-// //      via swtch back to the scheduler.
-// void
-// scheduler(void)
-// {
-//   struct proc *p;
-//   struct cpu *c = mycpu();
-//   int total_tickets, drawing, container = getactivefsindex();
-  
-//   for(;;) {
-//     // Enable interrupts on this processor.
-//     sti();
-
-//     // Loop over process table looking for process to run.
-//     acquire(&ptable.lock);
-
-//     total_tickets = gettotaltickets(container);
-//     if (total_tickets > 0) {
-//         drawing  = rand();
-//         if(drawing < 0) {
-//           drawing = drawing * -1;
-//         }
-//         if(drawing > total_tickets) {
-//           drawing = drawing % total_tickets;
-//         }
-
-//         for(p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
-//           if (p->state == RUNNABLE) {
-//             drawing = drawing - p->tickets;
-//           } 
-//           if(p->state != RUNNABLE || drawing > ) {
-//             continue;
-//           }
-//           
-
-//           // Switch to chosen process.  It is the process's job
-//           // to release ptable.lock and then reacquire it
-//           // before jumping back to us.
-//           c->proc = p;
-//           switchuvm(p);
-//           p->state = RUNNING;
-
-//           swtch(&(c->scheduler), p->context);
-//           switchkvm();
-
-//           c->proc = 0;
-//           // Process is done running for now.
-//           // It should have changed its p->state before coming back.
-//         }
-//     }
-//     release(&ptable.lock);
-
-//   }
-// }
-
 //PAGEBREAK: 42
 // Per-CPU process scheduler.
 // Each CPU calls scheduler() after setting itself up.
@@ -403,61 +345,13 @@ wait(void)
 //  - swtch to start running that process
 //  - eventually that process transfers control
 //      via swtch back to the scheduler.
-// void
-// scheduler(void)
-// {
-//   struct proc *p;
-//   int i;
-//   struct cpu *c = mycpu();
-//   c->proc = 0;
-
-//   for(;;) {
-//     // Enable interrupts on this processor.
-//     sti();
-
-//     // Loop over process table looking for process to run.
-//     acquire(&ptable.lock);
-//     for(i = -1; i < NUM_VCS; i++) {
-//       if(i == -1) {
-//         p = &ptable.proc[cabinet.next_proc];
-//         setnextproc(i, nextvalidproc(i, cabinet.next_proc));
-//       }
-//       else{
-//         if(cabinet.tuperwares[i].alive) {
-//           p = &ptable.proc[cabinet.tuperwares[i].next_proc];
-//           setnextproc(i, nextvalidproc(i, cabinet.tuperwares[i].next_proc));
-//         }else{
-//           continue;
-//         }
-//       }
-
-  
-
-//       // Switch to chosen process.  It is the process's job
-//       // to release ptable.lock and then reacquire it
-//       // before jumping back to us.
-//       c->proc = p;
-//       switchuvm(p);
-//       p->state = RUNNING;
-
-//       swtch(&(c->scheduler), p->context);
-//       switchkvm();
-
-//       // Process is done running for now.
-//       // It should have changed its p->state before coming back.
-//       c->proc = 0;
-//     }
-//     release(&ptable.lock);
-
-//   }
-// }
-
 void
 scheduler(void)
 {
   struct proc *p;
   struct cpu *c = mycpu();
   c->proc = 0;
+  char name[16];
 
   for(;;) {
     // Enable interrupts on this processor.
@@ -465,7 +359,25 @@ scheduler(void)
 
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
+    int index = getactivefsindex();
+    int alive = getcticks(index);
+    if(alive != -1) {
+      getname(index, &name[0]);
+    }
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
+      if(index == -1){
+        if(p->container != NULL){
+          continue;
+        }
+      }
+      else{
+        if(p->container == NULL){
+          continue;
+        }
+        if(strcmp1(p->container->name, name) != 0){
+          continue;
+        }
+      }
       if(p->state != RUNNABLE)
         continue;
 
@@ -760,6 +672,7 @@ pscontainer(int index)
         state = "???";
 
       cprintf("Container %d: ", p->cid);
+      setcticks(p->cid, p->ticks);
       cprintf("%d %s %s %d", p->pid, state, p->name, p->ticks);
       if(p->state == SLEEPING) {
         getcallerpcs((uint*)p->context->ebp+2, pc);

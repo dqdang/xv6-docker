@@ -492,3 +492,30 @@ sys_cresume(void) {
 
   return cresume(cindex);
 }
+
+int
+sys_getcurrentcontainer(void) {
+  int x; 
+  argint(0, &x);
+  return getcurrentcontainer(x);
+}
+
+int
+sys_getcticks(void) {
+  int cindex;
+  if(argint(0, &cindex) < 0) {
+    return -1;
+  }
+
+  return getcticks(cindex);
+}
+
+int
+sys_setcticks(void) {
+  int cindex;
+  if(argint(0, &cindex) < 0) {
+    return -1;
+  }
+
+  return setcticks(cindex);
+}

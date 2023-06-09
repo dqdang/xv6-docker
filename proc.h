@@ -51,6 +51,7 @@ struct proc {
   char name[16];               // Process name (debugging)
   int ticks;
   int cid;
+  struct container* container;
 };
 
 // Process memory is laid out contiguously, low addresses first:

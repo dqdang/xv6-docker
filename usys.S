@@ -69,3 +69,6 @@ SYSCALL(cpause);
 SYSCALL(cstop);
 SYSCALL(cresume);
 SYSCALL(setnextproc);
+SYSCALL(getcticks)
+SYSCALL(setcticks)
+SYSCALL(getcurrentcontainer)

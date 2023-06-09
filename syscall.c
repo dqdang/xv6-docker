@@ -131,6 +131,8 @@ extern int sys_getactivefs(void);
 extern int sys_getcwd(void);
 extern int sys_tostring(void);
 extern int sys_getactivefsindex(void);
+extern int sys_getcticks(void);
+extern int sys_setcticks(void);
 extern int sys_getatroot(void);
 extern int sys_setatroot(void);
 extern int sys_getpath(void);
@@ -143,6 +145,7 @@ extern int sys_cpause(void);
 extern int sys_cstop(void);
 extern int sys_cresume(void);
 extern int sys_setnextproc(void);
+extern int sys_getcurrentcontainer(void);
 
 
 static int (*syscalls[])(void) = {
@@ -195,6 +198,8 @@ static int (*syscalls[])(void) = {
 [SYS_getcwd]              sys_getcwd,
 [SYS_tostring]            sys_tostring,
 [SYS_getactivefsindex]    sys_getactivefsindex,
+[SYS_getcticks]           sys_getcticks,
+[SYS_setcticks]           sys_setcticks,
 [SYS_getatroot]           sys_getatroot,
 [SYS_setatroot]           sys_setatroot,
 [SYS_getpath]             sys_getpath,
@@ -207,6 +212,7 @@ static int (*syscalls[])(void) = {
 [SYS_cstop]               sys_cstop,
 [SYS_cresume]             sys_cresume,
 [SYS_setnextproc]         sys_setnextproc,
+[SYS_getcurrentcontainer] sys_getcurrentcontainer,
 };
 
 void

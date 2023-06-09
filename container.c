@@ -10,10 +10,10 @@
 #include "container.h"
 
 #define NUM_VCS 4
+int next = 1;
 
 int
-strcmp(const char *p, const char *q)
-{
+strcmp(const char *p, const char *q) {
   while(*p && *p == *q)
     p++, q++;
   return (char)*p - (char)*q;
@@ -127,7 +127,8 @@ int getvcfs(char *vc, char *fs) {
         if(strcmp(cabinet.tuperwares[i].vc, vc) == 0) {
             while((*fs++ = cabinet.tuperwares[i].name[j++]) != 0);
         }
-    }return 0;
+    }
+    return 0;
 }
 
 int setactivefs(char *fs) {
@@ -156,12 +157,37 @@ int getalive(int index) {
 int getactivefsindex(void) {
     int i, index = -1;
     for(i = 0; i < NUM_VCS; i++) {
-
         if(cabinet.tuperwares[i].alive && strcmp(&cabinet.active_fs[1], cabinet.tuperwares[i].name) == 0) {
             index = i;
             break;
         }
-    }return index;
+    }
+    return index;
+}
+
+int getcticks(int index) {
+    if(getcurrentcontainer() == 0) {
+        return -1;
+    }
+    else if(rand() == 0) {
+        return -1;
+    }
+    else {
+        int i;
+        int c_num = 0;
+        int pholder = cabinet.tuperwares[0].ticks;
+        for(i = 0; i < NUM_VCS; i++){
+            if(cabinet.tuperwares[i].ticks < pholder && strcmp(cabinet.tuperwares[i].name, "") != 0){
+                c_num = i;
+            }
+        }
+        return c_num;
+    }
+}
+
+int setcticks(int index, int ticks) {
+    cabinet.tuperwares[index].ticks = ticks;
+    return 0;
 }
 
 int setatroot(int index, int val) {
@@ -174,10 +200,11 @@ int setnextproc(int index, int val) {
     if(index > -1) {
         cabinet.tuperwares[index].next_proc = val;
         return 0;
-    }else{
+    } else {
         cabinet.next_proc = val;
         return 0;
-    }return -1;
+    }
+    return -1;
 }
 
 int getatroot(int index) {
@@ -199,6 +226,21 @@ int getnumcontainers() {
         }
     }
     return count;
+}
+
+int getcurrentcontainer() {
+    int i;
+    for(i = 0; i < NUM_VCS; i++){
+        if(strcmp(cabinet.tuperwares[i].name, "") == 0){
+            continue;
+        }
+    }
+    return i;
+}
+
+int rand(void) { // RAND_MAX assumed to be 32767
+    next = next * 74851725 + 95132;
+    return (unsigned int)(next/65536) % 7;
 }
 
 int setpath(int index, char *path, int update) {
@@ -243,10 +285,10 @@ int setpath(int index, char *path, int update) {
                 }
                 token_path = strtok(0, "/");
             }
-        }else{
+        } else {
             if(strcmp(path, "..") == 0) {
                 path_arr[--i] = 0;
-            }else{                
+            } else {
                 path_arr[i] = path;
             }
         }
@@ -260,7 +302,7 @@ int setpath(int index, char *path, int update) {
             }
         }
         strcat(cabinet.tuperwares[index].path, "\0");
-    }else{
+    } else {
         strcpy(cabinet.tuperwares[index].path, path);
     }
 
@@ -277,7 +319,7 @@ int tostring() {
         if(cabinet.tuperwares[i].name != 0) {
             cprintf(cabinet.tuperwares[i].name);
         }
-        else{
+        else {
             cprintf("NULL");
         }
         cprintf("\n");
@@ -285,7 +327,7 @@ int tostring() {
         if(cabinet.tuperwares[i].vc != 0) {
             cprintf(cabinet.tuperwares[i].vc);
         }
-        else{
+        else {
             cprintf("NULL");
         }
         cprintf("\n");
@@ -293,7 +335,7 @@ int tostring() {
         if(cabinet.tuperwares[i].path != 0) {
             cprintf(cabinet.tuperwares[i].path);
         }
-        else{
+        else {
             cprintf("NULL");
         }
         cprintf("\n");
@@ -301,14 +343,15 @@ int tostring() {
         if(cabinet.tuperwares[i].max_proc != 0) {
             cprintf("%d", cabinet.tuperwares[i].max_proc);
         }
-        else{
+        else {
             cprintf("NULL");
         }
         cprintf("\n");
         cprintf("USED MEM:  ");
         if(cabinet.tuperwares[i].used_mem != 0) {
             cprintf("%d", cabinet.tuperwares[i].used_mem*4096);
-        }else{
+        }
+        else {
             cprintf("NULL");
         }
         cprintf("\n");
@@ -316,14 +359,15 @@ int tostring() {
         if(cabinet.tuperwares[i].max_mem != 0) {
             cprintf("%d", cabinet.tuperwares[i].max_mem*4096);
         }
-        else{
+        else {
             cprintf("NULL");
         }
         cprintf("\n");
         cprintf("USED DISK: ");
         if(cabinet.tuperwares[i].used_disk != 0) {
             cprintf("%d", cabinet.tuperwares[i].used_disk);
-        }else{
+        }
+        else {
             cprintf("NULL");
         }
         cprintf("\n");
@@ -331,7 +375,7 @@ int tostring() {
         if(cabinet.tuperwares[i].max_disk != 0) {
             cprintf("%d", cabinet.tuperwares[i].max_disk);
         }
-        else{
+        else {
             cprintf("NULL");
         }
         cprintf("\n");
